@@ -2,6 +2,19 @@
 
 The Nexus programming language.
 
+## Native integration with component networks
+
+Nexus is meant to interface component-network-oriented systems, to enable a convenient, safe network description.
+
+```
+// Instantiate components:
+var c1 = comp("MyComponentTypeA");
+var c2 = comp("MyComponentTypeB");
+
+// Simple operators for defining connections, and native output names on component types.
+c1.Output -> c2.Input;
+```
+
 ## Safety
 
 Nexus is opinionated in some respects, mostly to improve safety.
@@ -74,37 +87,18 @@ However, due to the simple, unrelated matter of code formatting, it could be ove
 
 ```
 // Comment.
-func free(a, b, c) {
+fun free(a, b, c) {
   return 42;
 }
 
-func main() {
-  func local() {
+fun main() {
+  fun local {
     return "Hello".length();
   }
 
   free(1, 2, local());
 
-  return func { return 17; }()
-}
-```
-
-## Example 2
-
-```
-// Comment.
-func free(a, b, c) {
-  ret 42;
-}
-
-func main() {
-  func local() {
-    ret "Hello".length();
-  }
-
-  free(1, 2, local());
-
-  ret func { ret 17; }()
+  ret fun { ret 17; }();
 }
 ```
 
