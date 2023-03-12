@@ -4,16 +4,22 @@ The Nexus programming language.
 
 ## Native integration with component networks
 
-Nexus is meant to interface component-network-oriented systems, to enable a convenient, safe network description.
+Nexus is designed to interface component-network-oriented systems, to enable a convenient, safe network description.
 
-```
+```rs
 // Instantiate components:
-var c1 = comp("MyComponentTypeA");
-var c2 = comp("MyComponentTypeB");
+let c1 = node("TypeA");
+let c2 = node("TypeB");
 
-// Simple operators for defining connections, and native output names on component types.
+// Operators for defining edge connections:
 c1.Output -> c2.Input;
 ```
+
+From a syntactic viewpoint, it is mostly influenced by [Rust](https://github.com/rust-lang/rust).
+
+## Simplicity
+
+Nexus is geared towards simplicity, in the sense that it tries to support a minimal viable set of features required for flexible use as a component network description language.
 
 ## Safety
 
@@ -25,43 +31,42 @@ The following subsections indicate in what specific ways.
 Even though Nexus is dynamically typed, it requires a value to be initialized when it's used.
 E.g.:
 
-```
-var x;
+```rust
+let x;
 
-if (x) { /* ... */ } // ERROR: Using 'x' uninitialized.
+let y = x; // Error: Using 'x' uninitialized.
 ```
 
 and:
 
-```
-var x;
+```rust
+let x;
 
 x = true;
 
-if (x) { /* ... */ } // OK.
+let y = x; // OK.
 ```
 
 #### Argumentation
 
-Using values uninitialized (and having the interpreter assume a value) is an error in 99.9% of the cases.
+Using values uninitialized (and having the interpreter assume a value) is an error in 99.99% of the cases.
 
 Also, this initialization requirement implicitly assumes a variable to be declared (which is not required even in languages like JavaScript).
-Using a value undeclared is an error in 99.9999999% of the cases.
+Using a value undeclared is an error in 99.99% of the cases.
 
 ### Braces are strictly required
 
 Braces after `if`/`while`/`for`/etc. statements are required:
 
-```
-if (...) {
-  // OK.
+```js
+// OK:
+if expr {
+  do_something();
 }
 
-// Other code..
-
-if (...) // ERROR: Expecting braces for block statement.
-
-// Other code..
+// Error:
+if expr
+  do_something();
 ```
 
 In other words, only block statements are allowed.
@@ -73,36 +78,155 @@ Consider this example C code as an example:
 
 ```c
 if (condition)
-  printf("a\n");
-  printf("b\n");
+  printf("A\n");
+  printf("B\n"); // Whoops.
 ```
 
-This will always print `b`, regardless of the `condition`.
+This will always print `B`, regardless of the `condition`.
 However, due to the simple, unrelated matter of code formatting, it could be overlooked by a reviewer as a bug.
 
+## Examples
 
-# Examples
+### Example 1
 
-## Example 1
-
-```
+```rust
 // Comment.
-fun free(a, b, c) {
-  return 42;
+fn free(a, b, c) -> Int {
+  return 42 + a + b + c;
 }
 
-fun main() {
-  fun local {
-    return "Hello".length();
+/* Comment */
+fn main() {
+  fn local1() {
+    return "Hello1".length();
   }
 
-  free(1, 2, local());
+  let local2 = ||{ return "Hello2".length(); };
 
-  ret fun { ret 17; }();
+  let x = free(1, 2, local1() + local2());
+
+  print |x|{ return 17 + x; }();
 }
 ```
 
+## Feature list
 
-# Ideas
+### Expressions
 
-* Make Nexus more expression oriented (e.g. make `for`/`while`/etc. statements expressions).
+- Loops: `for`/`loop`
+- Conditions: `if`/`match`
+
+### Statements
+
+- Declaration: `var`/`let`
+
+## Implementation status
+
+### Milestone 0: setup
+
+- [ ] Lexing setup.
+- [ ] Parsing setup.
+
+### Milestone 1: foundations
+
+- [ ] Fundamental type `Number`.
+- [ ] Fundamental type `String`.
+- [ ] Simple arithmetic expressions.
+- [ ] Printing of values.
+- [ ] Interpretation from source file (`.nxs`).
+- [ ] Command-line REPL.
+
+### Milestone 2: basics
+
+- [ ] Functions using `fn`.
+- [ ] ...
+
+## Keywords
+
+### Base language keywords
+
+| Keyword | Description |
+| :-----: | :---------- |
+| `fn`    | Function declaration.   |
+| `for`   | Loop expression.        |
+| `if`    | Conditional expression. |
+| `let`   | Variable declaration.   |
+| `loop`  | Loop expression.        |
+| `match` | Match expression.       |
+| `while` | Loop expression.        |
+
+### Language library keywords
+
+| Keyword | Description |
+| :-----: | :---------- |
+| `print` | Print expression result. |
+| `node`  | Component instantiation. |
+
+## Language grammar
+
+Productions in [Extended Backus-Naur Form (EBNF)](https://en.wikipedia.org/wiki/Extended_Backus%E2%80%93Naur_form).
+
+### Lexical grammar
+
+```ebnf
+ALPHA  = "a" | "..." | "z" | "A" | "..." | "Z" | "_" ;
+DIGIT  = "0" | "..." | "9" ;
+STRING = "\"" , <character>* - "\"" , "\"" ;
+NUMBER = DIGIT+ ( "." DIGIT+ )? ;
+ID     = ALPHA ( ALPHA | DIGIT )* ;
+```
+
+### Main syntax (WIP)
+
+```ebnf
+program = decl* EOF ;
+
+decl       = fn_decl | var_decl | stmt ;
+fn_decl    = "fn" function ;
+var_decl   = "let" ID ( "=" expr )? ";" ;
+stmt       = expr_stmt | print_stmt | block ;
+expr_stmt  = expr ";" ;
+print_stmt = "print" expr ";" ;
+block      = "{" decl* "}" ;
+
+function   = ID "(" params* ")" block ;
+params     = ID ( "," ID )* ;
+args       = expr ( "," expr )* ;
+
+literal    = NUMBER | STRING | "true" | "false" ;
+expr       = literal | unary | binary | group ;
+unary      = ( "!" | "-" ) expr ;
+operator   = "==" | "!=" | "<=" | ">=" | "<" | ">" | "+" | "-" | "*" | "/" ;
+binary     = expr operator expr ;
+group      = "(" expr ")" ;
+```
+
+### TODO
+
+Add:
+
+- `for .. in`
+- `while`
+- `loop`
+- `match`
+- Component instantiation using `node`
+- Node edge connection using binary `->`
+- Assignment
+- Proper precendence handling
+
+## TODO
+
+- Immutability? Just shallow mutability for now.
+- Fundamental types:
+  - `Number`: number (double-precision floating-point, 64-bits)
+  - `String`: string (UTF-8 string)
+- Objects?
+- Add `match` expression? Should be simple for a few fundamental types.
+- Handling setting of component values...how/what/mutability?
+- Lambda expressions?
+- Copy/move semantics?
+- Implicit return value (to remove `return`)?
+- Support for JSON literal object notation?
+- Error handling? Result types?
+- Support for integration into a visual IDE / generative tooling.
+- Range declarations using `start..=end` for use in `for` loops.
