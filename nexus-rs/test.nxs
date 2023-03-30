@@ -1,0 +1,21 @@
+// Comment.
+fn free(a, b, c) -> Int {
+  return 42 + a + b + c; // Result comment.
+}
+
+/* Multi-line
+   comment */
+fn main() {
+  fn local1() {
+    return "Hello1".length();
+  }
+
+  let local2 = ||{ return "Hello2".length(); };
+
+  let x = free(1, 2.889, local1() + local2());
+
+  node a("Input"), b("Output");
+  a.Out -> b.In;
+
+  print "\\\\\" End:\t\"" + |x|{ return 17 + x; /* inline comment */ }() + "\"";
+}

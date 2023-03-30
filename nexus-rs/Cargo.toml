@@ -1,0 +1,11 @@
+[package]
+name = "nexus-rs"
+version = "0.1.0"
+edition = "2021"
+
+default-run = "nexus-rs"
+
+[dependencies]
+clap = { version = "4.2.1", features = ["derive"] }
+colored = "2.0.0"
+lazy_static = "1.4.0"
