@@ -4,8 +4,10 @@ fn free(a, b, c) -> Int {
 }
 
 /* Multi-line
+   comment
 
-   comment */
+   fn should_be_ignored() { return 10; }
+   */
 fn main() {
   fn local1() {
     return "Hello1".length();

@@ -33,6 +33,7 @@ fn main() {
 
         // XXX
         tokens.into_iter().for_each(|t| print!("{:?} ", t));
+        println!();
     } else {
         // TODO
         eprintln!("REPL not implemented yet!");

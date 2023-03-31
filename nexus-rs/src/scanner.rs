@@ -1,3 +1,4 @@
+use crate::cursor::Cursor;
 use crate::token::Token;
 use lazy_static::lazy_static;
 use std::{collections::HashMap, iter::Peekable, str::Chars};
@@ -8,7 +9,7 @@ use std::f64::consts::PI;
 pub type Tokens = Vec<Token>;
 
 pub struct Scanner {
-    comment_: bool, //<! Indicates multiblock comment state.
+    comment_: bool, //<! Indicates multiline comment state.
 }
 
 type TokenMap = HashMap<&'static str, Token>;
@@ -37,6 +38,12 @@ impl Scanner {
         }
 
         let mut tokens = Vec::new();
+
+        let mut cursor = Cursor::new(&line);
+        println!("{:?}", cursor);
+        cursor.advance();
+        println!("{:?}", cursor);
+        println!("{}", cursor.eol());
 
         let mut char_iter = line.chars().peekable();
         while let Some(c) = char_iter.next() {
