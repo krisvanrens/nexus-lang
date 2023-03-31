@@ -39,6 +39,7 @@ impl Scanner {
 
         let mut tokens = Vec::new();
 
+        // XXX
         let mut cursor = Cursor::new(&line);
         println!("{:?}", cursor);
         cursor.advance();
