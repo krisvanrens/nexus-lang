@@ -4,6 +4,7 @@ fn free(a, b, c) -> Int {
 }
 
 /* Multi-line
+
    comment */
 fn main() {
   fn local1() {
