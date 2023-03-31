@@ -1,7 +1,6 @@
 use std::{iter::Peekable, str::Chars};
 
-// TODO: Docs..
-
+/// Cursor to characters in a string, providing direct value access and advanced peeking.
 #[derive(Debug)]
 pub struct Cursor<'a> {
     iter: Peekable<Chars<'a>>,
@@ -9,6 +8,21 @@ pub struct Cursor<'a> {
 }
 
 impl<'a> Cursor<'a> {
+    /// Create a new cursor given a string.
+    ///
+    /// The cursor is initialized with the first character of the string.
+    ///
+    /// Example:
+    ///
+    /// ```
+    /// use nexus_rs::cursor::Cursor;
+    ///
+    /// let s = "Hello".to_string();
+    /// let mut c = Cursor::new(&s);
+    ///
+    /// assert!(c.value() == Some('H'));
+    /// assert!(c.peek() == Some(&'e'));
+    /// ```
     pub fn new(line: &'a str) -> Self {
         let mut iter = line.chars();
         let value = iter.next();
@@ -19,18 +33,81 @@ impl<'a> Cursor<'a> {
         }
     }
 
+    /// Get the value of the current character the cursor is pointing at (if any).
+    ///
+    /// Example:
+    ///
+    /// ```
+    /// use nexus_rs::cursor::Cursor;
+    ///
+    /// let s = "ab".to_string();
+    /// let mut c = Cursor::new(&s);
+    ///
+    /// assert!(c.value() == Some('a'));
+    /// c.advance();
+    /// assert!(c.value() == Some('b'));
+    /// ```
     pub fn value(&self) -> Option<char> {
         self.value
     }
 
+    /// Advance the cursor left to right, replacing the inner value.
+    ///
+    /// Example:
+    ///
+    /// ```
+    /// use nexus_rs::cursor::Cursor;
+    ///
+    /// let s = "abc".to_string();
+    /// let mut c = Cursor::new(&s);
+    ///
+    /// assert!(c.value() == Some('a'));
+    /// c.advance();
+    /// assert!(c.value() == Some('b'));
+    /// c.advance();
+    /// assert!(c.value() == Some('c'));
+    /// c.advance();
+    /// assert!(c.value() == None);
+    /// ```
     pub fn advance(&mut self) {
         self.value = self.iter.next();
     }
 
+    /// Peek into the next character without consuming the current value.
+    ///
+    /// Example:
+    ///
+    /// ```
+    /// use nexus_rs::cursor::Cursor;
+    ///
+    /// let s = "ab".to_string();
+    /// let mut c = Cursor::new(&s);
+    ///
+    /// assert!(c.value() == Some('a'));
+    /// assert!(c.peek() == Some(&'b'));
+    /// c.advance();
+    /// assert!(c.value() == Some('b'));
+    /// assert!(c.peek() == None);
+    /// ```
     pub fn peek(&mut self) -> Option<&char> {
         self.iter.peek()
     }
 
+    /// Peek the next word without consuming the current value.
+    ///
+    /// A "word" is defined as a consecutive sequence of alphanumeric characters.
+    /// The current value of the cursor is taken as the first character of the word.
+    ///
+    /// Example:
+    ///
+    /// ```
+    /// use nexus_rs::cursor::Cursor;
+    ///
+    /// let s = "abc12 def".to_string();
+    /// let mut c = Cursor::new(&s);
+    ///
+    /// assert!(c.peek_word() == Some("abc12".to_string()));
+    /// ```
     pub fn peek_word(&mut self) -> Option<String> {
         if !self.eol() && self.value.unwrap().is_alphanumeric() {
             let mut result = self.value.unwrap().to_string();
@@ -47,6 +124,20 @@ impl<'a> Cursor<'a> {
         }
     }
 
+    /// Check if the cursor is at end-of-line (EOL).
+    ///
+    /// Example:
+    ///
+    /// ```
+    /// use nexus_rs::cursor::Cursor;
+    ///
+    /// let s = "x".to_string();
+    /// let mut c = Cursor::new(&s);
+    ///
+    /// assert!(!c.eol());
+    /// c.advance();
+    /// assert!(c.eol());
+    /// ```
     pub fn eol(&self) -> bool {
         self.value.is_none()
     }
