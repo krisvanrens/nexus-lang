@@ -29,7 +29,7 @@ impl<'a> Cursor<'a> {
 
         Cursor {
             iter: iter.peekable(),
-            value: value,
+            value,
         }
     }
 
@@ -51,7 +51,7 @@ impl<'a> Cursor<'a> {
         self.value
     }
 
-    /// Advance the cursor left to right, replacing the inner value.
+    /// Advance the cursor one position, replacing the inner value.
     ///
     /// Example:
     ///
@@ -70,6 +70,41 @@ impl<'a> Cursor<'a> {
     /// assert!(c.value() == None);
     /// ```
     pub fn advance(&mut self) {
+        self.value = self.iter.next();
+    }
+
+    /// Advance the cursor by N positions, replacing the inner value.
+    /// 
+    /// If N is zero, `advance_by` is a no-op.
+    /// It is a valid operator to advance the cursor beyond the end-of-line (EOL).
+    ///
+    /// Example:
+    ///
+    /// ```
+    /// use nexus_rs::cursor::Cursor;
+    ///
+    /// let s = "abcdefg".to_string();
+    /// let mut c = Cursor::new(&s);
+    ///
+    /// assert!(c.value() == Some('a'));
+    /// c.advance_by(3);
+    /// assert!(c.value() == Some('d'));
+    /// c.advance_by(10);
+    /// assert!(c.value() == None);
+    /// ```
+    pub fn advance_by(&mut self, n: usize) {
+        if n == 0 {
+            return;
+        }
+
+        for _ in 0..(n - 1) {
+            self.iter.next();
+
+            if self.iter.peek().is_none() {
+                break;
+            }
+        }
+
         self.value = self.iter.next();
     }
 
@@ -95,7 +130,7 @@ impl<'a> Cursor<'a> {
 
     /// Peek the next word without consuming the current value.
     ///
-    /// A "word" is defined as a consecutive sequence of alphanumeric characters.
+    /// A "word" is defined as a consecutive sequence of alphanumeric characters or '_' (underscore).
     /// The current value of the cursor is taken as the first character of the word.
     ///
     /// Example:
@@ -103,10 +138,10 @@ impl<'a> Cursor<'a> {
     /// ```
     /// use nexus_rs::cursor::Cursor;
     ///
-    /// let s = "abc12 def".to_string();
+    /// let s = "abc_12 def".to_string();
     /// let mut c = Cursor::new(&s);
     ///
-    /// assert!(c.peek_word() == Some("abc12".to_string()));
+    /// assert!(c.peek_word() == Some("abc_12".to_string()));
     /// ```
     pub fn peek_word(&mut self) -> Option<String> {
         if !self.eol() && self.value.unwrap().is_alphanumeric() {
@@ -115,7 +150,7 @@ impl<'a> Cursor<'a> {
             result += &self
                 .iter
                 .clone()
-                .take_while(|x| x.is_alphanumeric())
+                .take_while(|x| x.is_alphanumeric() || x == &'_')
                 .collect::<String>();
 
             Some(result)
@@ -188,6 +223,24 @@ fn cursor_advance_test() {
 }
 
 #[test]
+fn cursor_advance_by_test() {
+    let line = "ab_cd_ɘƒ_gh".to_string();
+
+    let mut c = Cursor::new(&line);
+
+    assert!(c.value() == Some('a'));
+    c.advance_by(3);
+    assert!(c.value() == Some('c'));
+    c.advance_by(3);
+    assert!(c.value() == Some('ɘ'));
+    c.advance_by(3);
+    assert!(c.value() == Some('g'));
+
+    c.advance_by(3);
+    assert!(c.eol());
+}
+
+#[test]
 fn cursor_peek_test() {
     let line = "abcdefg".to_string();
 
@@ -235,4 +288,24 @@ fn cursor_peek_word_test() {
 
     assert!(!c.eol());
     assert!(c.value() == Some('d'));
+}
+
+#[test]
+fn parse_word_test() {
+    let test = |word: &str| {
+        let mut cursor = Cursor::new(word);
+        println!("{word}");
+        assert!(cursor.peek_word().unwrap() == word.to_string());
+    };
+
+    test("x");
+    test("ah");
+    test("word");
+    test("CamelCase");
+    test("snake_case");
+    test("ALLUPPER");
+    test("ŮñĭçøƋɇ");
+    test("trailing_numbers012");
+    test("numbers1n8etw33n");
+    test("veeeeeeeerylooooooongwooooooord");
 }
