@@ -21,4 +21,6 @@ fn main() {
   a.Out -> b.In;
 
   print "\\\\\" End:\t\"" + |x|{ return 17 + x; /* inline comment */ }() + "\"";
+
+  let local3 = ||   { return "Hello3".length(); };
 }
