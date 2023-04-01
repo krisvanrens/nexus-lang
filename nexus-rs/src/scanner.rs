@@ -1,7 +1,7 @@
 use crate::cursor::Cursor;
 use crate::token::Token;
 use lazy_static::lazy_static;
-use std::{collections::HashMap, iter::Peekable, str::Chars};
+use std::collections::HashMap;
 
 #[cfg(test)]
 use std::f64::consts::PI;
@@ -39,27 +39,20 @@ impl Scanner {
 
         let mut tokens = Vec::new();
 
-        // XXX
         let mut cursor = Cursor::new(&line);
-        println!("{:?}", cursor);
-        cursor.advance();
-        println!("{:?}", cursor);
-        println!("{}", cursor.eol());
-
-        let mut char_iter = line.chars().peekable();
-        while let Some(c) = char_iter.next() {
+        while let Some(c) = cursor.value() {
             if !self.comment_ {
                 match c {
-                    ' ' | '\r' | '\t' => continue,
+                    ' ' | '\r' | '\t' => (),
                     '(' => tokens.push(Token::LeftParen),
                     ')' => tokens.push(Token::RightParen),
                     '{' => tokens.push(Token::LeftBrace),
                     '}' => tokens.push(Token::RightBrace),
                     ';' => tokens.push(Token::SemiColon),
                     '+' => tokens.push(Token::Plus),
-                    '-' => match char_iter.peek() {
+                    '-' => match cursor.peek() {
                         Some('>') => {
-                            char_iter.next();
+                            cursor.advance();
                             tokens.push(Token::Arrow);
                         }
                         _ => tokens.push(Token::Minus),
@@ -70,63 +63,65 @@ impl Scanner {
                     ',' => tokens.push(Token::Comma),
                     '.' => tokens.push(Token::Dot),
                     '_' => tokens.push(Token::Underscore),
-                    '=' => match char_iter.peek() {
+                    '=' => match cursor.peek() {
                         Some('=') => {
-                            char_iter.next();
+                            cursor.advance();
                             tokens.push(Token::Eq);
                         }
                         _ => tokens.push(Token::Is),
                     },
-                    '|' => match char_iter.peek() {
+                    '|' => match cursor.peek() {
                         Some('|') => {
-                            char_iter.next();
+                            cursor.advance();
                             tokens.push(Token::Or);
                         }
                         _ => tokens.push(Token::Pipe),
                     },
-                    '>' => match char_iter.peek() {
+                    '>' => match cursor.peek() {
                         Some('=') => {
-                            char_iter.next();
+                            cursor.advance();
                             tokens.push(Token::GtEq);
                         }
                         _ => tokens.push(Token::Gt),
                     },
-                    '<' => match char_iter.peek() {
+                    '<' => match cursor.peek() {
                         Some('=') => {
-                            char_iter.next();
+                            cursor.advance();
                             tokens.push(Token::LtEq);
                         }
                         _ => tokens.push(Token::Lt),
                     },
-                    '!' => match char_iter.peek() {
+                    '!' => match cursor.peek() {
                         Some('=') => {
-                            char_iter.next();
+                            cursor.advance();
                             tokens.push(Token::NotEq);
                         }
                         _ => tokens.push(Token::Bang),
                     },
                     '&' => {
-                        if char_iter.peek() == Some(&'&') {
-                            char_iter.next();
+                        if cursor.peek() == Some(&'&') {
+                            cursor.advance();
                             tokens.push(Token::And);
                         }
                     }
-                    '/' => match char_iter.peek() {
+                    '/' => match cursor.peek() {
                         Some('/') => break,
                         Some('*') => {
-                            char_iter.next();
+                            cursor.advance();
                             self.comment_ = true;
                         }
                         _ => tokens.push(Token::Slash),
                     },
                     '"' => {
-                        tokens.push(Token::String(parse_string(&mut char_iter)));
+                        tokens.push(Token::String(parse_string(&mut cursor)));
                     }
                     x if x.is_alphanumeric() => {
                         if c.is_ascii_digit() {
-                            tokens.push(Token::Number(parse_number(c, &mut char_iter)));
+                            tokens.push(Token::Number(parse_number(&mut cursor)));
                         } else {
-                            let word = parse_word(c, &mut char_iter);
+                            let word = cursor.peek_word().unwrap();
+                            cursor.advance_by(word.chars().count() - 1);
+
                             tokens.push(if let Some(token) = KEYWORDS.get(&word.as_str()) {
                                 token.clone()
                             } else {
@@ -136,10 +131,12 @@ impl Scanner {
                     }
                     _ => panic!("unexpected character: '{c}'"), // TODO: Handle lexing error.
                 }
-            } else if (c == '*') && (char_iter.peek() == Some(&'/')) {
-                char_iter.next();
+            } else if (c == '*') && (cursor.peek() == Some(&'/')) {
+                cursor.advance();
                 self.comment_ = false;
             }
+
+            cursor.advance();
         }
 
         tokens
@@ -152,12 +149,14 @@ impl Default for Scanner {
     }
 }
 
-fn parse_string(char_iter: &mut Peekable<Chars>) -> String {
+fn parse_string(cursor: &mut Cursor) -> String {
     let mut result = String::new();
     let mut escaped = false;
     let mut ended = false;
 
-    for c in &mut *char_iter {
+    cursor.advance(); // Consume opening quotes.
+
+    while let Some(c) = cursor.value() {
         match c {
             '"' => {
                 if !escaped {
@@ -178,6 +177,8 @@ fn parse_string(char_iter: &mut Peekable<Chars>) -> String {
         }
 
         escaped = escaped && (c == '\\');
+
+        cursor.advance();
     }
 
     if !ended {
@@ -194,10 +195,10 @@ fn parse_string(char_iter: &mut Peekable<Chars>) -> String {
 #[test]
 fn parse_string_test() {
     let test = |input: &str| {
-        let s = input.to_string() + "\"";
-        let mut iter = s.chars().peekable();
+        let s = "\"".to_string() + input + "\"";
+        let mut cursor = Cursor::new(&s);
         assert!(
-            parse_string(&mut iter)
+            parse_string(&mut cursor)
                 == input
                     .to_string()
                     .replace("\\\"", "\"")
@@ -220,14 +221,16 @@ fn parse_string_test() {
     test(r#"\"quotes at the sides\""#);
 }
 
-fn parse_number(current_char: char, char_iter: &mut Peekable<Chars>) -> f64 {
-    let mut result = current_char.to_string();
+fn parse_number(cursor: &mut Cursor) -> f64 {
+    let mut result = String::new();
 
-    for c in char_iter {
+    while let Some(c) = cursor.value() {
         match c {
             '0'..='9' | '.' => result.push(c),
             _ => break,
         }
+
+        cursor.advance();
     }
 
     result.parse::<f64>().expect("failed to parse number") // TODO: Handle lexing error.
@@ -236,16 +239,8 @@ fn parse_number(current_char: char, char_iter: &mut Peekable<Chars>) -> f64 {
 #[test]
 fn parse_number_test() {
     let test = |input: &str, expected: f64| {
-        // We need to use indexing here for Unicode support.
-        let (index, _) = input.char_indices().nth(1).unwrap_or_default();
-        let subword = if index > 0 {
-            input[index..].to_string()
-        } else {
-            "".to_string()
-        };
-        let mut iter = subword.chars().into_iter().peekable();
-
-        assert!(parse_number(input.chars().next().unwrap(), &mut iter) - expected < 0.001);
+        let mut cursor = Cursor::new(input);
+        assert!(parse_number(&mut cursor) - expected < 0.001);
     };
 
     test("0", 0.0);
@@ -259,47 +254,4 @@ fn parse_number_test() {
     test("123.456", 123.456);
     test("123.456", 123.456);
     test("3.1415926535", PI);
-}
-
-fn parse_word(current_char: char, char_iter: &mut Peekable<Chars>) -> String {
-    let mut result = current_char.to_string();
-    loop {
-        match char_iter.peek() {
-            Some(c) if c.is_alphanumeric() || c == &'_' => {
-                result.push(*c);
-                char_iter.next();
-            }
-            _ => break,
-        }
-    }
-
-    result
-}
-
-#[test]
-fn parse_word_test() {
-    let test = |word: &str| {
-        // We need to use indexing here for Unicode support.
-        let (index, _) = word.char_indices().nth(1).unwrap_or_default();
-        let subword = if index > 0 {
-            word[index..].to_string()
-        } else {
-            "".to_string()
-        };
-        let mut iter = subword.chars().into_iter().peekable();
-
-        assert!(parse_word(word.chars().next().unwrap(), &mut iter) == word.to_string());
-    };
-
-    test("x");
-    test("ah");
-    test("word");
-    test("function");
-    test("CamelCase");
-    test("snake_case");
-    test("ALLUPPER");
-    test("ŮñĭçøƋɇ");
-    test("trailing_numbers012");
-    test("numbers1n8etw33n");
-    test("veeeeeeeerylooooooongidentifier");
 }
