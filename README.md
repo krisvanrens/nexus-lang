@@ -230,3 +230,18 @@ Add:
 - Error handling? Result types?
 - Support for integration into a visual IDE / generative tooling.
 - Range declarations using `start..=end` for use in `for` loops.
+
+## Known limitations
+
+- The scanner does not support in-line comments in all places, e.g. in between an empty closure declaration and the body, as in: `|| /* ... */ {}`.
+
+## FAQ
+
+### Why the name?
+
+From the dictionary:
+
+**Nexus**; *nex·us*; *Connection, link*
+
+Of course this ties back to its place as a component network-description language.
+
