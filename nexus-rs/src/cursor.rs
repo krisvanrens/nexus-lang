@@ -74,7 +74,7 @@ impl<'a> Cursor<'a> {
     }
 
     /// Advance the cursor by N positions, replacing the inner value.
-    /// 
+    ///
     /// If N is zero, `advance_by` is a no-op.
     /// It is a valid operator to advance the cursor beyond the end-of-line (EOL).
     ///
@@ -129,7 +129,7 @@ impl<'a> Cursor<'a> {
     }
 
     /// Peek into the next non-whitespace character without consuming the current value.
-    /// 
+    ///
     /// A whitespace character is one of the following:
     ///  - Whitespace: '`_`',
     ///  - Carriage return: '`\r`',
@@ -295,7 +295,6 @@ fn cursor_peek_nonwhitespace_test() {
     let test = |input: &str, expect: char| {
         let mut c = Cursor::new(&input);
         assert!(c.peek_nonwhitespace() == Some(expect));
-
     };
 
     test("a b", 'b');

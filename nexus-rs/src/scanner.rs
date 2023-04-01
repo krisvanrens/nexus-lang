@@ -81,7 +81,7 @@ impl Scanner {
                             } else {
                                 tokens.push(Token::Or);
                             }
-                        },
+                        }
                         _ => tokens.push(Token::Pipe),
                     },
                     '>' => match cursor.peek() {
