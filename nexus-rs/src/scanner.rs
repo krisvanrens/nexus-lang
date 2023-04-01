@@ -48,6 +48,8 @@ impl Scanner {
                     ')' => tokens.push(Token::RightParen),
                     '{' => tokens.push(Token::LeftBrace),
                     '}' => tokens.push(Token::RightBrace),
+                    '[' => tokens.push(Token::LeftBracket),
+                    ']' => tokens.push(Token::RightBracket),
                     ';' => tokens.push(Token::SemiColon),
                     '+' => tokens.push(Token::Plus),
                     '-' => match cursor.peek() {
