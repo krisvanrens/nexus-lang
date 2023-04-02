@@ -125,11 +125,7 @@ impl<'a> Cursor<'a> {
     /// assert!(c.peek() == None);
     /// ```
     pub fn peek(&self) -> Option<char> {
-        if let Some(c) = self.iter.clone().peek() {
-            Some(c.clone())
-        } else {
-            None
-        }
+        self.iter.clone().peek().copied()
     }
 
     /// Peek into the next nth character without consuming the current value.
@@ -159,11 +155,7 @@ impl<'a> Cursor<'a> {
                     iter_clone.next();
                 }
 
-                if let Some(c) = iter_clone.peek() {
-                    Some(c.clone())
-                } else {
-                    None
-                }
+                iter_clone.peek().copied()
             }
         }
     }
