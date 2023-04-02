@@ -216,7 +216,8 @@ Add:
 
 ## TODO
 
-- Immutability? Just shallow mutability for now.
+- Improve declarative approach for extending a module with components.
+- Immutability? Just shallow mutability for now. Add `mut` keyword.
 - Fundamental types:
   - `Number`: number (double-precision floating-point, 64-bits)
   - `String`: string (UTF-8 string)
