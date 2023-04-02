@@ -16,6 +16,7 @@ pub enum Token {
     Percent,      // '%'
     Comma,        // ','
     Dot,          // '.'
+    Range,        // '..'
     Underscore,   // '_'
     Is,           // '='
     Eq,           // '=='
