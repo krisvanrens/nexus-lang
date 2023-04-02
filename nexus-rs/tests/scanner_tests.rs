@@ -2,7 +2,6 @@ use nexus_rs::{
     scanner::{Scanner, Tokens},
     token::Token,
 };
-use std::iter::zip;
 
 #[test]
 fn primitive_test() {
@@ -20,11 +19,7 @@ fn primitive_test() {
 
         let tokens = s.scan(input.to_string());
 
-        assert_eq!(tokens.len(), expected.len());
-        assert_eq!(
-            expected.len(),
-            zip(tokens, expected).filter(|(a, b)| { a == b }).count()
-        );
+        assert_eq!(tokens, expected);
     };
 
     test("(", Token::LeftParen);
