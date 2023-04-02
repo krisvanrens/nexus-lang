@@ -18,10 +18,10 @@ impl<'a> Cursor<'a> {
     /// use nexus_rs::cursor::Cursor;
     ///
     /// let s = "Hello".to_string();
-    /// let mut c = Cursor::new(&s);
+    /// let c = Cursor::new(&s);
     ///
     /// assert!(c.value() == Some('H'));
-    /// assert!(c.peek() == Some(&'e'));
+    /// assert!(c.peek() == Some('e'));
     /// ```
     pub fn new(line: &'a str) -> Self {
         let mut iter = line.chars();
@@ -119,13 +119,53 @@ impl<'a> Cursor<'a> {
     /// let mut c = Cursor::new(&s);
     ///
     /// assert!(c.value() == Some('a'));
-    /// assert!(c.peek() == Some(&'b'));
+    /// assert!(c.peek() == Some('b'));
     /// c.advance();
     /// assert!(c.value() == Some('b'));
     /// assert!(c.peek() == None);
     /// ```
-    pub fn peek(&mut self) -> Option<&char> {
-        self.iter.peek()
+    pub fn peek(&self) -> Option<char> {
+        if let Some(c) = self.iter.clone().peek() {
+            Some(c.clone())
+        } else {
+            None
+        }
+    }
+
+    /// Peek into the next nth character without consuming the current value.
+    /// 
+    /// Returns the current cursor value if 'n' is zero.
+    ///
+    /// Example:
+    ///
+    /// ```
+    /// use nexus_rs::cursor::Cursor;
+    ///
+    /// let s = "abc".to_string();
+    /// let mut c = Cursor::new(&s);
+    ///
+    /// assert!(c.value() == Some('a'));
+    /// assert!(c.peek_nth(0) == Some('a'));
+    /// assert!(c.peek_nth(1) == Some('b'));
+    /// assert!(c.peek_nth(2) == Some('c'));
+    /// ```
+    pub fn peek_nth(&self, n: usize) -> Option<char> {
+        match n {
+            0 => self.value(),
+            1 => self.peek(),
+            _ => {
+                let mut iter_clone = self.iter.clone();
+                for _ in 0..(n - 1) {
+                    iter_clone.next();
+                }
+
+                if let Some(c) = iter_clone.peek() {
+                    Some(c.clone())
+                } else {
+                    None
+                }
+            }
+        }
     }
 
     /// Peek into the next non-whitespace character without consuming the current value.
@@ -144,10 +184,10 @@ impl<'a> Cursor<'a> {
     /// let mut c = Cursor::new(&s);
     ///
     /// assert!(c.value() == Some('a'));
-    /// assert!(c.peek() == Some(&' '));
+    /// assert!(c.peek() == Some(' '));
     /// assert!(c.peek_nonwhitespace() == Some('b'));
     /// ```
-    pub fn peek_nonwhitespace(&mut self) -> Option<char> {
+    pub fn peek_nonwhitespace(&self) -> Option<char> {
         if !self.eol() {
             let iter_clone = self.iter.clone();
             for c in iter_clone {
@@ -175,7 +215,7 @@ impl<'a> Cursor<'a> {
     ///
     /// assert!(c.peek_word() == Some("abc_12".to_string()));
     /// ```
-    pub fn peek_word(&mut self) -> Option<String> {
+    pub fn peek_word(&self) -> Option<String> {
         if !self.eol() && self.value.unwrap().is_alphanumeric() {
             let mut result = self.value.unwrap().to_string();
 
@@ -279,7 +319,7 @@ fn cursor_peek_test() {
     let mut c = Cursor::new(&line);
 
     for i in "bcdefg".chars() {
-        assert!(c.peek().unwrap() == &i);
+        assert!(c.peek().unwrap() == i);
         c.advance();
     }
 
@@ -291,9 +331,20 @@ fn cursor_peek_test() {
 }
 
 #[test]
+fn cursor_peek_nth_test() {
+    let line = "abcdefg".to_string();
+
+    let c = Cursor::new(&line);
+
+    for (i, x) in line.char_indices() {
+        assert_eq!(c.peek_nth(i), Some(x));
+    }
+}
+
+#[test]
 fn cursor_peek_nonwhitespace_test() {
     let test = |input: &str, expect: char| {
-        let mut c = Cursor::new(&input);
+        let c = Cursor::new(&input);
         assert!(c.peek_nonwhitespace() == Some(expect));
     };
 
@@ -339,7 +390,7 @@ fn cursor_peek_word_test() {
 #[test]
 fn parse_word_test() {
     let test = |word: &str| {
-        let mut cursor = Cursor::new(word);
+        let cursor = Cursor::new(word);
         println!("{word}");
         assert!(cursor.peek_word().unwrap() == word.to_string());
     };
