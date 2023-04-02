@@ -2,10 +2,11 @@ use nexus_rs::{
     scanner::{Scanner, Tokens},
     token::Token,
 };
+use std::iter::zip;
 
 #[test]
 fn primitive_test() {
-    let test_single = |input: &str, expected: Token| {
+    let test = |input: &str, expected: Token| {
         let mut s = Scanner::new();
 
         let tokens = s.scan(input.to_string());
@@ -14,59 +15,60 @@ fn primitive_test() {
         assert_eq!(tokens.into_iter().next().unwrap(), expected);
     };
 
-    let test_multiple = |input: &str, expected: Tokens| {
+    let test_set = |input: &str, expected: Tokens| {
         let mut s = Scanner::new();
 
         let tokens = s.scan(input.to_string());
 
         assert_eq!(tokens.len(), expected.len());
-
-        // TODO: Compare collections!
+        assert_eq!(
+            expected.len(),
+            zip(tokens, expected).filter(|(a, b)| { a == b }).count()
+        );
     };
 
-    test_single("(", Token::LeftParen);
-    test_single(")", Token::RightParen);
-    test_single("{", Token::LeftBrace);
-    test_single("}", Token::RightBrace);
-    test_single("[", Token::LeftBracket);
-    test_single("]", Token::RightBracket);
-    test_single(";", Token::SemiColon);
-    test_single("+", Token::Plus);
-    test_single("-", Token::Minus);
-    test_single("->", Token::Arrow);
-    test_single("*", Token::Star);
-    test_single("/", Token::Slash);
-    test_single("\\", Token::BackSlash);
-    test_single("%", Token::Percent);
-    test_single(",", Token::Comma);
-    test_single(".", Token::Dot);
-    test_single("_", Token::Underscore);
-    test_single("=", Token::Is);
-    test_single("==", Token::Eq);
-    test_single(">", Token::Gt);
-    test_single(">=", Token::GtEq);
-    test_single("<", Token::Lt);
-    test_single("<=", Token::LtEq);
-    test_single("!", Token::Bang);
-    test_single("!=", Token::NotEq);
-    test_single("&&", Token::And);
-    test_single("||", Token::Or);
-    test_single("|", Token::Pipe);
-    test_single("true", Token::True);
-    test_single("false", Token::False);
-    test_single("let", Token::Let);
-    test_single("fn", Token::Function);
-    test_single("if", Token::If);
-    test_single("for", Token::For);
-    test_single("while", Token::While);
-    test_single("return", Token::Return);
-    test_single("print", Token::Print);
-    test_single("node", Token::Node);
+    test("(", Token::LeftParen);
+    test(")", Token::RightParen);
+    test("{", Token::LeftBrace);
+    test("}", Token::RightBrace);
+    test("[", Token::LeftBracket);
+    test("]", Token::RightBracket);
+    test(";", Token::SemiColon);
+    test("+", Token::Plus);
+    test("-", Token::Minus);
+    test("->", Token::Arrow);
+    test("*", Token::Star);
+    test("/", Token::Slash);
+    test("\\", Token::BackSlash);
+    test("%", Token::Percent);
+    test(",", Token::Comma);
+    test(".", Token::Dot);
+    test("_", Token::Underscore);
+    test("=", Token::Is);
+    test("==", Token::Eq);
+    test(">", Token::Gt);
+    test(">=", Token::GtEq);
+    test("<", Token::Lt);
+    test("<=", Token::LtEq);
+    test("!", Token::Bang);
+    test("!=", Token::NotEq);
+    test("&&", Token::And);
+    test("||", Token::Or);
+    test("|", Token::Pipe);
+    test("true", Token::True);
+    test("false", Token::False);
+    test("let", Token::Let);
+    test("fn", Token::Function);
+    test("if", Token::If);
+    test("for", Token::For);
+    test("while", Token::While);
+    test("return", Token::Return);
+    test("print", Token::Print);
+    test("node", Token::Node);
 
-    test_multiple("||{", vec![Token::EmptyClosure, Token::LeftBrace]);
+    test_set("||{", vec![Token::EmptyClosure, Token::LeftBrace]);
 
-    // TODO: Test data-bearing types.
-    //Number(f64),
-    //Identifier(String),
-    //String(String),
+    test("2.8539", Token::Number(2.8539f64));
+    test("top_id", Token::Identifier("top_id".to_string()));
+    test("\"Hi\"", Token::String("Hi".to_string()));
 }
