@@ -20,8 +20,8 @@ impl<'a> Cursor<'a> {
     /// let s = "Hello".to_string();
     /// let c = Cursor::new(&s);
     ///
-    /// assert!(c.value() == Some('H'));
-    /// assert!(c.peek() == Some('e'));
+    /// assert_eq!(c.value(), Some('H'));
+    /// assert_eq!(c.peek(), Some('e'));
     /// ```
     pub fn new(line: &'a str) -> Self {
         let mut iter = line.chars();
@@ -43,9 +43,9 @@ impl<'a> Cursor<'a> {
     /// let s = "ab".to_string();
     /// let mut c = Cursor::new(&s);
     ///
-    /// assert!(c.value() == Some('a'));
+    /// assert_eq!(c.value(), Some('a'));
     /// c.advance();
-    /// assert!(c.value() == Some('b'));
+    /// assert_eq!(c.value(), Some('b'));
     /// ```
     pub fn value(&self) -> Option<char> {
         self.value
@@ -61,13 +61,13 @@ impl<'a> Cursor<'a> {
     /// let s = "abc".to_string();
     /// let mut c = Cursor::new(&s);
     ///
-    /// assert!(c.value() == Some('a'));
+    /// assert_eq!(c.value(), Some('a'));
     /// c.advance();
-    /// assert!(c.value() == Some('b'));
+    /// assert_eq!(c.value(), Some('b'));
     /// c.advance();
-    /// assert!(c.value() == Some('c'));
+    /// assert_eq!(c.value(), Some('c'));
     /// c.advance();
-    /// assert!(c.value() == None);
+    /// assert_eq!(c.value(), None);
     /// ```
     pub fn advance(&mut self) {
         self.value = self.iter.next();
@@ -86,11 +86,11 @@ impl<'a> Cursor<'a> {
     /// let s = "abcdefg".to_string();
     /// let mut c = Cursor::new(&s);
     ///
-    /// assert!(c.value() == Some('a'));
+    /// assert_eq!(c.value(), Some('a'));
     /// c.advance_by(3);
-    /// assert!(c.value() == Some('d'));
+    /// assert_eq!(c.value(), Some('d'));
     /// c.advance_by(10);
-    /// assert!(c.value() == None);
+    /// assert_eq!(c.value(), None);
     /// ```
     pub fn advance_by(&mut self, n: usize) {
         if n == 0 {
@@ -118,18 +118,18 @@ impl<'a> Cursor<'a> {
     /// let s = "ab".to_string();
     /// let mut c = Cursor::new(&s);
     ///
-    /// assert!(c.value() == Some('a'));
-    /// assert!(c.peek() == Some('b'));
+    /// assert_eq!(c.value(), Some('a'));
+    /// assert_eq!(c.peek(), Some('b'));
     /// c.advance();
-    /// assert!(c.value() == Some('b'));
-    /// assert!(c.peek() == None);
+    /// assert_eq!(c.value(), Some('b'));
+    /// assert_eq!(c.peek(), None);
     /// ```
     pub fn peek(&self) -> Option<char> {
         self.iter.clone().peek().copied()
     }
 
     /// Peek into the next nth character without consuming the current value.
-    /// 
+    ///
     /// Returns the current cursor value if 'n' is zero.
     ///
     /// Example:
@@ -140,10 +140,10 @@ impl<'a> Cursor<'a> {
     /// let s = "abc".to_string();
     /// let mut c = Cursor::new(&s);
     ///
-    /// assert!(c.value() == Some('a'));
-    /// assert!(c.peek_nth(0) == Some('a'));
-    /// assert!(c.peek_nth(1) == Some('b'));
-    /// assert!(c.peek_nth(2) == Some('c'));
+    /// assert_eq!(c.value(), Some('a'));
+    /// assert_eq!(c.peek_nth(0), Some('a'));
+    /// assert_eq!(c.peek_nth(1), Some('b'));
+    /// assert_eq!(c.peek_nth(2), Some('c'));
     /// ```
     pub fn peek_nth(&self, n: usize) -> Option<char> {
         match n {
@@ -175,9 +175,9 @@ impl<'a> Cursor<'a> {
     /// let s = "a  \tb".to_string();
     /// let mut c = Cursor::new(&s);
     ///
-    /// assert!(c.value() == Some('a'));
-    /// assert!(c.peek() == Some(' '));
-    /// assert!(c.peek_nonwhitespace() == Some('b'));
+    /// assert_eq!(c.value(), Some('a'));
+    /// assert_eq!(c.peek(), Some(' '));
+    /// assert_eq!(c.peek_nonwhitespace(), Some('b'));
     /// ```
     pub fn peek_nonwhitespace(&self) -> Option<char> {
         if !self.eol() {
@@ -205,7 +205,7 @@ impl<'a> Cursor<'a> {
     /// let s = "abc_12 def".to_string();
     /// let mut c = Cursor::new(&s);
     ///
-    /// assert!(c.peek_word() == Some("abc_12".to_string()));
+    /// assert_eq!(c.peek_word(), Some("abc_12".to_string()));
     /// ```
     pub fn peek_word(&self) -> Option<String> {
         if !self.eol() && self.value.unwrap().is_alphanumeric() {
@@ -250,8 +250,8 @@ fn cursor_new_test() {
     let c1 = Cursor::new(&empty);
     let c2 = Cursor::new(&line);
 
-    assert!(c1.value() == None);
-    assert!(c2.value() == Some('T'));
+    assert_eq!(c1.value(), None);
+    assert_eq!(c2.value(), Some('T'));
 }
 
 #[test]
@@ -279,7 +279,7 @@ fn cursor_advance_test() {
     let mut c = Cursor::new(&line);
 
     for i in "abcdefg".chars() {
-        assert!(c.value().unwrap() == i);
+        assert_eq!(c.value().unwrap(), i);
         c.advance();
     }
 
@@ -292,13 +292,13 @@ fn cursor_advance_by_test() {
 
     let mut c = Cursor::new(&line);
 
-    assert!(c.value() == Some('a'));
+    assert_eq!(c.value(), Some('a'));
     c.advance_by(3);
-    assert!(c.value() == Some('c'));
+    assert_eq!(c.value(), Some('c'));
     c.advance_by(3);
-    assert!(c.value() == Some('ɘ'));
+    assert_eq!(c.value(), Some('ɘ'));
     c.advance_by(3);
-    assert!(c.value() == Some('g'));
+    assert_eq!(c.value(), Some('g'));
 
     c.advance_by(3);
     assert!(c.eol());
@@ -311,7 +311,7 @@ fn cursor_peek_test() {
     let mut c = Cursor::new(&line);
 
     for i in "bcdefg".chars() {
-        assert!(c.peek().unwrap() == i);
+        assert_eq!(c.peek().unwrap(), i);
         c.advance();
     }
 
@@ -337,7 +337,7 @@ fn cursor_peek_nth_test() {
 fn cursor_peek_nonwhitespace_test() {
     let test = |input: &str, expect: char| {
         let c = Cursor::new(&input);
-        assert!(c.peek_nonwhitespace() == Some(expect));
+        assert_eq!(c.peek_nonwhitespace(), Some(expect));
     };
 
     test("a b", 'b');
@@ -354,29 +354,29 @@ fn cursor_peek_word_test() {
     let mut c = Cursor::new(&line);
 
     assert!(!c.eol());
-    assert!(c.value() == Some('a'));
+    assert_eq!(c.value(), Some('a'));
 
-    assert!(c.peek_word() == Some("abc".to_string()));
+    assert_eq!(c.peek_word(), Some("abc".to_string()));
 
     assert!(!c.eol());
-    assert!(c.value() == Some('a'));
+    assert_eq!(c.value(), Some('a'));
 
     c.advance();
     c.advance();
     c.advance();
 
     assert!(!c.eol());
-    assert!(c.value() == Some(' '));
+    assert_eq!(c.value(), Some(' '));
 
     c.advance();
 
     assert!(!c.eol());
-    assert!(c.value() == Some('d'));
+    assert_eq!(c.value(), Some('d'));
 
-    assert!(c.peek_word() == Some("def".to_string()));
+    assert_eq!(c.peek_word(), Some("def".to_string()));
 
     assert!(!c.eol());
-    assert!(c.value() == Some('d'));
+    assert_eq!(c.value(), Some('d'));
 }
 
 #[test]
@@ -384,7 +384,7 @@ fn parse_word_test() {
     let test = |word: &str| {
         let cursor = Cursor::new(word);
         println!("{word}");
-        assert!(cursor.peek_word().unwrap() == word.to_string());
+        assert_eq!(cursor.peek_word().unwrap(), word.to_string());
     };
 
     test("x");

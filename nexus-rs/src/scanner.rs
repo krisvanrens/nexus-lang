@@ -210,12 +210,12 @@ fn parse_string_test() {
     let test = |input: &str| {
         let s = "\"".to_string() + input + "\"";
         let mut cursor = Cursor::new(&s);
-        assert!(
-            parse_string(&mut cursor)
-                == input
-                    .to_string()
-                    .replace("\\\"", "\"")
-                    .replace("\\\\", "\\")
+        assert_eq!(
+            parse_string(&mut cursor),
+            input
+                .to_string()
+                .replace("\\\"", "\"")
+                .replace("\\\\", "\\")
         );
     };
 
@@ -246,7 +246,7 @@ fn parse_number(cursor: &mut Cursor) -> f64 {
                     result.push(c);
                 }
                 _ => panic!("unexpected token"), // TODO: Handle lexing error.
-            }
+            },
             _ => break,
         }
 
