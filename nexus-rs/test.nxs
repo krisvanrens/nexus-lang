@@ -17,10 +17,16 @@ fn main() {
 
   let x = free(1, 2.889, local1() + local2());
 
-  node a("Input"), b("Output");
+  let a = node("Input");
+  let b = node("Output");
   a.Out -> b.In;
 
-  print "\\\\\" End:\t\"" + |x|{ return 17 + x; /* inline comment */ }() + "\"";
+  let mut c = module("Subsystem");
+  for i in 0..=3 {
+    let p = node("Processor");
+    p.Input -> b.Output;
+    c.push(p);
+  }
 
-  let local3 = ||   { return "Hello3".length(); };
+  print "\\\\\" End:\t\"" + |x|{ return 17 + x; /* inline comment */ }() + "\"";
 }
