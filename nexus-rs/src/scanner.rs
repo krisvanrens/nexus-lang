@@ -229,11 +229,11 @@ fn parse_string_test() {
 }
 
 fn parse_number(cursor: &mut Cursor) -> f64 {
-    let mut result = String::new();
+    let mut result = cursor.value().unwrap().to_string();
 
-    while let Some(c) = cursor.value() {
+    while let Some(c) = cursor.peek() {
         match c {
-            '0'..='9' | '.' => result.push(c),
+            '0'..='9' | '.' => result.push(*c),
             _ => break,
         }
 
