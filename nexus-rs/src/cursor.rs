@@ -73,10 +73,10 @@ impl<'a> Cursor<'a> {
         self.value = self.iter.next();
     }
 
-    /// Advance the cursor by N positions, replacing the inner value.
+    /// Advance the cursor by N positions, consuming the value at each increment.
     ///
     /// If N is zero, `advance_by` is a no-op.
-    /// It is a valid operator to advance the cursor beyond the end-of-line (EOL).
+    /// It is a valid operation to advance the cursor beyond the end-of-line (EOL).
     ///
     /// Example:
     ///
@@ -93,19 +93,20 @@ impl<'a> Cursor<'a> {
     /// assert_eq!(c.value(), None);
     /// ```
     pub fn advance_by(&mut self, n: usize) {
-        if n == 0 {
-            return;
-        }
+        match n {
+            0 => (),
+            _ => {
+                for _ in 0..(n - 1) {
+                    self.iter.next();
 
-        for _ in 0..(n - 1) {
-            self.iter.next();
+                    if self.iter.peek().is_none() {
+                        break;
+                    }
+                }
 
-            if self.iter.peek().is_none() {
-                break;
+                self.value = self.iter.next();
             }
         }
-
-        self.value = self.iter.next();
     }
 
     /// Peek into the next character without consuming the current value.
