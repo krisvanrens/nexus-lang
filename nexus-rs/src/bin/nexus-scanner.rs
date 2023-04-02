@@ -22,7 +22,7 @@ fn main() {
     let mut s = Scanner::new();
 
     for line in file {
-        println!("{} {}: '{}'", "==".yellow().bold(), "Scan line".bold(), format!("{line}").bright_red().dimmed());
+        println!("{} {}: '{}'", "==".yellow().bold(), "Scan line".bold(), line.to_string().bright_red().dimmed());
         s.scan(line).into_iter().for_each(|t| print!("{:?} ", t));
         println!();
     }
