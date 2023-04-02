@@ -63,7 +63,13 @@ impl Scanner {
                     '\\' => tokens.push(Token::BackSlash),
                     '%' => tokens.push(Token::Percent),
                     ',' => tokens.push(Token::Comma),
-                    '.' => tokens.push(Token::Dot),
+                    '.' => match cursor.peek() {
+                        Some('.') => {
+                            cursor.advance();
+                            tokens.push(Token::Range);
+                        }
+                        _ => tokens.push(Token::Dot),
+                    },
                     '_' => tokens.push(Token::Underscore),
                     '=' => match cursor.peek() {
                         Some('=') => {
@@ -106,7 +112,7 @@ impl Scanner {
                         _ => tokens.push(Token::Bang),
                     },
                     '&' => {
-                        if cursor.peek() == Some(&'&') {
+                        if cursor.peek() == Some('&') {
                             cursor.advance();
                             tokens.push(Token::And);
                         }
@@ -138,7 +144,7 @@ impl Scanner {
                     }
                     _ => panic!("unexpected character: '{c}'"), // TODO: Handle lexing error.
                 }
-            } else if (c == '*') && (cursor.peek() == Some(&'/')) {
+            } else if (c == '*') && (cursor.peek() == Some('/')) {
                 cursor.advance();
                 self.comment_ = false;
             }
@@ -233,7 +239,14 @@ fn parse_number(cursor: &mut Cursor) -> f64 {
 
     while let Some(c) = cursor.peek() {
         match c {
-            '0'..='9' | '.' => result.push(*c),
+            '0'..='9' => result.push(c),
+            '.' => match cursor.peek_nth(2) {
+                Some('.') => break,
+                Some(x) if x.is_ascii_digit() => {
+                    result.push(c);
+                }
+                _ => panic!("unexpected token"), // TODO: Handle lexing error.
+            }
             _ => break,
         }
 
