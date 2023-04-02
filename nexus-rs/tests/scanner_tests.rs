@@ -43,6 +43,7 @@ fn primitive_test() {
     test("%", Token::Percent);
     test(",", Token::Comma);
     test(".", Token::Dot);
+    test("..", Token::Range);
     test("_", Token::Underscore);
     test("=", Token::Is);
     test("==", Token::Eq);
