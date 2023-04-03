@@ -2,6 +2,10 @@
 
 The Nexus programming language.
 
+Nexus is a language for aiding in software component network descriptions.
+Aside a simple base of common general-purpose primitives/control flow/etc. it offers native integration for building a network of components, connecting in-/outputs and setting component properties.
+The syntax of Nexus is loosely modeled after that of the [Rust programming language](https://github.com/rust-lang/rust).
+
 ## Native integration with component networks
 
 Nexus is designed to interface component-network-oriented systems, to enable a convenient, safe network description.
@@ -11,11 +15,19 @@ Nexus is designed to interface component-network-oriented systems, to enable a c
 let c1 = node("TypeA");
 let c2 = node("TypeB");
 
-// Operators for defining edge connections:
-c1.Output -> c2.Input;
-```
+let mut system = group;
+system.source = c1;
+system.sink   = c2;
 
-From a syntactic viewpoint, it is mostly influenced by [Rust](https://github.com/rust-lang/rust).
+system.processor = node("TypeC");
+
+let proc = &system.processor;
+proc.velocity = 3.14;
+
+// Operators for defining edge connections:
+c1.Output -> system.processor.Input;
+system.processor.Output -> c2.Input;
+```
 
 ## Simplicity
 
@@ -40,7 +52,7 @@ let y = x; // Error: Using 'x' uninitialized.
 and:
 
 ```rust
-let x;
+let mut x;
 
 x = true;
 
@@ -54,7 +66,7 @@ Using values uninitialized (and having the interpreter assume a value) is an err
 Also, this initialization requirement implicitly assumes a variable to be declared (which is not required even in languages like JavaScript).
 Using a value undeclared is an error in 99.99% of the cases.
 
-### Braces are strictly required
+### Block scopes are strictly required
 
 Braces after `if`/`while`/`for`/etc. statements are required:
 
@@ -85,6 +97,27 @@ if (condition)
 This will always print `B`, regardless of the `condition`.
 However, due to the simple, unrelated matter of code formatting, it could be overlooked by a reviewer as a bug.
 
+## Tooling
+
+One of the focus points of Nexus is that there should be good tooling.
+This has many aspects:
+
+- Tools may come from other languages: due to Rust-like syntax, `rustfmt` should work.
+- Nexus should be friendly for building tools for; the API should be simple.
+- Nexus should (on the long run) be delivered with tools.
+
+## The component model
+
+...
+
+## Language front-end API
+
+..how should visual tools interact with Nexus?
+
+## Language backend-end API / FFI
+
+..how should software component networks interact with Nexus?
+
 ## Examples
 
 ### Example 1
@@ -111,32 +144,53 @@ fn main() {
 
 ## Feature list
 
+### Fundamental data types
+
+Nexus is dynamically typed.
+All variables are declared using `let` (immutable, directly initialized) or `let mut` (mutable) and are typed according to first initialization.
+After first use, the type is strictly checked.
+
+There are three fundamental data types:
+
+- `String`, a Unicode string,
+- `Number`, a double-precision, signed floating-point number,
+- `bool`, a boolean logic value.
+
 ### Expressions
 
-- Loops: `for`/`loop`
-- Conditions: `if`/`match`
+- Loop: `while`/`for`/`loop`
+- Conditional: `if`/`match`
+- Closure: `|x|{ /* ... */ }`
+- Range: `x..y` or `x..=y`
 
 ### Statements
 
-- Declaration: `var`/`let`
+- Declaration: `let`
+- Function: `fn`
+- Return: `return`
+- Expression statements
 
 ## Implementation status
 
-### Milestone 0: setup
+### Milestone 0: ideation, base setup
 
-- [ ] Lexing setup.
+- [x] Lexing/scanning setup.
+- [x] Interpretation from source file (`.nxs`).
+- [ ] Command-line REPL.
+
+### Milestone 1: language setup
+
+- [ ] First thorough iteration of grammar rules.
 - [ ] Parsing setup.
 
-### Milestone 1: foundations
+### Milestone 2: foundations
 
 - [ ] Fundamental type `Number`.
 - [ ] Fundamental type `String`.
 - [ ] Simple arithmetic expressions.
 - [ ] Printing of values.
-- [ ] Interpretation from source file (`.nxs`).
-- [ ] Command-line REPL.
 
-### Milestone 2: basics
+### Milestone 3: basics
 
 - [ ] Functions using `fn`.
 - [ ] ...
@@ -147,13 +201,15 @@ fn main() {
 
 | Keyword | Description |
 | :-----: | :---------- |
-| `fn`    | Function declaration.   |
-| `for`   | Loop expression.        |
-| `if`    | Conditional expression. |
-| `let`   | Variable declaration.   |
-| `loop`  | Loop expression.        |
-| `match` | Match expression.       |
-| `while` | Loop expression.        |
+| `fn`     | Function declaration.   |
+| `for`    | Loop expression.        |
+| `if`     | Conditional expression. |
+| `let`    | Variable declaration.   |
+| `loop`   | Loop expression.        |
+| `match`  | Match expression.       |
+| `return` | Return statement.       |
+| `use`    | External use statement. |
+| `while`  | Loop expression.        |
 
 ### Language library keywords
 
@@ -209,6 +265,7 @@ Add:
 - `while`
 - `loop`
 - `match`
+- `use` to include same-named `.nxs` files within visibility.
 - Component instantiation using `node`
 - Node edge connection using binary `->`
 - Assignment
@@ -242,7 +299,6 @@ Add:
 
 From the dictionary:
 
-**Nexus**; *nex·us*; *Connection, link*
+**Nexus**; *nex·us*; meaning: *connection, link*
 
 Of course this ties back to its place as a component network-description language.
-
