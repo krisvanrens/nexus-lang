@@ -5,10 +5,10 @@ use std::process::exit;
 
 /// Nexus programming language scanner/lexer tester.
 #[derive(Parser)]
-#[clap(author, version, about, long_about = None)]
+#[command(author, version, about, long_about = None)]
 struct Args {
     /// Input source filename.
-    #[clap(short, long)]
+    #[arg(short, long)]
     filename: String,
 }
 
@@ -22,7 +22,12 @@ fn main() {
     let mut s = Scanner::new();
 
     for line in file {
-        println!("{} {}: '{}'", "==".yellow().bold(), "Scan line".bold(), line.to_string().bright_red().dimmed());
+        println!(
+            "{} {}: '{}'",
+            "==".yellow().bold(),
+            "Scan line".bold(),
+            line.to_string().bright_red().dimmed()
+        );
         s.scan(line).into_iter().for_each(|t| print!("{:?} ", t));
         println!();
     }
