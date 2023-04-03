@@ -9,3 +9,4 @@ default-run = "nexus-rs"
 clap = { version = "4.2.1", features = ["derive"] }
 colored = "2.0.0"
 lazy_static = "1.4.0"
+rustyline = "11.0.0"

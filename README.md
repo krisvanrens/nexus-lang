@@ -181,7 +181,7 @@ There are three fundamental data types:
 - [x] Lexing/scanning setup.
 - [ ] Lexing error handling.
 - [x] Interpretation from source file (`.nxs`).
-- [ ] Command-line REPL.
+- [x] Command-line REPL.
 
 ### Milestone 1: language setup
 
