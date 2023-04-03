@@ -106,6 +106,10 @@ This has many aspects:
 - Nexus should be friendly for building tools for; the API should be simple.
 - Nexus should (on the long run) be delivered with tools.
 
+## Documentation
+
+...
+
 ## The component model
 
 ...
@@ -153,7 +157,7 @@ After first use, the type is strictly checked.
 There are three fundamental data types:
 
 - `String`, a Unicode string,
-- `Number`, a double-precision, signed floating-point number,
+- `Number`, a double-precision (64 bits), signed floating-point number,
 - `bool`, a boolean logic value.
 
 ### Expressions
@@ -175,6 +179,7 @@ There are three fundamental data types:
 ### Milestone 0: ideation, base setup
 
 - [x] Lexing/scanning setup.
+- [ ] Lexing error handling.
 - [x] Interpretation from source file (`.nxs`).
 - [ ] Command-line REPL.
 
@@ -182,6 +187,7 @@ There are three fundamental data types:
 
 - [ ] First thorough iteration of grammar rules.
 - [ ] Parsing setup.
+- [ ] Parsing error handling.
 
 ### Milestone 2: foundations
 
@@ -275,9 +281,6 @@ Add:
 
 - Improve declarative approach for extending a module with components.
 - Immutability? Just shallow mutability for now. Add `mut` keyword.
-- Fundamental types:
-  - `Number`: number (double-precision floating-point, 64-bits)
-  - `String`: string (UTF-8 string)
 - Objects?
 - Add `match` expression? Should be simple for a few fundamental types.
 - Handling setting of component values...how/what/mutability?
@@ -288,6 +291,9 @@ Add:
 - Error handling? Result types?
 - Support for integration into a visual IDE / generative tooling.
 - Range declarations using `start..=end` for use in `for` loops.
+- Require safe edge types? How?
+- Provide clear and good error messages on every level.
+- FFI? How to deal with FFI of rich Unicode strings?
 
 ## Known limitations
 
