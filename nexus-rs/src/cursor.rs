@@ -161,6 +161,34 @@ impl<'a> Cursor<'a> {
         }
     }
 
+    /// Peek while a predicated holds without consuming the current value.
+    ///
+    /// Example:
+    ///
+    /// ```
+    /// use nexus_rs::cursor::Cursor;
+    ///
+    /// let s = "abc123 def".to_string();
+    /// let mut c = Cursor::new(&s);
+    ///
+    /// assert_eq!(c.peek_while(|c| c.is_alphanumeric()), Some("abc123".to_string()));
+    /// ```
+    pub fn peek_while(&self, mut predicate: impl FnMut(char) -> bool) -> Option<String> {
+        let mut result = self.value.unwrap().to_string();
+
+        if !self.eol() {
+            result += &self
+                .chars
+                .clone()
+                .take_while(|c| predicate(*c))
+                .collect::<String>();
+
+            Some(result)
+        } else {
+            None
+        }
+    }
+
     /// Peek the next word without consuming the current value.
     ///
     /// A "word" is defined as a consecutive sequence of alphanumeric characters or '_' (underscore).
@@ -303,6 +331,64 @@ fn cursor_peek_nth_test() {
 }
 
 #[test]
+fn cursor_peek_while_test() {
+    let line = "abc def".to_string();
+
+    let mut c = Cursor::new(&line);
+
+    let is_word_char = |c: char| -> bool { c.is_alphanumeric() || c == '_' };
+
+    assert!(!c.eol());
+    assert_eq!(c.value(), Some('a'));
+
+    assert_eq!(c.peek_while(is_word_char), Some("abc".to_string()));
+
+    assert!(!c.eol());
+    assert_eq!(c.value(), Some('a'));
+
+    c.advance();
+    c.advance();
+    c.advance();
+
+    assert!(!c.eol());
+    assert_eq!(c.value(), Some(' '));
+
+    c.advance();
+
+    assert!(!c.eol());
+    assert_eq!(c.value(), Some('d'));
+
+    assert_eq!(c.peek_while(is_word_char), Some("def".to_string()));
+
+    assert!(!c.eol());
+    assert_eq!(c.value(), Some('d'));
+}
+
+#[test]
+fn parse_word_test() {
+    let test = |word: &str| {
+        let cursor = Cursor::new(word);
+        assert_eq!(
+            cursor
+                .peek_while(|c| { c.is_alphanumeric() || c == '_' })
+                .unwrap(),
+            word.to_string()
+        );
+    };
+
+    test("x");
+    test("ah");
+    test("word");
+    test("CamelCase");
+    test("snake_case");
+    test("ALLUPPER");
+    test("ŮñĭçøƋɇ");
+    test("trailing_numbers012");
+    test("numbers1n8etw33n");
+    test("veeeeeeeerylooooooongwooooooord");
+}
+
+#[test]
 fn cursor_peek_word_test() {
     let line = "abc def".to_string();
 
@@ -332,24 +418,4 @@ fn cursor_peek_word_test() {
 
     assert!(!c.eol());
     assert_eq!(c.value(), Some('d'));
-}
-
-#[test]
-fn parse_word_test() {
-    let test = |word: &str| {
-        let cursor = Cursor::new(word);
-        println!("{word}");
-        assert_eq!(cursor.peek_word().unwrap(), word.to_string());
-    };
-
-    test("x");
-    test("ah");
-    test("word");
-    test("CamelCase");
-    test("snake_case");
-    test("ALLUPPER");
-    test("ŮñĭçøƋɇ");
-    test("trailing_numbers012");
-    test("numbers1n8etw33n");
-    test("veeeeeeeerylooooooongwooooooord");
 }
