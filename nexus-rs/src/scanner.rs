@@ -249,7 +249,7 @@ fn parse_string_test() {
 }
 
 fn parse_number(cursor: &mut Cursor) -> f64 {
-    let mut result = cursor.value().unwrap().to_string();
+    let mut result = cursor.value().unwrap().to_string(); // TODO: Handle lexing error.
 
     while let Some(c) = cursor.peek() {
         match c {
