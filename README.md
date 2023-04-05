@@ -295,10 +295,6 @@ Add:
 - Provide clear and good error messages on every level.
 - FFI? How to deal with FFI of rich Unicode strings?
 
-## Known limitations
-
-- The scanner does not support in-line comments in all places, e.g. in between an empty closure declaration and the body, as in: `|| /* ... */ {}`.
-
 ## FAQ
 
 ### Why the name?
