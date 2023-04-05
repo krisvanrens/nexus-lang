@@ -1,12 +1,12 @@
 use crate::cursor::Cursor;
-use crate::token::Token;
+use crate::token::{Token, Tokens};
 use lazy_static::lazy_static;
 use std::collections::HashMap;
+use thiserror::Error;
 
 #[cfg(test)]
 use std::f64::consts::PI;
 
-pub type Tokens = Vec<Token>;
 
 pub struct Scanner {
     comment_: bool, //<! Indicates multiline comment state.

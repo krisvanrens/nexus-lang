@@ -44,3 +44,5 @@ pub enum Token {
     Identifier(String),
     String(String),
 }
+
+pub type Tokens = Vec<Token>;
