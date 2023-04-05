@@ -139,7 +139,7 @@ impl<'a> Cursor<'a> {
     /// use nexus_rs::cursor::Cursor;
     ///
     /// let s = "abc".to_string();
-    /// let mut c = Cursor::new(&s);
+    /// let c = Cursor::new(&s);
     ///
     /// assert_eq!(c.value(), Some('a'));
     /// assert_eq!(c.peek_nth(0), Some('a'));
@@ -169,7 +169,7 @@ impl<'a> Cursor<'a> {
     /// use nexus_rs::cursor::Cursor;
     ///
     /// let s = "abc123 def".to_string();
-    /// let mut c = Cursor::new(&s);
+    /// let c = Cursor::new(&s);
     ///
     /// assert_eq!(c.peek_while(|c| c.is_alphanumeric()), Some("abc123".to_string()));
     /// ```
