@@ -24,7 +24,7 @@ fn main() {
         let mut scanner = Scanner::new();
 
         print_tokens(file.into_iter().fold(Tokens::new(), |mut acc, line| {
-            acc.append(&mut scanner.scan(line));
+            acc.append(&mut scanner.scan(line).unwrap()); // TODO: Handle scanning error.
             acc
         }));
     } else {
@@ -36,7 +36,7 @@ fn main() {
         loop {
             let line = rl.readline("> ");
             match line {
-                Ok(line) => print_tokens(Scanner::new().scan(line)),
+                Ok(line) => print_tokens(Scanner::new().scan(line).unwrap()), // TODO: Handle scanning error.
                 Err(ReadlineError::Eof) => break,
                 Err(ReadlineError::Interrupted) => {
                     eprintln!("interrupted");

@@ -5,10 +5,13 @@ fn primitive_test() {
     let test = |input: &str, expected: Token| {
         let mut s = Scanner::new();
 
-        let tokens = s.scan(input.to_string());
-
-        assert_eq!(tokens.len(), 1);
-        assert_eq!(tokens.into_iter().next().unwrap(), expected);
+        match s.scan(input.to_string()) {
+            Ok(tokens) => {
+                assert_eq!(tokens.len(), 1);
+                assert_eq!(tokens.into_iter().next().unwrap(), expected);
+            }
+            Err(e) => assert!(false, "error: {}", e),
+        }
     };
 
     test("(", Token::LeftParen);

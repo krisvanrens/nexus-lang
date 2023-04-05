@@ -7,9 +7,23 @@ use thiserror::Error;
 #[cfg(test)]
 use std::f64::consts::PI;
 
-
 pub struct Scanner {
     comment_: bool, //<! Indicates multiline comment state.
+}
+
+#[derive(Error, Debug)]
+pub enum ScanError {
+    #[error("Malformed string literal")]
+    MalformedString,
+
+    #[error("Failed to parse number '{0}'")]
+    NumberParseError(String),
+
+    #[error("Unexpected character")]
+    UnexpectedCharacter,
+
+    #[error("Unterminated string")]
+    UnterminatedString,
 }
 
 type TokenMap = HashMap<&'static str, Token>;
@@ -39,12 +53,14 @@ impl Scanner {
     /// use nexus_rs::{scanner::Scanner, token::Token};
     ///
     /// let mut s = Scanner::new();
-    /// assert_eq!(s.scan("let x;".to_string()),
-    ///            vec![Token::Let,
-    ///                 Token::Identifier("x".to_string()),
-    ///                 Token::SemiColon]);
+    /// if let Ok(tokens) = s.scan("let x;".to_string()) {
+    ///     assert_eq!(tokens,
+    ///                vec![Token::Let,
+    ///                     Token::Identifier("x".to_string()),
+    ///                     Token::SemiColon]);
+    /// }
     /// ```
-    pub fn scan(&mut self, line: String) -> Tokens {
+    pub fn scan(&mut self, line: String) -> Result<Tokens, ScanError> {
         lazy_static! {
             static ref KEYWORDS: TokenMap = token_map! {
                 "false"  => Token::False,
@@ -166,7 +182,7 @@ impl Scanner {
             cursor.advance();
         }
 
-        tokens
+        Ok(tokens)
     }
 }
 

@@ -315,6 +315,7 @@ dependencies = [
  "colored",
  "lazy_static",
  "rustyline",
+ "thiserror",
 ]
 
 [[package]]
