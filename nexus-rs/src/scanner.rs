@@ -14,6 +14,17 @@ pub struct Scanner {
 
 type TokenMap = HashMap<&'static str, Token>;
 
+/// Initialize a tokenmap using 'key => value' notation.
+macro_rules! token_map {
+    ($($key:expr => $value:expr),+ $(,)?) => {
+        {
+            let mut map: TokenMap = HashMap::new();
+            $(map.insert($key, $value);)+
+            map
+        }
+    }
+}
+
 impl Scanner {
     /// Construct a new scanner.
     pub fn new() -> Self {
@@ -35,19 +46,17 @@ impl Scanner {
     /// ```
     pub fn scan(&mut self, line: String) -> Tokens {
         lazy_static! {
-            static ref KEYWORDS: TokenMap = {
-                let mut map: TokenMap = HashMap::new();
-                map.insert("false", Token::False);
-                map.insert("fn", Token::Function);
-                map.insert("for", Token::For);
-                map.insert("if", Token::If);
-                map.insert("let", Token::Let);
-                map.insert("node", Token::Node);
-                map.insert("print", Token::Print);
-                map.insert("return", Token::Return);
-                map.insert("true", Token::True);
-                map.insert("while", Token::While);
-                map
+            static ref KEYWORDS: TokenMap = token_map! {
+                "false"  => Token::False,
+                "fn"     => Token::Function,
+                "for"    => Token::For,
+                "if"     => Token::If,
+                "let"    => Token::Let,
+                "node"   => Token::Node,
+                "print"  => Token::Print,
+                "return" => Token::Return,
+                "true"   => Token::True,
+                "while"  => Token::While,
             };
         }
 
