@@ -1,7 +1,4 @@
-use nexus_rs::{
-    scanner::Scanner,
-    token::Token,
-};
+use nexus_rs::{scanner::Scanner, token::Token};
 
 #[test]
 fn primitive_test() {
