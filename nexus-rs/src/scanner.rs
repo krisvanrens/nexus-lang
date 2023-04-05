@@ -15,10 +15,24 @@ pub struct Scanner {
 type TokenMap = HashMap<&'static str, Token>;
 
 impl Scanner {
+    /// Construct a new scanner.
     pub fn new() -> Self {
         Scanner { comment_: false }
     }
 
+    /// Scan a line of text and output the tokens found.
+    ///
+    /// Example:
+    ///
+    /// ```
+    /// use nexus_rs::{scanner::Scanner, token::Token};
+    ///
+    /// let mut s = Scanner::new();
+    /// assert_eq!(s.scan("let x;".to_string()),
+    ///            vec![Token::Let,
+    ///                 Token::Identifier("x".to_string()),
+    ///                 Token::SemiColon]);
+    /// ```
     pub fn scan(&mut self, line: String) -> Tokens {
         lazy_static! {
             static ref KEYWORDS: TokenMap = {
