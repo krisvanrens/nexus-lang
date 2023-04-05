@@ -14,7 +14,7 @@ pub struct Scanner {
 
 type TokenMap = HashMap<&'static str, Token>;
 
-/// Initialize a tokenmap using 'key => value' notation.
+/// Initialize a token map using 'key => value' notation.
 macro_rules! token_map {
     ($($key:expr => $value:expr),+ $(,)?) => {
         {
