@@ -31,14 +31,20 @@ fn main() {
             acc
         }));
     } else {
-        let mut rl = DefaultEditor::new().expect("failed to create REPL interface");
+        let Ok(mut rl) = DefaultEditor::new() else {
+            eprintln!("failed to create REPL interface");
+            exit(1);
+        };
 
         loop {
             let line = rl.readline("> ");
             match line {
                 Ok(line) => print_tokens(Scanner::new().scan(line)),
                 Err(ReadlineError::Eof) => break,
-                Err(ReadlineError::Interrupted) => break, // TODO: Do something else?
+                Err(ReadlineError::Interrupted) => {
+                    eprintln!("interrupted");
+                    break; // TODO: Do something else?
+                }
                 _ => {
                     eprintln!("failed to parse input");
                     exit(1);
