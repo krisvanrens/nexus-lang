@@ -144,7 +144,9 @@ impl Scanner {
                         if c.is_ascii_digit() {
                             tokens.push(Token::Number(parse_number(&mut cursor)));
                         } else {
-                            let word = cursor.peek_word().unwrap();
+                            let word = cursor
+                                .peek_while(|c| c.is_alphanumeric() || c == '_')
+                                .unwrap(); // TODO: Handle lexing error.
                             cursor.advance_by(word.chars().count() - 1);
 
                             tokens.push(if let Some(token) = KEYWORDS.get(&word.as_str()) {
