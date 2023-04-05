@@ -3,7 +3,7 @@ use nexus_rs::{
     filereader::FileReader,
     scanner::{Scanner, Tokens},
 };
-use rustyline::DefaultEditor;
+use rustyline::{error::ReadlineError, DefaultEditor};
 use std::process::exit;
 
 /// Nexus programming language interpreter.
@@ -20,7 +20,7 @@ fn main() {
 
     if let Some(filename) = args.filename {
         let Ok(file) = FileReader::try_new(filename) else {
-            eprintln!("Failed to open file");
+            eprintln!("failed to open file");
             exit(1);
         };
 
@@ -31,11 +31,19 @@ fn main() {
             acc
         }));
     } else {
-        let mut rl = DefaultEditor::new().expect("failed to create REPL");
+        let mut rl = DefaultEditor::new().expect("failed to create REPL interface");
 
         loop {
-            let line = rl.readline("> ").expect("failed to parse input");
-            print_tokens(Scanner::new().scan(line));
+            let line = rl.readline("> ");
+            match line {
+                Ok(line) => print_tokens(Scanner::new().scan(line)),
+                Err(ReadlineError::Eof) => break,
+                Err(ReadlineError::Interrupted) => break, // TODO: Do something else?
+                _ => {
+                    eprintln!("failed to parse input");
+                    exit(1);
+                }
+            }
         }
     }
 }
