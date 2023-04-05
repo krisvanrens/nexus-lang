@@ -13,16 +13,16 @@ pub struct Scanner {
 
 #[derive(Error, Debug)]
 pub enum ScanError {
-    #[error("Malformed string literal")]
+    #[error("malformed string literal")]
     MalformedString,
 
-    #[error("Failed to parse number '{0}'")]
+    #[error("failed to parse number '{0}'")]
     NumberParseError(String),
 
-    #[error("Unexpected character")]
+    #[error("unexpected character")]
     UnexpectedCharacter,
 
-    #[error("Unterminated string")]
+    #[error("unterminated string")]
     UnterminatedString,
 }
 
