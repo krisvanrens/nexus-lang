@@ -28,7 +28,7 @@ pub enum Token {
     NotEq,        // '!='
     And,          // '&&'
     Or,           // '||'
-    EmptyClosure, // '||' (when followed by '{')
+    EmptyClosure, // '||'
     Pipe,         // '|'
     True,         // 'true'
     False,        // 'false'
