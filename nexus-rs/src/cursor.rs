@@ -3,7 +3,7 @@ use std::{iter::Peekable, str::Chars};
 /// Cursor to characters in a string, providing direct value access and advanced peeking.
 #[derive(Debug)]
 pub struct Cursor<'a> {
-    iter: Peekable<Chars<'a>>,
+    chars: Peekable<Chars<'a>>,
     value: Option<char>,
 }
 
@@ -24,11 +24,11 @@ impl<'a> Cursor<'a> {
     /// assert_eq!(c.peek(), Some('e'));
     /// ```
     pub fn new(line: &'a str) -> Self {
-        let mut iter = line.chars();
-        let value = iter.next();
+        let mut chars = line.chars();
+        let value = chars.next();
 
         Cursor {
-            iter: iter.peekable(),
+            chars: chars.peekable(),
             value,
         }
     }
@@ -70,7 +70,7 @@ impl<'a> Cursor<'a> {
     /// assert_eq!(c.value(), None);
     /// ```
     pub fn advance(&mut self) {
-        self.value = self.iter.next();
+        self.value = self.chars.next();
     }
 
     /// Advance the cursor by N positions, consuming the value at each increment.
@@ -97,14 +97,14 @@ impl<'a> Cursor<'a> {
             0 => (),
             _ => {
                 for _ in 0..(n - 1) {
-                    self.iter.next();
+                    self.chars.next();
 
-                    if self.iter.peek().is_none() {
+                    if self.chars.peek().is_none() {
                         break;
                     }
                 }
 
-                self.value = self.iter.next();
+                self.value = self.chars.next();
             }
         }
     }
@@ -126,7 +126,7 @@ impl<'a> Cursor<'a> {
     /// assert_eq!(c.peek(), None);
     /// ```
     pub fn peek(&self) -> Option<char> {
-        self.iter.clone().peek().copied()
+        self.chars.clone().peek().copied()
     }
 
     /// Peek into the next nth character without consuming the current value.
@@ -151,7 +151,7 @@ impl<'a> Cursor<'a> {
             0 => self.value(),
             1 => self.peek(),
             _ => {
-                let mut iter_clone = self.iter.clone();
+                let mut iter_clone = self.chars.clone();
                 for _ in 0..(n - 1) {
                     iter_clone.next();
                 }
@@ -181,7 +181,7 @@ impl<'a> Cursor<'a> {
             let mut result = self.value.unwrap().to_string();
 
             result += &self
-                .iter
+                .chars
                 .clone()
                 .take_while(|x| x.is_alphanumeric() || x == &'_')
                 .collect::<String>();
