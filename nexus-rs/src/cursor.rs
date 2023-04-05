@@ -365,31 +365,7 @@ fn cursor_peek_while_test() {
 }
 
 #[test]
-fn parse_word_test() {
-    let test = |word: &str| {
-        let cursor = Cursor::new(word);
-        assert_eq!(
-            cursor
-                .peek_while(|c| { c.is_alphanumeric() || c == '_' })
-                .unwrap(),
-            word.to_string()
-        );
-    };
-
-    test("x");
-    test("ah");
-    test("word");
-    test("CamelCase");
-    test("snake_case");
-    test("ALLUPPER");
-    test("ŮñĭçøƋɇ");
-    test("trailing_numbers012");
-    test("numbers1n8etw33n");
-    test("veeeeeeeerylooooooongwooooooord");
-}
-
-#[test]
-fn cursor_peek_word_test() {
+fn peek_while_word_test() {
     let line = "abc def".to_string();
 
     let mut c = Cursor::new(&line);
@@ -418,4 +394,28 @@ fn cursor_peek_word_test() {
 
     assert!(!c.eol());
     assert_eq!(c.value(), Some('d'));
+}
+
+#[test]
+fn parse_word_test() {
+    let test = |word: &str| {
+        let cursor = Cursor::new(word);
+        assert_eq!(
+            cursor
+                .peek_while(|c| { c.is_alphanumeric() || c == '_' })
+                .unwrap(),
+            word.to_string()
+        );
+    };
+
+    test("x");
+    test("ah");
+    test("word");
+    test("CamelCase");
+    test("snake_case");
+    test("ALLUPPER");
+    test("ŮñĭçøƋɇ");
+    test("trailing_numbers012");
+    test("numbers1n8etw33n");
+    test("veeeeeeeerylooooooongwooooooord");
 }
