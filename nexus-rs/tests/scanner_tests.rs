@@ -1,5 +1,5 @@
 use nexus_rs::{
-    scanner::{Scanner, Tokens},
+    scanner::Scanner,
     token::Token,
 };
 
@@ -12,14 +12,6 @@ fn primitive_test() {
 
         assert_eq!(tokens.len(), 1);
         assert_eq!(tokens.into_iter().next().unwrap(), expected);
-    };
-
-    let test_set = |input: &str, expected: Tokens| {
-        let mut s = Scanner::new();
-
-        let tokens = s.scan(input.to_string());
-
-        assert_eq!(tokens, expected);
     };
 
     test("(", Token::LeftParen);
@@ -49,7 +41,7 @@ fn primitive_test() {
     test("!", Token::Bang);
     test("!=", Token::NotEq);
     test("&&", Token::And);
-    test("||", Token::Or);
+    //test("||", Token::Or); // NOTE: 'Or' is selected in token stream post-processing.
     test("|", Token::Pipe);
     test("true", Token::True);
     test("false", Token::False);
@@ -61,8 +53,6 @@ fn primitive_test() {
     test("return", Token::Return);
     test("print", Token::Print);
     test("node", Token::Node);
-
-    test_set("||{", vec![Token::EmptyClosure, Token::LeftBrace]);
 
     test("2.8539", Token::Number(2.8539f64));
     test("top_id", Token::Identifier("top_id".to_string()));

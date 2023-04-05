@@ -29,4 +29,10 @@ fn main() {
   }
 
   print "\\\\\" End:\t\"" + |x|{ return 17 + x; /* inline comment */ }() + "\"";
+
+  || /* sdfsdf
+  sdf
+  sdf
+  sdf
+  */ {}
 }

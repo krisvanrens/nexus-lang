@@ -92,18 +92,7 @@ impl Scanner {
                         }
                         _ => tokens.push(Token::Is),
                     },
-                    '|' => match cursor.peek() {
-                        Some('|') => {
-                            cursor.advance();
-
-                            if cursor.peek_nonwhitespace() == Some('{') {
-                                tokens.push(Token::EmptyClosure);
-                            } else {
-                                tokens.push(Token::Or);
-                            }
-                        }
-                        _ => tokens.push(Token::Pipe),
-                    },
+                    '|' => tokens.push(Token::Pipe),
                     '>' => match cursor.peek() {
                         Some('=') => {
                             cursor.advance();

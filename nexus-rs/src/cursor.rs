@@ -161,38 +161,6 @@ impl<'a> Cursor<'a> {
         }
     }
 
-    /// Peek into the next non-whitespace character without consuming the current value.
-    ///
-    /// A whitespace character is one of the following:
-    ///  - Whitespace: '`_`',
-    ///  - Carriage return: '`\r`',
-    ///  - Tab: '`\t`'.
-    ///
-    /// Example:
-    ///
-    /// ```
-    /// use nexus_rs::cursor::Cursor;
-    ///
-    /// let s = "a  \tb".to_string();
-    /// let mut c = Cursor::new(&s);
-    ///
-    /// assert_eq!(c.value(), Some('a'));
-    /// assert_eq!(c.peek(), Some(' '));
-    /// assert_eq!(c.peek_nonwhitespace(), Some('b'));
-    /// ```
-    pub fn peek_nonwhitespace(&self) -> Option<char> {
-        if !self.eol() {
-            let iter_clone = self.iter.clone();
-            for c in iter_clone {
-                if !c.is_ascii_whitespace() {
-                    return Some(c);
-                }
-            }
-        }
-
-        None
-    }
-
     /// Peek the next word without consuming the current value.
     ///
     /// A "word" is defined as a consecutive sequence of alphanumeric characters or '_' (underscore).
@@ -332,20 +300,6 @@ fn cursor_peek_nth_test() {
     for (i, x) in line.char_indices() {
         assert_eq!(c.peek_nth(i), Some(x));
     }
-}
-
-#[test]
-fn cursor_peek_nonwhitespace_test() {
-    let test = |input: &str, expect: char| {
-        let c = Cursor::new(&input);
-        assert_eq!(c.peek_nonwhitespace(), Some(expect));
-    };
-
-    test("a b", 'b');
-    test("a    b", 'b');
-    test("a\tb", 'b');
-    test("a\rb", 'b');
-    test("a    \t\t   \r \t b", 'b');
 }
 
 #[test]
