@@ -4,6 +4,7 @@ use std::{
     path::Path,
 };
 
+/// Iterable wrapper around a buffered file reader.
 pub struct FileReader {
     reader: BufReader<File>,
 }
