@@ -6,21 +6,24 @@ Nexus is a language for aiding in software component network descriptions.
 Aside a simple base of common general-purpose primitives/control flow/etc. it offers native integration for building a network of components, connecting in-/outputs and setting component properties.
 The syntax of Nexus is loosely modeled after that of the [Rust programming language](https://github.com/rust-lang/rust).
 
+**NOTE: This project is still very much under construction -- don't use in production!**
+
 ## Native integration with component networks
 
-Nexus is designed to interface component-network-oriented systems, to enable a convenient, safe network description.
+Nexus is designed to interface component-network-oriented systems:
 
-```rs
+```rust
 // Instantiate components:
 let c1 = node("TypeA");
 let c2 = node("TypeB");
 
-let mut system = group;
+let mut system = mod;
 system.source = c1;
 system.sink   = c2;
 
-system.processor = node("TypeC");
+let system.processor = node("TypeC"); // Ad-hoc definitions.
 
+// References to (sub-)systems:
 let proc = &system.processor;
 proc.velocity = 3.14;
 
@@ -32,6 +35,7 @@ system.processor.Output -> c2.Input;
 ## Simplicity
 
 Nexus is geared towards simplicity, in the sense that it tries to support a minimal viable set of features required for flexible use as a component network description language.
+It does not
 
 ## Safety
 
@@ -172,6 +176,7 @@ There are three fundamental data types:
 - Declaration: `let`
 - Function: `fn`
 - Return: `return`
+- Print: `print`
 - Expression statements
 
 ## Implementation status
@@ -179,15 +184,17 @@ There are three fundamental data types:
 ### Milestone 0: ideation, base setup
 
 - [x] Lexing/scanning setup.
-- [ ] Lexing error handling.
+- [ ] Scanner error handling.
 - [x] Interpretation from source file (`.nxs`).
-- [x] Command-line REPL.
+- [x] Command-line REPL setup.
+- [ ] Review language design and setup (README).
 
 ### Milestone 1: language setup
 
 - [ ] First thorough iteration of grammar rules.
 - [ ] Parsing setup.
 - [ ] Parsing error handling.
+- [ ] Debugging commands in REPL and interpreter.
 
 ### Milestone 2: foundations
 
@@ -275,19 +282,19 @@ Add:
 - Component instantiation using `node`
 - Node edge connection using binary `->`
 - Assignment
-- Proper precendence handling
+- Proper precedence handling
 
 ## TODO
 
 - Improve declarative approach for extending a module with components.
 - Immutability? Just shallow mutability for now. Add `mut` keyword.
 - Objects?
+- Object literal notation? (or JSON literal notation)
 - Add `match` expression? Should be simple for a few fundamental types.
 - Handling setting of component values...how/what/mutability?
 - Lambda expressions?
-- Copy/move semantics?
+- Move semantics as a default?
 - Implicit return value (to remove `return`)?
-- Support for JSON literal object notation?
 - Error handling? Result types?
 - Support for integration into a visual IDE / generative tooling.
 - Range declarations using `start..=end` for use in `for` loops.
