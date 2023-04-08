@@ -41,7 +41,7 @@ impl Scanner {
 
     /// Scan a line of text and output the tokens found, or a scanning error.
     ///
-    /// Example:
+    /// # Example
     ///
     /// ```
     /// use nexus_rs::{scanner::Scanner, token::Token};

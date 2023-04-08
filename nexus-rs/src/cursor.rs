@@ -12,7 +12,7 @@ impl<'a> Cursor<'a> {
     ///
     /// The cursor is initialized with the first character of the string.
     ///
-    /// Example:
+    /// # Example
     ///
     /// ```
     /// use nexus_rs::cursor::Cursor;
@@ -35,7 +35,7 @@ impl<'a> Cursor<'a> {
 
     /// Get the value of the current character the cursor is pointing at (if any).
     ///
-    /// Example:
+    /// # Example
     ///
     /// ```
     /// use nexus_rs::cursor::Cursor;
@@ -53,7 +53,7 @@ impl<'a> Cursor<'a> {
 
     /// Advance the cursor one position, replacing the inner value.
     ///
-    /// Example:
+    /// # Example
     ///
     /// ```
     /// use nexus_rs::cursor::Cursor;
@@ -78,7 +78,7 @@ impl<'a> Cursor<'a> {
     /// If N is zero, `advance_by` is a no-op.
     /// It is a valid operation to advance the cursor beyond the end-of-line (EOL).
     ///
-    /// Example:
+    /// # Example
     ///
     /// ```
     /// use nexus_rs::cursor::Cursor;
@@ -111,7 +111,7 @@ impl<'a> Cursor<'a> {
 
     /// Peek into the next character without consuming the current value.
     ///
-    /// Example:
+    /// # Example
     ///
     /// ```
     /// use nexus_rs::cursor::Cursor;
@@ -133,7 +133,7 @@ impl<'a> Cursor<'a> {
     ///
     /// Returns the current cursor value if 'n' is zero.
     ///
-    /// Example:
+    /// # Example
     ///
     /// ```
     /// use nexus_rs::cursor::Cursor;
@@ -163,7 +163,7 @@ impl<'a> Cursor<'a> {
 
     /// Peek while a predicated holds without consuming the current value.
     ///
-    /// Example:
+    /// # Example
     ///
     /// ```
     /// use nexus_rs::cursor::Cursor;
@@ -194,7 +194,7 @@ impl<'a> Cursor<'a> {
     /// A "word" is defined as a consecutive sequence of alphanumeric characters or '_' (underscore).
     /// The current value of the cursor is taken as the first character of the word.
     ///
-    /// Example:
+    /// # Example
     ///
     /// ```
     /// use nexus_rs::cursor::Cursor;
@@ -222,7 +222,7 @@ impl<'a> Cursor<'a> {
 
     /// Check if the cursor is at end-of-line (EOL).
     ///
-    /// Example:
+    /// # Example
     ///
     /// ```
     /// use nexus_rs::cursor::Cursor;
