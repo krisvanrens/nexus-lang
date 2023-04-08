@@ -184,7 +184,7 @@ There are three fundamental data types:
 ### Milestone 0: ideation, base setup
 
 - [x] Lexing/scanning setup.
-- [ ] Scanner error handling.
+- [x] Scanner error handling.
 - [x] Interpretation from source file (`.nxs`).
 - [x] Command-line REPL setup.
 - [ ] Review language design and setup (README).

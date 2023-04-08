@@ -10,6 +10,7 @@ use std::f64::consts::PI;
 /// Scanner for Nexus.
 ///
 /// **Note**: at this moment, the scanner is *not* suitable for out-of-order parallel operation.
+/// Due to support for multiline comments in Nexus, line scans are noncommutative.
 pub struct Scanner {
     comment_: bool, //<! Indicates multiline comment state.
 }
