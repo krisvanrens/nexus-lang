@@ -34,6 +34,7 @@ impl IntoIterator for FileReader {
     }
 }
 
+/// Iterator for [FileReader].
 pub struct FileReaderIterator {
     lines: Lines<BufReader<File>>,
 }

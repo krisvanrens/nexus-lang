@@ -1,3 +1,4 @@
+/// Scanning/lexing token representation used in the Nexus grammar.
 #[derive(Clone, Debug, PartialEq)]
 pub enum Token {
     LeftParen,    // '('
@@ -45,4 +46,5 @@ pub enum Token {
     String(String),
 }
 
+/// Collection of tokens.
 pub type Tokens = Vec<Token>;

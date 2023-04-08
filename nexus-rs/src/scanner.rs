@@ -7,10 +7,14 @@ use thiserror::Error;
 #[cfg(test)]
 use std::f64::consts::PI;
 
+/// Scanner for Nexus.
+///
+/// **Note**: at this moment, the scanner is *not* suitable for out-of-order parallel operation.
 pub struct Scanner {
     comment_: bool, //<! Indicates multiline comment state.
 }
 
+/// Scanning/lexing error representation.
 #[derive(Error, Debug)]
 pub enum ScanError {
     #[error("malformed string literal")]
@@ -35,7 +39,7 @@ impl Scanner {
         Scanner { comment_: false }
     }
 
-    /// Scan a line of text and output the tokens found.
+    /// Scan a line of text and output the tokens found, or a scanning error.
     ///
     /// Example:
     ///
