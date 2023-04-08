@@ -60,6 +60,6 @@ fn main() {
 }
 
 fn print_tokens(tokens: Tokens) {
-    tokens.into_iter().for_each(|t| print!("{:?} ", t));
+    tokens.into_iter().for_each(|t| print!("{t:?} "));
     println!();
 }
