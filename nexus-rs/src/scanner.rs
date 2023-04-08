@@ -19,24 +19,14 @@ pub enum ScanError {
     #[error("failed to parse number '{0}'")]
     NumberParseError(String),
 
+    #[error("failed to parse word")]
+    WordParseError,
+
     #[error("unexpected character")]
     UnexpectedCharacter,
 
     #[error("unterminated string")]
     UnterminatedString,
-}
-
-type TokenMap = HashMap<&'static str, Token>;
-
-/// Initialize a token map using 'key => value' notation.
-macro_rules! token_map {
-    ($($key:expr => $value:expr),+ $(,)?) => {
-        {
-            let mut map: TokenMap = HashMap::new();
-            $(map.insert($key, $value);)+
-            map
-        }
-    }
 }
 
 impl Scanner {
@@ -61,21 +51,6 @@ impl Scanner {
     /// }
     /// ```
     pub fn scan(&mut self, line: String) -> Result<Tokens, ScanError> {
-        lazy_static! {
-            static ref KEYWORDS: TokenMap = token_map! {
-                "false"  => Token::False,
-                "fn"     => Token::Function,
-                "for"    => Token::For,
-                "if"     => Token::If,
-                "let"    => Token::Let,
-                "node"   => Token::Node,
-                "print"  => Token::Print,
-                "return" => Token::Return,
-                "true"   => Token::True,
-                "while"  => Token::While,
-            };
-        }
-
         let mut tokens = Vec::new();
 
         let mut cursor = Cursor::new(&line);
@@ -154,25 +129,11 @@ impl Scanner {
                         _ => tokens.push(Token::Slash),
                     },
                     '"' => {
-                        tokens.push(Token::String(parse_string(&mut cursor)));
+                        tokens.push(Token::String(parse_string(&mut cursor)?));
                     }
-                    x if x.is_alphanumeric() => {
-                        if c.is_ascii_digit() {
-                            tokens.push(Token::Number(parse_number(&mut cursor)));
-                        } else {
-                            let word = cursor
-                                .peek_while(|c| c.is_alphanumeric() || c == '_')
-                                .unwrap(); // TODO: Handle lexing error.
-                            cursor.advance_by(word.chars().count() - 1);
-
-                            tokens.push(if let Some(token) = KEYWORDS.get(&word.as_str()) {
-                                token.clone()
-                            } else {
-                                Token::Identifier(word)
-                            });
-                        }
-                    }
-                    _ => panic!("unexpected character: '{c}'"), // TODO: Handle lexing error.
+                    '0'..='9' => tokens.push(Token::Number(parse_number(&mut cursor)?)),
+                    x if x.is_alphabetic() => tokens.push(parse_word(&mut cursor)?),
+                    _ => return Err(ScanError::UnexpectedCharacter),
                 }
             } else if (c == '*') && (cursor.peek() == Some('/')) {
                 cursor.advance();
@@ -192,7 +153,7 @@ impl Default for Scanner {
     }
 }
 
-fn parse_string(cursor: &mut Cursor) -> String {
+fn parse_string(cursor: &mut Cursor) -> Result<String, ScanError> {
     let mut result = String::new();
     let mut escaped = false;
     let mut ended = false;
@@ -225,14 +186,14 @@ fn parse_string(cursor: &mut Cursor) -> String {
     }
 
     if !ended {
-        panic!("unterminated string"); // TODO: Handle lexing error.
+        return Err(ScanError::UnterminatedString);
     }
 
     if escaped {
-        panic!("malformed string with escaping"); // TODO: Handle lexing error.
+        return Err(ScanError::MalformedString);
     }
 
-    result
+    Ok(result)
 }
 
 #[test]
@@ -241,7 +202,7 @@ fn parse_string_test() {
         let s = "\"".to_string() + input + "\"";
         let mut cursor = Cursor::new(&s);
         assert_eq!(
-            parse_string(&mut cursor),
+            parse_string(&mut cursor).unwrap(),
             input
                 .to_string()
                 .replace("\\\"", "\"")
@@ -264,8 +225,8 @@ fn parse_string_test() {
     test(r#"\"quotes at the sides\""#);
 }
 
-fn parse_number(cursor: &mut Cursor) -> f64 {
-    let mut result = cursor.value().unwrap().to_string(); // TODO: Handle lexing error.
+fn parse_number(cursor: &mut Cursor) -> Result<f64, ScanError> {
+    let mut result = cursor.value().unwrap().to_string();
 
     while let Some(c) = cursor.peek() {
         match c {
@@ -275,7 +236,7 @@ fn parse_number(cursor: &mut Cursor) -> f64 {
                 Some(x) if x.is_ascii_digit() => {
                     result.push(c);
                 }
-                _ => panic!("unexpected token"), // TODO: Handle lexing error.
+                _ => return Err(ScanError::UnexpectedCharacter),
             },
             _ => break,
         }
@@ -283,14 +244,16 @@ fn parse_number(cursor: &mut Cursor) -> f64 {
         cursor.advance();
     }
 
-    result.parse::<f64>().expect("failed to parse number") // TODO: Handle lexing error.
+    result
+        .parse::<f64>()
+        .map_err(|e| ScanError::NumberParseError(e.to_string()))
 }
 
 #[test]
 fn parse_number_test() {
     let test = |input: &str, expected: f64| {
         let mut cursor = Cursor::new(input);
-        assert!(parse_number(&mut cursor) - expected < 0.001);
+        assert!(parse_number(&mut cursor).unwrap() - expected < 0.001);
     };
 
     test("0", 0.0);
@@ -304,4 +267,87 @@ fn parse_number_test() {
     test("123.456", 123.456);
     test("123.456", 123.456);
     test("3.1415926535", PI);
+}
+
+type TokenMap = HashMap<&'static str, Token>;
+
+/// Initialize a token map using 'key => value' notation.
+macro_rules! token_map {
+    ($($key:expr => $value:expr),+ $(,)?) => {
+        {
+            let mut map: TokenMap = HashMap::new();
+            $(map.insert($key, $value);)+
+            map
+        }
+    }
+}
+
+fn parse_word(cursor: &mut Cursor) -> Result<Token, ScanError> {
+    lazy_static! {
+        static ref KEYWORDS: TokenMap = token_map! {
+            "false"  => Token::False,
+            "fn"     => Token::Function,
+            "for"    => Token::For,
+            "if"     => Token::If,
+            "let"    => Token::Let,
+            "node"   => Token::Node,
+            "print"  => Token::Print,
+            "return" => Token::Return,
+            "true"   => Token::True,
+            "while"  => Token::While,
+        };
+    }
+
+    match cursor.peek_while(|c| c.is_alphanumeric() || c == '_') {
+        Some(word) => {
+            cursor.advance_by(word.chars().count() - 1);
+            if let Some(token) = KEYWORDS.get(&word.as_str()) {
+                Ok(token.clone())
+            } else {
+                Ok(Token::Identifier(word))
+            }
+        }
+        _ => Err(ScanError::WordParseError),
+    }
+}
+
+#[test]
+fn parse_word_identifier_test() {
+    let test = |word: &str| {
+        let mut cursor = Cursor::new(word);
+        assert_eq!(
+            parse_word(&mut cursor).unwrap(),
+            Token::Identifier(word.to_string())
+        );
+    };
+
+    test("x");
+    test("ah");
+    test("word");
+    test("CamelCase");
+    test("snake_case");
+    test("ALLUPPER");
+    test("ŮñĭçøƋɇ");
+    test("trailing_numbers012");
+    test("numbers1n8etw33n");
+    test("veeeeeeeerylooooooongwooooooord");
+}
+
+#[test]
+fn parse_word_keyword_test() {
+    let test = |word: &str, expected: Token| {
+        let mut cursor = Cursor::new(word);
+        assert_eq!(parse_word(&mut cursor).unwrap(), expected);
+    };
+
+    test("false", Token::False);
+    test("fn", Token::Function);
+    test("for", Token::For);
+    test("if", Token::If);
+    test("let", Token::Let);
+    test("node", Token::Node);
+    test("print", Token::Print);
+    test("return", Token::Return);
+    test("true", Token::True);
+    test("while", Token::While);
 }
