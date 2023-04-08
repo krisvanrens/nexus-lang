@@ -28,7 +28,10 @@ fn main() {
             "Scan line".bold(),
             line.to_string().bright_red().dimmed()
         );
-        s.scan(line).into_iter().for_each(|t| print!("{:?} ", t));
+        match s.scan(line) {
+            Ok(tokens) => tokens.into_iter().for_each(|t| print!("{t:?}")),
+            Err(error) => eprint!("Error({error:?})"),
+        }
         println!();
     }
 }
