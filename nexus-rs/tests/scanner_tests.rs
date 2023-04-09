@@ -51,8 +51,10 @@ fn primitive_test() {
     test("for", Token::For);
     test("while", Token::While);
     test("return", Token::Return);
+    test("use", Token::Use);
     test("print", Token::Print);
     test("node", Token::Node);
+    test("group", Token::Group);
 
     test("2.8539", Token::Number(2.8539f64));
     test("top_id", Token::Identifier("top_id".to_string()));
