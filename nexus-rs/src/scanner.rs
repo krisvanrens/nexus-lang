@@ -300,6 +300,7 @@ fn parse_word(cursor: &mut Cursor) -> Result<Token, ScanError> {
             "print"  => Token::Print,
             "return" => Token::Return,
             "true"   => Token::True,
+            "use"    => Token::Use,
             "while"  => Token::While,
         };
     }
@@ -356,5 +357,6 @@ fn parse_word_keyword_test() {
     test("print", Token::Print);
     test("return", Token::Return);
     test("true", Token::True);
+    test("use", Token::Use);
     test("while", Token::While);
 }

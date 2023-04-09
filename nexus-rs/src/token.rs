@@ -39,6 +39,7 @@ pub enum Token {
     For,          // 'for'
     While,        // 'while'
     Return,       // 'return'
+    Use,          // 'use'
     Print,        // 'print'
     Node,         // 'node'
     Group,        // 'group'
