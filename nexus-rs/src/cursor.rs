@@ -189,37 +189,6 @@ impl<'a> Cursor<'a> {
         }
     }
 
-    /// Peek the next word without consuming the current value.
-    ///
-    /// A "word" is defined as a consecutive sequence of alphanumeric characters or '_' (underscore).
-    /// The current value of the cursor is taken as the first character of the word.
-    ///
-    /// # Example
-    ///
-    /// ```
-    /// use nexus_rs::cursor::Cursor;
-    ///
-    /// let s = "abc_12 def".to_string();
-    /// let mut c = Cursor::new(&s);
-    ///
-    /// assert_eq!(c.peek_word(), Some("abc_12".to_string()));
-    /// ```
-    pub fn peek_word(&self) -> Option<String> {
-        if !self.eol() && self.value.unwrap().is_alphanumeric() {
-            let mut result = self.value.unwrap().to_string();
-
-            result += &self
-                .chars
-                .clone()
-                .take_while(|x| x.is_alphanumeric() || x == &'_')
-                .collect::<String>();
-
-            Some(result)
-        } else {
-            None
-        }
-    }
-
     /// Check if the cursor is at end-of-line (EOL).
     ///
     /// # Example
@@ -359,38 +328,6 @@ fn cursor_peek_while_test() {
     assert_eq!(c.value(), Some('d'));
 
     assert_eq!(c.peek_while(is_word_char), Some("def".to_string()));
-
-    assert!(!c.eol());
-    assert_eq!(c.value(), Some('d'));
-}
-
-#[test]
-fn peek_while_word_test() {
-    let line = "abc def".to_string();
-
-    let mut c = Cursor::new(&line);
-
-    assert!(!c.eol());
-    assert_eq!(c.value(), Some('a'));
-
-    assert_eq!(c.peek_word(), Some("abc".to_string()));
-
-    assert!(!c.eol());
-    assert_eq!(c.value(), Some('a'));
-
-    c.advance();
-    c.advance();
-    c.advance();
-
-    assert!(!c.eol());
-    assert_eq!(c.value(), Some(' '));
-
-    c.advance();
-
-    assert!(!c.eol());
-    assert_eq!(c.value(), Some('d'));
-
-    assert_eq!(c.peek_word(), Some("def".to_string()));
 
     assert!(!c.eol());
     assert_eq!(c.value(), Some('d'));
