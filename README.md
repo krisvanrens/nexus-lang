@@ -6,7 +6,7 @@ Nexus is a language for aiding in software component network descriptions.
 Aside a simple base of common general-purpose primitives/control flow/etc. it offers native integration for building a network of components, connecting in-/outputs and setting component properties.
 The syntax of Nexus is loosely modeled after that of the [Rust programming language](https://github.com/rust-lang/rust).
 
-**NOTE: This project is still very much under construction -- don't use in production!**
+**NOTE**: This project is still very much under construction -- don't use in production..
 
 ## Native integration with component networks
 
@@ -17,7 +17,7 @@ Nexus is designed to interface component-network-oriented systems:
 let c1 = node("TypeA");
 let c2 = node("TypeB");
 
-let mut system = mod;
+let mut system : group; // A component group named 'system'.
 system.source = c1;
 system.sink   = c2;
 
@@ -35,7 +35,6 @@ system.processor.Output -> c2.Input;
 ## Simplicity
 
 Nexus is geared towards simplicity, in the sense that it tries to support a minimal viable set of features required for flexible use as a component network description language.
-It does not
 
 ## Safety
 
@@ -210,6 +209,14 @@ There are three fundamental data types:
 
 ## Keywords
 
+### Language type keywords
+
+| Keyword | Description |
+| :-----: | :---------- |
+| `bool`   | Boolean logic type. |
+| `Number` | Number type.        |
+| `String` | String type.        |
+
 ### Base language keywords
 
 | Keyword | Description |
@@ -228,8 +235,9 @@ There are three fundamental data types:
 
 | Keyword | Description |
 | :-----: | :---------- |
-| `print` | Print expression result. |
-| `node`  | Component instantiation. |
+| `group` | Component group instantiation. |
+| `node`  | Component instantiation.       |
+| `print` | Print expression result.       |
 
 ## Language grammar
 
@@ -244,6 +252,10 @@ STRING = "\"" , <character>* - "\"" , "\"" ;
 NUMBER = DIGIT+ ( "." DIGIT+ )? ;
 ID     = ALPHA ( ALPHA | DIGIT )* ;
 ```
+
+Note: for simplicity in the production rules, `ALPHA` is represented here as ASCII alphabetic.
+However, in `nexus-rs`, it means any *alphabetic* character, as defined by [chapter 4](https://www.unicode.org/versions/Unicode15.0.0/ch04.pdf) of [Unicode standard](https://www.unicode.org/versions/Unicode15.0.0/).
+This means in practice it is possible to define identifiers named `ŮñĭçøƋɇ`.
 
 ### Main syntax (WIP)
 
