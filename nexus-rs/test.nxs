@@ -9,7 +9,7 @@ fn free(a, b, c) -> Int {
    fn should_be_ignored() { return 10; }
    */
 fn main() {
-  fn local1() {
+  fn local1() -> Number {
     return "Hello1".length();
   }
 
@@ -21,7 +21,7 @@ fn main() {
   let b = node("Output");
   a.Out -> b.In;
 
-  let mut c = module("Subsystem");
+  let mut c = group("Subsystem for proc");
   for i in 0..=3 {
     let p = node("Processor");
     p.Input -> b.Output;

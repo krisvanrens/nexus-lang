@@ -293,6 +293,7 @@ fn parse_word(cursor: &mut Cursor) -> Result<Token, ScanError> {
             "false"  => Token::False,
             "fn"     => Token::Function,
             "for"    => Token::For,
+            "group"  => Token::Group,
             "if"     => Token::If,
             "let"    => Token::Let,
             "node"   => Token::Node,
@@ -348,6 +349,7 @@ fn parse_word_keyword_test() {
     test("false", Token::False);
     test("fn", Token::Function);
     test("for", Token::For);
+    test("group", Token::Group);
     test("if", Token::If);
     test("let", Token::Let);
     test("node", Token::Node);

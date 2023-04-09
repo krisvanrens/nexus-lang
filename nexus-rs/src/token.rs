@@ -41,6 +41,7 @@ pub enum Token {
     Return,       // 'return'
     Print,        // 'print'
     Node,         // 'node'
+    Group,        // 'group'
     Number(f64),
     Identifier(String),
     String(String),
