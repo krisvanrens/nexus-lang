@@ -296,6 +296,10 @@ Add:
 - Assignment
 - Proper precedence handling
 
+## Known limitations
+
+- Due to the current line-based scanning implementation, only a single scanning error per line can be detected.
+
 ## TODO
 
 - Improve declarative approach for extending a module with components.
