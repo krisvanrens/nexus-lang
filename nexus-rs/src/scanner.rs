@@ -43,13 +43,19 @@ pub struct ScanError {
 
 impl Display for ScanError {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        f.write_fmt(format_args!("error: {} at position {:?}", self.kind, self.char_index))
+        f.write_fmt(format_args!(
+            "error: {} at position {:?}",
+            self.kind, self.char_index
+        ))
     }
 }
 
 impl ScanError {
     fn new(kind: ScanErrorKind, cursor: &Cursor) -> Self {
-        ScanError { kind, char_index: cursor.index() }
+        ScanError {
+            kind,
+            char_index: cursor.index(),
+        }
     }
 }
 

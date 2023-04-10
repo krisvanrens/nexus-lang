@@ -394,7 +394,10 @@ fn cursor_index_advance_test() {
     assert_eq!(cursor.index(), Some(0));
 
     while !cursor.eol() {
-        assert_eq!(cursor.index(), Some(cursor.value().unwrap().to_digit(10).unwrap() as usize));
+        assert_eq!(
+            cursor.index(),
+            Some(cursor.value().unwrap().to_digit(10).unwrap() as usize)
+        );
         cursor.advance();
     }
 
