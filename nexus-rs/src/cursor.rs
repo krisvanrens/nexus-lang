@@ -4,6 +4,7 @@ use std::{iter::Peekable, str::Chars};
 #[derive(Debug)]
 pub struct Cursor<'a> {
     chars: Peekable<Chars<'a>>,
+    index: usize,
     value: Option<char>,
 }
 
@@ -21,6 +22,7 @@ impl<'a> Cursor<'a> {
     /// let c = Cursor::new(&s);
     ///
     /// assert_eq!(c.value(), Some('H'));
+    /// assert_eq!(c.index(), Some(0));
     /// assert_eq!(c.peek(), Some('e'));
     /// ```
     pub fn new(line: &'a str) -> Self {
@@ -29,6 +31,7 @@ impl<'a> Cursor<'a> {
 
         Cursor {
             chars: chars.peekable(),
+            index: 0,
             value,
         }
     }
@@ -71,6 +74,7 @@ impl<'a> Cursor<'a> {
     /// ```
     pub fn advance(&mut self) {
         self.value = self.chars.next();
+        self.index += 1;
     }
 
     /// Advance the cursor by N positions, consuming the value at each increment.
@@ -98,6 +102,7 @@ impl<'a> Cursor<'a> {
             _ => {
                 for _ in 0..(n - 1) {
                     self.chars.next();
+                    self.index += 1;
 
                     if self.chars.peek().is_none() {
                         break;
@@ -105,6 +110,7 @@ impl<'a> Cursor<'a> {
                 }
 
                 self.value = self.chars.next();
+                self.index += 1;
             }
         }
     }
@@ -184,6 +190,30 @@ impl<'a> Cursor<'a> {
                 .collect::<String>();
 
             Some(result)
+        } else {
+            None
+        }
+    }
+
+    /// Get the current character index of the cursor.
+    ///
+    /// # Example
+    ///
+    /// ```
+    /// use nexus_rs::cursor::Cursor;
+    ///
+    /// let s = "abcdefg".to_string();
+    /// let mut c = Cursor::new(&s);
+    ///
+    /// assert_eq!(c.index(), Some(0));
+    /// c.advance();
+    /// assert_eq!(c.index(), Some(1));
+    /// c.advance_by(3);
+    /// assert_eq!(c.index(), Some(4));
+    /// ```
+    pub fn index(&self) -> Option<usize> {
+        if !self.eol() {
+            Some(self.index)
         } else {
             None
         }
@@ -355,4 +385,42 @@ fn parse_word_test() {
     test("trailing_numbers012");
     test("numbers1n8etw33n");
     test("veeeeeeeerylooooooongwooooooord");
+}
+
+#[test]
+fn cursor_index_advance_test() {
+    let mut cursor = Cursor::new("0123456789");
+
+    assert_eq!(cursor.index(), Some(0));
+
+    while !cursor.eol() {
+        assert_eq!(cursor.index(), Some(cursor.value().unwrap().to_digit(10).unwrap() as usize));
+        cursor.advance();
+    }
+
+    assert!(cursor.index().is_none());
+}
+
+#[test]
+fn cursor_index_advance_by_test() {
+    let mut cursor = Cursor::new("This is a test string");
+    //                            0    5  7 9    14    EOL
+
+    let test = |cursor: &Cursor, i: usize, c: char| {
+        assert_eq!(cursor.index(), Some(i));
+        assert_eq!(cursor.value(), Some(c));
+    };
+
+    test(&cursor, 0, 'T');
+    cursor.advance_by(5);
+    test(&cursor, 5, 'i');
+    cursor.advance_by(3);
+    test(&cursor, 8, 'a');
+    cursor.advance_by(2);
+    test(&cursor, 10, 't');
+    cursor.advance_by(5);
+    test(&cursor, 15, 's');
+    cursor.advance_by(6);
+
+    assert!(cursor.index().is_none());
 }
