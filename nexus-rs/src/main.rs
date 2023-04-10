@@ -16,47 +16,55 @@ fn main() {
     let args = Args::parse();
 
     if let Some(filename) = args.filename {
-        let Ok(file) = FileReader::try_new(filename) else {
-            eprintln!("failed to open file");
-            exit(1);
-        };
-
-        let mut scanner = Scanner::new();
-
-        print_tokens(
-            file.into_iter()
-                .enumerate()
-                .fold(Tokens::new(), |mut acc, line| {
-                    let (index, line) = line;
-                    match scanner.scan(line) {
-                        Ok(mut result) => acc.append(&mut result),
-                        Err(error) => eprintln!("line {}: {error:?}", index + 1),
-                    }
-
-                    acc
-                }),
-        );
+        run_from_file(filename);
     } else {
-        let Ok(mut rl) = DefaultEditor::new() else {
-            eprintln!("failed to create REPL interface");
-            exit(1);
-        };
+        run_repl();
+    }
+}
 
-        loop {
-            match rl.readline("> ") {
-                Ok(line) => match Scanner::new().scan(line) {
-                    Ok(tokens) => print_tokens(tokens),
-                    Err(error) => eprintln!("{error:?}"),
-                },
-                Err(ReadlineError::Eof) => break,
-                Err(ReadlineError::Interrupted) => {
-                    eprintln!("interrupted");
-                    break; // TODO: Do something else?
+fn run_from_file(filename: String) {
+    let Ok(file) = FileReader::try_new(filename) else {
+        eprintln!("failed to open file");
+        exit(1);
+    };
+
+    let mut scanner = Scanner::new();
+
+    print_tokens(
+        file.into_iter()
+            .enumerate()
+            .fold(Tokens::new(), |mut acc, line| {
+                let (index, line) = line;
+                match scanner.scan(line) {
+                    Ok(mut result) => acc.append(&mut result),
+                    Err(error) => eprintln!("line {}: {error:?}", index + 1),
                 }
-                _ => {
-                    eprintln!("failed to parse input");
-                    exit(1);
-                }
+
+                acc
+            }),
+    );
+}
+
+fn run_repl() {
+    let Ok(mut rl) = DefaultEditor::new() else {
+        eprintln!("failed to create REPL interface");
+        exit(1);
+    };
+
+    loop {
+        match rl.readline("> ") {
+            Ok(line) => match Scanner::new().scan(line) {
+                Ok(tokens) => print_tokens(tokens),
+                Err(error) => eprintln!("{error:?}"),
+            },
+            Err(ReadlineError::Eof) => break,
+            Err(ReadlineError::Interrupted) => {
+                eprintln!("interrupted");
+                break; // TODO: Do something else?
+            }
+            _ => {
+                eprintln!("failed to parse input");
+                exit(1);
             }
         }
     }
