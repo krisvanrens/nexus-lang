@@ -4,9 +4,11 @@ The Nexus programming language.
 
 Nexus is a language for aiding in software component network descriptions.
 Aside a simple base of common general-purpose primitives/control flow/etc. it offers native integration for building a network of components, connecting in-/outputs and setting component properties.
-The syntax of Nexus is loosely modeled after that of the [Rust programming language](https://github.com/rust-lang/rust).
+The syntax of Nexus is loosely modeled after that of the excellent [Rust programming language](https://github.com/rust-lang/rust).
 
-**NOTE**: This project is still very much under construction -- don't use in production..
+Nexus is meant to drive a software component network system through its API, using the Nexus network description as input.
+
+**NOTE**: This project is still very much under construction -- anything might change!
 
 ## Native integration with component networks
 
@@ -19,7 +21,7 @@ let c2 = node("TypeB");
 
 let mut system : group; // A component group named 'system'.
 system.source = c1;
-system.sink   = c2;
+system.sink = c2;
 
 let system.processor = node("TypeC"); // Ad-hoc definitions.
 
@@ -66,8 +68,8 @@ let y = x; // OK.
 
 Using values uninitialized (and having the interpreter assume a value) is an error in 99.99% of the cases.
 
-Also, this initialization requirement implicitly assumes a variable to be declared (which is not required even in languages like JavaScript).
-Using a value undeclared is an error in 99.99% of the cases.
+Also, this initialization requirement implicitly assumes a variable to be declared (which is not even required in languages like JavaScript).
+Using a value undeclared always is an error.
 
 ### Block scopes are strictly required
 
@@ -76,12 +78,12 @@ Braces after `if`/`while`/`for`/etc. statements are required:
 ```js
 // OK:
 if expr {
-  do_something();
+    do_something();
 }
 
 // Error:
 if expr
-  do_something();
+    do_something();
 ```
 
 In other words, only block statements are allowed.
@@ -89,37 +91,42 @@ In other words, only block statements are allowed.
 #### Argumentation
 
 The argumentation for strictly requiring braces is simple: this prevents statement blocks to be "cut up" accidentally.
-Consider this example C code as an example:
+Consider this C code as an example:
 
 ```c
-if (condition)
-  printf("A\n");
-  printf("B\n"); // Whoops.
+if (expr)
+    printf("A\n");
+    printf("B\n"); // Whoops.
 ```
 
 This will always print `B`, regardless of the `condition`.
-However, due to the simple, unrelated matter of code formatting, it could be overlooked by a reviewer as a bug.
+However, due to the simple, unrelated matter of code formatting, it could easily be overlooked by a reviewer as a bug.
 
 ## Tooling
 
 One of the focus points of Nexus is that there should be good tooling.
 This has many aspects:
 
-- Tools may come from other languages: due to Rust-like syntax, `rustfmt` should work.
 - Nexus should be friendly for building tools for; the API should be simple.
-- Nexus should (on the long run) be delivered with tools.
+- Nexus should (on the long run) be delivered with tools and examples.
 
-## Documentation
+## Documentation and tests
 
-...
+As soon as the language syntax and semantics settle, documentation will be added.
+The current leading implementatation of Nexus, `nexus_rs` will be documented and tested thoroughly.
 
 ## The component model
 
-...
+This section describes the abstract component model used to define networks for.
 
-## Language front-end API
+`// TODO`
 
-..how should visual tools interact with Nexus?
+## Language API
+
+This section describes the API used to interact with a software component network decription system.
+It can also be used by other tools, e.g. a visualizer for networks described by Nexus.
+
+`// TODO`
 
 ## Language backend-end API / FFI
 
@@ -127,26 +134,54 @@ This has many aspects:
 
 ## Examples
 
-### Example 1
+### Example 1: general purpose
 
 ```rust
 // Comment.
-fn free(a, b, c) -> Int {
-  return 42 + a + b + c;
+fn free(a: Number, b: bool, c: Number) -> Number {
+    42 + a + if b { c } else { 0 }
 }
 
 /* Comment */
 fn main() {
-  fn local1() {
-    return "Hello1".length();
-  }
+    fn local1() {
+        return "Hello1".length();
+    }
 
-  let local2 = ||{ return "Hello2".length(); };
+    let local2 = ||{ return "Hello2".length(); };
 
-  let x = free(1, 2, local1() + local2());
+    let x = free(1, true, local1() + local2());
 
-  print |x|{ return 17 + x; }();
+    print |x|{ 17 + x }(); // IIFE.
 }
+```
+
+### Example 2: graph description
+
+```rust
+fn create_system(name: String) -> group {
+    let mut sys = group(name);
+
+    let sys.source = node("Reader");
+    let sys.sink = node("Writer");
+
+    sys.source.Output -> sys.sink.Input;
+
+    // Group in-/outputs:
+    let sys.Input = &sys.source.Input;
+    let sys.Output = &sys.sink.Output;
+
+    sys
+}
+
+let mut app : group;
+
+// Create four systems in 'app':
+for i in 0..4 {
+    app[i] = create_system("Sys" + i);
+}
+
+print app;
 ```
 
 ## Feature list
@@ -154,21 +189,22 @@ fn main() {
 ### Fundamental data types
 
 Nexus is dynamically typed.
-All variables are declared using `let` (immutable, directly initialized) or `let mut` (mutable) and are typed according to first initialization.
+All automatic variables are declared using `let` (immutable, directly initialized) or `let mut` (mutable) and are typed according to first initialization.
 After first use, the type is strictly checked.
+Function arguments are always strictly typed.
 
 There are three fundamental data types:
 
 - `String`, a Unicode string,
-- `Number`, a double-precision (64 bits), signed floating-point number,
+- `Number`, a double-precision (> 64 bits), signed floating-point number,
 - `bool`, a boolean logic value.
 
 ### Expressions
 
-- Loop: `while`/`for`/`loop`
-- Conditional: `if`/`match`
+- Loop: `while`/`for`
+- Conditional: `if`
 - Closure: `|x|{ /* ... */ }`
-- Range: `x..y` or `x..=y`
+- Range: `x..y` (exclusive) or `x..=y` (inclusive)
 
 ### Statements
 
@@ -186,7 +222,6 @@ There are three fundamental data types:
 - [x] Scanner error handling.
 - [x] Interpretation from source file (`.nxs`).
 - [x] Command-line REPL setup.
-- [ ] Review language design and setup (README).
 
 ### Milestone 1: language setup
 
@@ -204,8 +239,11 @@ There are three fundamental data types:
 
 ### Milestone 3: basics
 
+- [ ] Including other files with `use`
 - [ ] Functions using `fn`.
 - [ ] ...
+
+T.B.D.
 
 ## Keywords
 
@@ -225,8 +263,6 @@ There are three fundamental data types:
 | `for`    | Loop expression.        |
 | `if`     | Conditional expression. |
 | `let`    | Variable declaration.   |
-| `loop`   | Loop expression.        |
-| `match`  | Match expression.       |
 | `return` | Return statement.       |
 | `use`    | External use statement. |
 | `while`  | Loop expression.        |
@@ -259,19 +295,22 @@ This means in practice it is possible to define identifiers named `ŮñĭçøƋ�
 
 ### Main syntax (WIP)
 
+Note: the grammar will be extended as the language implementation progresses.
+
 ```ebnf
 program = decl* EOF ;
 
+type       = "bool" | "Number" | "String" ;
 decl       = fn_decl | var_decl | stmt ;
 fn_decl    = "fn" function ;
-var_decl   = "let" ID ( "=" expr )? ";" ;
+var_decl   = "let" ( "mut" )? ID ( ":" type )? | ( "=" expr )? ";" ;
 stmt       = expr_stmt | print_stmt | block ;
 expr_stmt  = expr ";" ;
 print_stmt = "print" expr ";" ;
 block      = "{" decl* "}" ;
 
-function   = ID "(" params* ")" block ;
-params     = ID ( "," ID )* ;
+function   = ID "(" params* ")" "->" type block ;
+params     = ID ":" type ( "," ID ":" type )* ;
 args       = expr ( "," expr )* ;
 
 literal    = NUMBER | STRING | "true" | "false" ;
@@ -282,41 +321,30 @@ binary     = expr operator expr ;
 group      = "(" expr ")" ;
 ```
 
-### TODO
-
-Add:
-
-- `for .. in`
-- `while`
-- `loop`
-- `match`
-- `use` to include same-named `.nxs` files within visibility.
-- Component instantiation using `node`
-- Node edge connection using binary `->`
-- Assignment
-- Proper precedence handling
-
 ## Known limitations
 
-- Due to the current line-based scanning implementation, only a single scanning error per line can be detected.
+- Due to the current line-based scanning implementation, only a single scanning error per line will be detected. This is fine for now.
 
 ## TODO
 
 - Improve declarative approach for extending a module with components.
-- Immutability? Just shallow mutability for now. Add `mut` keyword.
-- Objects?
+- Immutability? Is the benefit of immutibility by default + move semantics beneficial for the use case of Nexus? Why or why not?
+- Support for objects? Groups using `group` should suffice.
+- Execution entry point? Just structural starting from the root `.nxs` file?
 - Object literal notation? (or JSON literal notation)
 - Add `match` expression? Should be simple for a few fundamental types.
 - Handling setting of component values...how/what/mutability?
-- Lambda expressions?
-- Move semantics as a default?
-- Implicit return value (to remove `return`)?
+- Implicit return value (to omit `return` in most places)?
+- Add combined assigment/operators (`+=`/`-=`/`*=`/`/=`).
+- Is it possible to have `Number` be floating-point when sometimes used as integer?
 - Error handling? Result types?
 - Support for integration into a visual IDE / generative tooling.
-- Range declarations using `start..=end` for use in `for` loops.
-- Require safe edge types? How?
+- Require safe edge types? How? Should be dealt with in the API -- possibly a responsibility of the component network integration.
 - Provide clear and good error messages on every level.
 - FFI? How to deal with FFI of rich Unicode strings?
+- Add `loop` expression? This will also require `break` and `continue` (which would be nice anyway..).
+- What is the difference between the front- and backend API? Is there a difference at all? What are the needs for a visualization tool vs. those of the component network integration itself?
+- Tool idea: Nexus to Graphviz Dot description.
 
 ## FAQ
 
@@ -324,6 +352,6 @@ Add:
 
 From the dictionary:
 
-**Nexus**; *nex·us*; meaning: *connection, link*
+> **Nexus**; *nex·us*; meaning: *connection, link*
 
 Of course this ties back to its place as a component network-description language.
