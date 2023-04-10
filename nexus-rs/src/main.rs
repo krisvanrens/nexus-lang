@@ -43,8 +43,7 @@ fn main() {
         };
 
         loop {
-            let line = rl.readline("> ");
-            match line {
+            match rl.readline("> ") {
                 Ok(line) => match Scanner::new().scan(line) {
                     Ok(tokens) => print_tokens(tokens),
                     Err(error) => eprintln!("{error:?}"),
