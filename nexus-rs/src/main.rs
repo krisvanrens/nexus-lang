@@ -23,12 +23,12 @@ fn main() {
 
         let mut scanner = Scanner::new();
 
-        print_tokens(file.into_iter().fold(Tokens::new(), |mut acc, line| {
-            if let Ok(mut result) = scanner.scan(line) {
-                acc.append(&mut result);
+        print_tokens(file.into_iter().enumerate().fold(Tokens::new(), |mut acc, line| {
+            let (index, line) = line;
+            match scanner.scan(line) {
+                Ok(mut result) => acc.append(&mut result),
+                Err(error) => eprintln!("line {}: {error:?}", index + 1),
             }
-
-            // TODO: Do something with error.
 
             acc
         }));
