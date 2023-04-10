@@ -1,6 +1,6 @@
 // Comment.
-fn free(a, b, c) -> Int {
-  return 42 + a + b + c; // Result comment.
+fn free(a: Number, b: bool, c: Number) -> Number {
+  42 + a + if b { c } else { 0 }; // Result comment.
 }
 
 /* Multi-line
@@ -10,12 +10,12 @@ fn free(a, b, c) -> Int {
    */
 fn main() {
   fn local1() -> Number {
-    return "Hello1".length();
+    return "Hello1".len();
   }
 
-  let local2 = ||{ return "Hello2".length(); };
+  let local2 = ||{ return "Hello2".len(); };
 
-  let x = free(1, 2.889, local1() + local2());
+  let x = free(2.889, true, local1() + local2());
 
   let a = node("Input");
   let b = node("Output");

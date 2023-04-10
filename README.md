@@ -145,10 +145,10 @@ fn free(a: Number, b: bool, c: Number) -> Number {
 /* Comment */
 fn main() {
     fn local1() {
-        return "Hello1".length();
+        return "Hello1".len();
     }
 
-    let local2 = ||{ return "Hello2".length(); };
+    let local2 = ||{ return "Hello2".len(); };
 
     let x = free(1, true, local1() + local2());
 
@@ -337,6 +337,7 @@ group      = "(" expr ")" ;
 - Handling setting of component values...how/what/mutability?
 - Implicit return value (to omit `return` in most places)?
 - Add combined assigment/operators (`+=`/`-=`/`*=`/`/=`).
+- Traits for fundamental types? E.g. `"sdfs".len() == 4` etc.
 - Is it possible to have `Number` be floating-point when sometimes used as integer?
 - Error handling? Result types?
 - Support for integration into a visual IDE / generative tooling.
