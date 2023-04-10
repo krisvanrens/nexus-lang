@@ -20,6 +20,7 @@ fn primitive_test() {
     test("}", Token::RightBrace);
     test("[", Token::LeftBracket);
     test("]", Token::RightBracket);
+    test(":", Token::Colon);
     test(";", Token::SemiColon);
     test("+", Token::Plus);
     test("-", Token::Minus);

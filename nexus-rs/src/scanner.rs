@@ -94,6 +94,7 @@ impl Scanner {
                     '}' => tokens.push(Token::RightBrace),
                     '[' => tokens.push(Token::LeftBracket),
                     ']' => tokens.push(Token::RightBracket),
+                    ':' => tokens.push(Token::Colon),
                     ';' => tokens.push(Token::SemiColon),
                     '+' => tokens.push(Token::Plus),
                     '-' => match cursor.peek() {

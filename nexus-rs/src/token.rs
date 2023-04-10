@@ -7,6 +7,7 @@ pub enum Token {
     RightBrace,   // '}'
     LeftBracket,  // '['
     RightBracket, // ']'
+    Colon,        // ':'
     SemiColon,    // ';'
     Plus,         // '+'
     Minus,        // '-'
