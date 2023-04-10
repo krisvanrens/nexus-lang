@@ -2,9 +2,9 @@
 
 The Nexus programming language.
 
-Nexus is a language for aiding in software component network descriptions.
+Nexus is a language for supporting software component network descriptions.
 Aside a simple base of common general-purpose primitives/control flow/etc. it offers native integration for building a network of components, connecting in-/outputs and setting component properties.
-The syntax of Nexus is loosely modeled after that of the excellent [Rust programming language](https://github.com/rust-lang/rust).
+The syntax and most semantics of Nexus are loosely modeled after that of the excellent [Rust programming language](https://github.com/rust-lang/rust).
 
 Nexus is meant to drive a software component network system through its API, using the Nexus network description as input.
 
@@ -328,6 +328,7 @@ group      = "(" expr ")" ;
 ## TODO
 
 - Improve declarative approach for extending a module with components.
+- Simple suport for variable aliases (references)? Should be handy for shorthand names.
 - Immutability? Is the benefit of immutibility by default + move semantics beneficial for the use case of Nexus? Why or why not?
 - Support for objects? Groups using `group` should suffice.
 - Execution entry point? Just structural starting from the root `.nxs` file?
@@ -345,6 +346,7 @@ group      = "(" expr ")" ;
 - Add `loop` expression? This will also require `break` and `continue` (which would be nice anyway..).
 - What is the difference between the front- and backend API? Is there a difference at all? What are the needs for a visualization tool vs. those of the component network integration itself?
 - Tool idea: Nexus to Graphviz Dot description.
+- Example integrations and implementations. Nexus to Rust library, Nexus to C++ library etc.
 
 ## FAQ
 
