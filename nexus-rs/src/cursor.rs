@@ -151,12 +151,12 @@ impl<'a> Cursor<'a> {
             0 => self.value(),
             1 => self.peek(),
             _ => {
-                let mut iter_clone = self.chars.clone();
+                let mut chars = self.chars.clone();
                 for _ in 0..(n - 1) {
-                    iter_clone.next();
+                    chars.next();
                 }
 
-                iter_clone.peek().copied()
+                chars.peek().copied()
             }
         }
     }
