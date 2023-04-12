@@ -1,5 +1,7 @@
 # nexus-lang
 
+[![MIT licensed](https://img.shields.io/github/license/krisvanrens/nexus-lang)](./LICENSE)
+
 The Nexus programming language.
 
 Nexus is a language for supporting software component network descriptions.
