@@ -6,6 +6,9 @@ use std::fmt::Display;
 use thiserror::Error;
 
 #[cfg(test)]
+use pretty_assertions::assert_eq;
+
+#[cfg(test)]
 use std::f64::consts::PI;
 
 /// Scanner for Nexus.

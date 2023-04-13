@@ -1,5 +1,8 @@
 use nexus_rs::{scanner::Scanner, token::Token};
 
+#[cfg(test)]
+use pretty_assertions::assert_eq;
+
 #[test]
 fn primitive_test() {
     let test = |input: &str, expected: Token| {
