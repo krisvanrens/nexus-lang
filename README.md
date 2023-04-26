@@ -300,7 +300,7 @@ This means in practice it is possible to define identifiers named `ŮñĭçøƋ�
 Note: the grammar will be extended as the language implementation progresses.
 
 ```ebnf
-program = decl* EOF ;
+program    = decl* EOF ;
 
 type       = "bool" | "Number" | "String" ;
 decl       = fn_decl | var_decl | stmt ;
@@ -321,6 +321,13 @@ unary      = ( "!" | "-" ) expr ;
 operator   = "==" | "!=" | "<=" | ">=" | "<" | ">" | "+" | "-" | "*" | "/" ;
 binary     = expr operator expr ;
 group      = "(" expr ")" ;
+```
+
+Builtin statements:
+
+```ebnf
+node  = "node" "(" expr ")" ";" ;
+print = "print" "(" expr ")" ";" ;
 ```
 
 ## Known limitations
@@ -360,3 +367,4 @@ From the dictionary:
 > **Nexus**; *nex·us*; meaning: *connection, link*
 
 Of course this ties back to its place as a component network-description language.
+
