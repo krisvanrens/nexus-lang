@@ -7,6 +7,9 @@ pub mod cursor;
 /// File reader based on a buffered, line-by-line file reader.
 pub mod filereader;
 
+/// Parser for Nexus.
+pub mod parser;
+
 /// Pointer-wrapper used in the AST.
 pub mod ptr;
 
