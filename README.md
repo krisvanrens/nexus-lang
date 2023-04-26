@@ -1,6 +1,6 @@
 # nexus-lang
 
-[![MIT licensed](https://img.shields.io/github/license/krisvanrens/nexus-lang)](./LICENSE)
+[![MIT licensed](https://img.shields.io/github/license/krisvanrens/nexus-lang?style=for-the-badge)](./LICENSE)
 
 The Nexus programming language.
 
