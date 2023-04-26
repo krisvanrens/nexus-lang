@@ -1,5 +1,5 @@
 use clap::Parser;
-use nexus_rs::{filereader::FileReader, scanner::Scanner, token::Tokens};
+use nexus_rs::{filereader::*, token::*, *};
 use rustyline::{error::ReadlineError, DefaultEditor};
 use std::process::exit;
 
@@ -28,21 +28,22 @@ fn run_from_file(filename: String) {
         exit(1);
     };
 
-    let mut scanner = Scanner::new();
+    let mut scanner = scanner::Scanner::new();
 
-    print_tokens(
-        file.into_iter()
-            .enumerate()
-            .fold(Tokens::new(), |mut acc, line| {
-                let (index, line) = line;
-                match scanner.scan(line) {
-                    Ok(mut result) => acc.append(&mut result),
-                    Err(error) => eprintln!("line {}: {error:?}", index + 1),
-                }
+    let mut parser = parser::Parser::new(file.into_iter().enumerate().fold(
+        Tokens::new(),
+        |mut acc, line| {
+            let (index, line) = line;
+            match scanner.scan(line) {
+                Ok(mut result) => acc.append(&mut result),
+                Err(error) => eprintln!("line {}: {error:?}", index + 1),
+            }
 
-                acc
-            }),
-    );
+            acc
+        },
+    ));
+
+    println!("{:?}", parser.parse());
 }
 
 fn run_repl() {
@@ -53,8 +54,10 @@ fn run_repl() {
 
     loop {
         match rl.readline("> ") {
-            Ok(line) => match Scanner::new().scan(line) {
-                Ok(tokens) => print_tokens(tokens),
+            Ok(line) => match scanner::Scanner::new().scan(line) {
+                Ok(tokens) => {
+                    println!("{:?}", parser::Parser::new(tokens).parse());
+                }
                 Err(error) => eprintln!("{error:?}"),
             },
             Err(ReadlineError::Eof) => break,
@@ -68,9 +71,4 @@ fn run_repl() {
             }
         }
     }
-}
-
-fn print_tokens(tokens: Tokens) {
-    tokens.into_iter().for_each(|t| print!("{t:?} "));
-    println!();
 }
