@@ -53,9 +53,16 @@ impl TokenCursor {
         self.advance();
     }
 
-    /// Temporary helper function to fast-forward to the end of the token stream.
+    /// Temporary helper function to fast-forward unsupported tokens (until EOS).
     fn fast_forward(&mut self) {
         while !self.eos() {
+            self.advance();
+        }
+    }
+
+    /// Temporary helper function to fast-forward unsupported tokens (while the predicate holds).
+    fn fast_forward_while(&mut self, mut pred: impl FnMut(&Token) -> bool) {
+        while !self.eos() && pred(&self.curr.as_ref().unwrap()) {
             self.advance();
         }
     }
@@ -181,10 +188,22 @@ fn parse_stmt(c: &mut TokenCursor) -> ast::Stmt {
 }
 
 fn parse_block_stmt(c: &mut TokenCursor) -> ast::Stmt {
-    c.fast_forward();
+    c.consume(Token::LeftBrace);
+
+    let mut body = ast::Stmts::new();
+    loop {
+        match c.peek() {
+            Some(&Token::RightBrace) => break,
+            None => panic!("unexpected EOS while parsing block statement"), // TODO: Proper error handling..
+            _ => body.push(parse_stmt(c)),
+        }
+    }
+
+    c.consume(Token::RightBrace);
+
     ast::Stmt {
-        kind: ast::StmtKind::Unsupported,
-    } // TODO
+        kind: ast::StmtKind::Block(body),
+    }
 }
 
 fn parse_identifier(c: &mut TokenCursor) -> String {
@@ -211,7 +230,9 @@ fn parse_expr(c: &mut TokenCursor) -> ast::Expr {
 }
 
 fn parse_expr_stmt(c: &mut TokenCursor) -> ast::Stmt {
-    c.fast_forward();
+    c.fast_forward_while(|t| t != &Token::SemiColon);
+    c.consume(Token::SemiColon);
+
     ast::Stmt {
         kind: ast::StmtKind::Unsupported,
     } // TODO

@@ -9,13 +9,9 @@ fn free(a: Number, b: bool, c: Number) -> Number {
    fn should_be_ignored() { return 10; }
    */
 fn main() {
-  fn local1() -> Number {
-    return "Hello1".len();
-  }
+  let local = ||{ return "Hello2".len(); };
 
-  let local2 = ||{ return "Hello2".len(); };
-
-  let x = free(2.889, true, local1() + local2());
+  let x = free(2.889, true, local());
 
   let a = node("Input");
   let b = node("Output");
@@ -28,7 +24,7 @@ fn main() {
     c.push(p);
   }
 
-  let r : Bool = false;
+  let r : bool = false;
 
   print "\\\\\" End:\t\"" + |x|{ return 17 + x; /* inline comment */ }() + "\"";
 

@@ -19,6 +19,7 @@ pub struct Stmt {
 /// Statement kind.
 #[derive(Debug)]
 pub enum StmtKind {
+    Block(Stmts),
     Expr(Ptr<Expr>),
     FunctionDecl(Ptr<FunctionDecl>),
     Node(Ptr<Node>),
