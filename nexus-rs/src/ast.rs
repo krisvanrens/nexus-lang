@@ -41,7 +41,7 @@ pub enum TypeKind {
 pub struct FunctionDecl {
     pub id: String,
     //pub args: ..., // TODO
-    pub ret_type: TypeKind,
+    pub ret_type: Option<TypeKind>,
     //pub body: ..., // TODO
 }
 

@@ -319,9 +319,9 @@ macro_rules! token_map {
 fn parse_word(cursor: &mut Cursor) -> Result<Token, ScanError> {
     lazy_static! {
         static ref KEYWORDS: TokenMap = token_map! {
-            "Bool"   => Token::BoolId,
             "Number" => Token::NumberId,
             "String" => Token::StringId,
+            "bool"   => Token::BoolId,
             "false"  => Token::False,
             "fn"     => Token::Function,
             "for"    => Token::For,

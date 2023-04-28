@@ -41,7 +41,7 @@ pub enum Token {
     While,        // 'while'
     Return,       // 'return'
     Use,          // 'use'
-    BoolId,       // 'Bool'
+    BoolId,       // 'bool'
     NumberId,     // 'Number'
     StringId,     // 'String'
     Print,        // 'print'

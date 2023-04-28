@@ -126,9 +126,12 @@ fn parse_function_decl(c: &mut TokenCursor) -> ast::Stmt {
         "expected ')' after function argument list",
     ); // TODO: Proper error handling.
 
-    c.consume_msg(Token::Arrow, "expected '->' in function declaration");
-
-    let ret_type = parse_type(c);
+    let ret_type = if c.peek() == Some(&Token::Arrow) {
+        c.consume_msg(Token::Arrow, "expected '->' in function declaration");
+        Some(parse_type(c))
+    } else {
+        None
+    };
 
     let _body = parse_block_stmt(c); // TODO
 

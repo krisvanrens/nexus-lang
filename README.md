@@ -312,7 +312,7 @@ node_stmt  = "node" expr ";" ;
 print_stmt = "print" expr ";" ;
 block      = "{" decl* "}" ;
 
-function   = ID "(" params* ")" "->" type block ;
+function   = ID "(" params* ")" ( "->" type )? block ;
 params     = ID ":" type ( "," ID ":" type )* ;
 args       = expr ( "," expr )* ;
 
