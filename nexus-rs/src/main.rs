@@ -54,12 +54,16 @@ fn run_repl() {
 
     loop {
         match rl.readline("> ") {
-            Ok(line) => match scanner::Scanner::new().scan(line) {
-                Ok(tokens) => {
-                    println!("{:?}", parser::Parser::new(tokens).parse());
+            Ok(line) => {
+                rl.add_history_entry(line.clone())
+                    .expect("failed to store line to history");
+                match scanner::Scanner::new().scan(line) {
+                    Ok(tokens) => {
+                        println!("{:?}", parser::Parser::new(tokens).parse());
+                    }
+                    Err(error) => eprintln!("{error:?}"),
                 }
-                Err(error) => eprintln!("{error:?}"),
-            },
+            }
             Err(ReadlineError::Eof) => break,
             Err(ReadlineError::Interrupted) => {
                 eprintln!("interrupted");
