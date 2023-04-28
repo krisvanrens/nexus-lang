@@ -11,6 +11,7 @@ struct TokenCursor {
     curr: Option<Token>,
 }
 
+/// Token cursor for parser.
 impl TokenCursor {
     fn new(tokens: Tokens) -> Self {
         let mut iter = tokens.into_iter().peekable();
@@ -22,21 +23,44 @@ impl TokenCursor {
         }
     }
 
+    /// Take value and advance cursor.
     fn value(&mut self) -> Option<Token> {
-        self.curr.take()
+        let value = self.curr.take();
+        self.advance();
+        value
     }
 
+    /// Peek value only (without advancing).
+    fn peek(&mut self) -> Option<&Token> {
+        self.curr.as_ref()
+    }
+
+    /// Advance cursor.
     fn advance(&mut self) {
         self.prev = self.curr.take();
         self.curr = self.iter.next();
     }
 
-    // TODO: Extend with parsing of value for a content-bearing tokens like Identifier/String/etc..
-    fn consume(&mut self, token: Token, msg: &str) {
-        assert_eq!(self.curr, Some(token), "{}", msg); // TODO: Proper error handling..
+    /// Consume an expected token.
+    fn consume(&mut self, expected: Token) {
+        assert_eq!(self.curr, Some(expected));
         self.advance();
     }
 
+    /// Consume an expected token (with fail error message).
+    fn consume_msg(&mut self, expected: Token, msg: &str) {
+        assert_eq!(self.curr, Some(expected), "{}", msg); // TODO: Proper error handling..
+        self.advance();
+    }
+
+    /// Temporary helper function to fast-forward to the end of the token stream.
+    fn fast_forward(&mut self) {
+        while !self.eos() {
+            self.advance();
+        }
+    }
+
+    /// Check if token stream is end-of-stream (EOS).
     fn eos(&self) -> bool {
         self.curr.is_none()
     }
@@ -70,29 +94,163 @@ impl Parser {
         let mut ast = ast::Stmts::new();
 
         while !self.cursor.eos() {
-            ast.push(parse_print(&mut self.cursor));
+            ast.push(parse_decl(&mut self.cursor));
         }
 
         ast
     }
 }
 
-fn parse_print(c: &mut TokenCursor) -> ast::Stmt {
-    c.consume(Token::Print, "expected print statement"); // TODO: Auto-consume this one during match..
-    c.consume(Token::LeftParen, "expected '(' after print statement");
-
-    // XXX: Strings only for now..
-    let value = parse_string_literal(c);
-
-    c.consume(Token::RightParen, "expected ')' after expression");
-    c.consume(Token::SemiColon, "expected semicolon after statement");
-
-    ast::Stmt {
-        kind: ast::StmtKind::Print(Ptr::new(ast::Print { value })),
+fn parse_decl(c: &mut TokenCursor) -> ast::Stmt {
+    match c.peek() {
+        Some(&Token::Function) => parse_function_decl(c),
+        Some(&Token::Let) => parse_variable_decl(c),
+        _ => parse_stmt(c),
     }
 }
 
-fn parse_string_literal(c: &mut TokenCursor) -> ast::StringLiteral {
+fn parse_function_decl(c: &mut TokenCursor) -> ast::Stmt {
+    c.consume(Token::Function);
+
+    let id = parse_identifier(c);
+
+    c.consume_msg(Token::LeftParen, "expected '(' after function identifier"); // TODO: Proper error handling.
+
+    // TODO: Store function arguments..
+    if c.peek() != Some(&Token::RightParen) {
+        parse_function_args(c);
+    }
+
+    c.consume_msg(
+        Token::RightParen,
+        "expected ')' after function argument list",
+    ); // TODO: Proper error handling.
+
+    c.consume_msg(Token::Arrow, "expected '->' in function declaration");
+
+    let ret_type = parse_type(c);
+
+    let _body = parse_block_stmt(c); // TODO
+
+    ast::Stmt {
+        kind: ast::StmtKind::FunctionDecl(Ptr::new(ast::FunctionDecl { id, ret_type })),
+    }
+}
+
+fn parse_function_args(c: &mut TokenCursor) {
+    let _id = parse_identifier(c);
+
+    c.consume_msg(
+        Token::Colon,
+        "expected ':' after function argument identifier",
+    ); // TODO: Proper error handling.
+
+    let _typeid = parse_type(c);
+
+    while c.peek() == Some(&Token::Comma) {
+        c.consume(Token::Comma);
+
+        let _id = parse_identifier(c);
+
+        c.consume_msg(
+            Token::Colon,
+            "expected ':' after function argument identifier",
+        ); // TODO: Proper error handling.
+
+        let _typeid = parse_type(c);
+    }
+}
+
+fn parse_variable_decl(c: &mut TokenCursor) -> ast::Stmt {
+    c.fast_forward();
+    ast::Stmt {
+        kind: ast::StmtKind::Unsupported,
+    } // TODO
+}
+
+fn parse_stmt(c: &mut TokenCursor) -> ast::Stmt {
+    match c.peek() {
+        Some(&Token::LeftBrace) => parse_block_stmt(c),
+        Some(&Token::Node) => parse_node_stmt(c),
+        Some(&Token::Print) => parse_print_stmt(c),
+        _ => parse_expr_stmt(c),
+    }
+}
+
+fn parse_block_stmt(c: &mut TokenCursor) -> ast::Stmt {
+    c.fast_forward();
+    ast::Stmt {
+        kind: ast::StmtKind::Unsupported,
+    } // TODO
+}
+
+fn parse_identifier(c: &mut TokenCursor) -> String {
+    match c.value() {
+        Some(Token::Identifier(i)) => i,
+        _ => panic!("unexpected token"), // TODO: Proper error handling..
+    }
+}
+
+fn parse_type(c: &mut TokenCursor) -> ast::TypeKind {
+    match c.value() {
+        Some(Token::BoolId) => ast::TypeKind::Bool,
+        Some(Token::NumberId) => ast::TypeKind::Number,
+        Some(Token::StringId) => ast::TypeKind::String,
+        _ => panic!("unexpected type ID"), // TODO: Proper error handling..
+    }
+}
+
+fn parse_expr(c: &mut TokenCursor) -> ast::Expr {
+    c.fast_forward();
+    ast::Expr {
+        kind: ast::ExprKind::Empty,
+    } // TODO
+}
+
+fn parse_expr_stmt(c: &mut TokenCursor) -> ast::Stmt {
+    c.fast_forward();
+    ast::Stmt {
+        kind: ast::StmtKind::Unsupported,
+    } // TODO
+}
+
+fn parse_node_stmt(c: &mut TokenCursor) -> ast::Stmt {
+    c.consume(Token::Print);
+
+    let expr = parse_expr(c);
+
+    c.consume_msg(Token::SemiColon, "expected semicolon after statement");
+
+    ast::Stmt {
+        kind: ast::StmtKind::Node(Ptr::new(ast::Node { expr })),
+    }
+}
+
+fn parse_print_stmt(c: &mut TokenCursor) -> ast::Stmt {
+    c.consume(Token::Node);
+
+    let expr = parse_expr(c);
+
+    c.consume_msg(Token::SemiColon, "expected semicolon after statement");
+
+    ast::Stmt {
+        kind: ast::StmtKind::Print(Ptr::new(ast::Print { expr })),
+    }
+}
+
+fn _parse_number_literal(c: &mut TokenCursor) -> ast::NumberLiteral {
+    ast::NumberLiteral {
+        value: match c.value() {
+            Some(Token::Number(n)) => {
+                c.advance();
+                n
+            }
+            _ => panic!("not a number literal"), // TODO: Proper error handling..
+        },
+    }
+}
+
+fn _parse_string_literal(c: &mut TokenCursor) -> ast::StringLiteral {
     ast::StringLiteral {
         value: match c.value() {
             Some(Token::String(s)) => {

@@ -28,6 +28,8 @@ fn main() {
     c.push(p);
   }
 
+  let r : Bool = false;
+
   print "\\\\\" End:\t\"" + |x|{ return 17 + x; /* inline comment */ }() + "\"";
 
   || /* sdfsdf

@@ -16,29 +16,57 @@ pub struct Stmt {
     pub kind: StmtKind,
 }
 
-/// Statement kinds.
+/// Statement kind.
 #[derive(Debug)]
 pub enum StmtKind {
-    // XXX: Print only for now..
+    Expr(Ptr<Expr>),
+    FunctionDecl(Ptr<FunctionDecl>),
+    Node(Ptr<Node>),
     Print(Ptr<Print>),
+    Unsupported, // XXX: Temporary value for unfinished business..
 }
 
 /// A collection of statements.
 pub type Stmts = Vec<Stmt>;
 
+/// Nexus fundamental type kind.
 #[derive(Debug)]
-pub struct Print {
-    // XXX: Just strings for now..
-    pub value: StringLiteral,
+pub enum TypeKind {
+    Bool,
+    Number,
+    String,
 }
 
-impl<E> Eval<(), E> for Print {
-    fn eval<F>(&self, _eval_expr: F)
-    where
-        F: FnMut(&E),
-    {
-        println!("{}", self.value.value);
-    }
+#[derive(Debug)]
+pub struct FunctionDecl {
+    pub id: String,
+    //pub args: ..., // TODO
+    pub ret_type: TypeKind,
+    //pub body: ..., // TODO
+}
+
+#[derive(Debug)]
+pub struct Expr {
+    pub kind: ExprKind,
+}
+
+#[derive(Debug)]
+pub enum ExprKind {
+    Literal,
+    Unary,
+    Binary,
+    Group,
+    Empty,
+}
+
+#[derive(Debug)]
+pub struct Node {
+    pub expr: Expr,
+}
+
+#[derive(Debug)]
+pub struct Print {
+    pub expr: Expr,
 }
 
 #[derive(Debug)]

@@ -18,14 +18,14 @@ Nexus is designed to interface component-network-oriented systems:
 
 ```rust
 // Instantiate components:
-let c1 = node("TypeA");
-let c2 = node("TypeB");
+let c1 = node "TypeA";
+let c2 = node "TypeB";
 
 let mut system : group; // A component group named 'system'.
 system.source = c1;
 system.sink = c2;
 
-let system.processor = node("TypeC"); // Ad-hoc definitions.
+let system.processor = node "TypeC"; // Ad-hoc definitions.
 
 // References to (sub-)systems:
 let proc = &system.processor;
@@ -164,8 +164,8 @@ fn main() {
 fn create_system(name: String) -> group {
     let mut sys = group(name);
 
-    let sys.source = node("Reader");
-    let sys.sink = node("Writer");
+    let sys.source = node "Reader";
+    let sys.sink = node "Writer";
 
     sys.source.Output -> sys.sink.Input;
 
@@ -306,8 +306,9 @@ type       = "bool" | "Number" | "String" ;
 decl       = fn_decl | var_decl | stmt ;
 fn_decl    = "fn" function ;
 var_decl   = "let" ( "mut" )? ID ( ":" type )? | ( "=" expr )? ";" ;
-stmt       = expr_stmt | print_stmt | block ;
+stmt       = expr_stmt | node_stmt | print_stmt | block ;
 expr_stmt  = expr ";" ;
+node_stmt  = "node" expr ";" ;
 print_stmt = "print" expr ";" ;
 block      = "{" decl* "}" ;
 
@@ -321,13 +322,6 @@ unary      = ( "!" | "-" ) expr ;
 operator   = "==" | "!=" | "<=" | ">=" | "<" | ">" | "+" | "-" | "*" | "/" ;
 binary     = expr operator expr ;
 group      = "(" expr ")" ;
-```
-
-Builtin statements:
-
-```ebnf
-node  = "node" "(" expr ")" ";" ;
-print = "print" "(" expr ")" ";" ;
 ```
 
 ## Known limitations
