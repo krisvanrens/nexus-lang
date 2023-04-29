@@ -361,6 +361,7 @@ group      = "(" expr ")" ;
 - `else if` support.
 - Printing of `group`s and `node`s.
 - Generating an AST graph image for debugging.
+- Underscore for integer number separators?
 
 ## FAQ
 
