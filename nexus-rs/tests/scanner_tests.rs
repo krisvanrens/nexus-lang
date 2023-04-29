@@ -4,7 +4,7 @@ use nexus_rs::{scanner::Scanner, token::Token};
 use pretty_assertions::assert_eq;
 
 #[test]
-fn primitive_test() {
+fn token_test() {
     let test = |input: &str, expected: Token| {
         let mut s = Scanner::new();
 
@@ -45,17 +45,23 @@ fn primitive_test() {
     test("!", Token::Bang);
     test("!=", Token::NotEq);
     test("&&", Token::And);
-    //test("||", Token::Or); // NOTE: 'Or' is selected in token stream post-processing.
+    //test("||", Token::Or);           // NOTE: Selected in token stream post-processing.
+    //test("||", Token::EmptyClosure); // NOTE: Selected in token stream post-processing.
     test("|", Token::Pipe);
     test("true", Token::True);
     test("false", Token::False);
+    test("const", Token::Const);
     test("let", Token::Let);
+    test("mut", Token::Mut);
     test("fn", Token::Function);
     test("if", Token::If);
     test("for", Token::For);
     test("while", Token::While);
     test("return", Token::Return);
     test("use", Token::Use);
+    test("bool", Token::BoolId);
+    test("Number", Token::NumberId);
+    test("String", Token::StringId);
     test("print", Token::Print);
     test("node", Token::Node);
     test("group", Token::Group);

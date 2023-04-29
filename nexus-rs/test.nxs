@@ -3,25 +3,30 @@ fn free(a: Number, b: bool, c: Number) -> Number {
   42 + a + if b { c } else { 0 }; // Result comment.
 }
 
+const C : Number = 300_000;
+
 /* Multi-line
    comment
 
    fn should_be_ignored() { return 10; }
    */
 fn main() {
-  let local = ||{ return "Hello2".len(); };
+  let local1 = || "Hello".len();
+  let local2 = ||{ return "Hello".len(); };
 
-  let x = free(2.889, true, local());
+  const PI : Number = 3.1415926535;
 
-  let a = node("Input");
-  let b = node("Output");
+  let x = free(2.889, true, local1() + local2());
+
+  let a = node "Input" ;
+  let b = node "Output" ;
   a.Out -> b.In;
 
-  let mut c = group("Subsystem for proc");
+  let mut c = group "Subsystem for proc" ;
   for i in 0..=3 {
-    let p = node("Processor");
+    let p = node "Processor" ;
     p.Input -> b.Output;
-    c.push(p);
+    c.add(p);
   }
 
   let r : bool = false;
