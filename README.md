@@ -261,13 +261,15 @@ T.B.D.
 
 | Keyword | Description |
 | :-----: | :---------- |
-| `fn`     | Function declaration.   |
-| `for`    | Loop expression.        |
-| `if`     | Conditional expression. |
-| `let`    | Variable declaration.   |
-| `return` | Return statement.       |
-| `use`    | External use statement. |
-| `while`  | Loop expression.        |
+| `const`  | Constant declaration.          |
+| `fn`     | Function declaration.          |
+| `for`    | Loop expression.               |
+| `if`     | Conditional expression.        |
+| `let`    | Variable declaration.          |
+| `mut`    | Variable mutability specifier. |
+| `return` | Return statement.              |
+| `use`    | External use statement.        |
+| `while`  | Loop expression.               |
 
 ### Language library keywords
 
@@ -279,7 +281,7 @@ T.B.D.
 
 ## Language grammar
 
-Productions in [Extended Backus-Naur Form (EBNF)](https://en.wikipedia.org/wiki/Extended_Backus%E2%80%93Naur_form).
+Productions are in [Extended Backus-Naur Form (EBNF)](https://en.wikipedia.org/wiki/Extended_Backus%E2%80%93Naur_form).
 
 ### Lexical grammar
 
@@ -303,9 +305,10 @@ Note: the grammar will be extended as the language implementation progresses.
 program    = decl* EOF ;
 
 type       = "bool" | "Number" | "String" ;
-decl       = fn_decl | var_decl | stmt ;
+decl       = fn_decl | const_decl | var_decl | stmt ;
 fn_decl    = "fn" function ;
-var_decl   = "let" ( "mut" )? ID ( ":" type )? | ( "=" expr )? ";" ;
+const_decl = "const" ID ":" type "=" expr ";" ;
+var_decl   = "let" ( "mut" )? ID ( ( "=" expr ) | ( ":" type ) ( ":" type "=" expr ) )? ";" ;
 stmt       = expr_stmt | node_stmt | print_stmt | block ;
 expr_stmt  = expr ";" ;
 node_stmt  = "node" expr ";" ;
@@ -351,6 +354,13 @@ group      = "(" expr ")" ;
 - What is the difference between the front- and backend API? Is there a difference at all? What are the needs for a visualization tool vs. those of the component network integration itself?
 - Tool idea: Nexus to Graphviz Dot description.
 - Example integrations and implementations. Nexus to Rust library, Nexus to C++ library etc.
+- Shadowing like Rust does?
+- Enforce style: upper snake case for `const`?
+- Function order is arbitrary like Rust?
+- `if` expressions _must_ be of type `bool`.
+- `else if` support.
+- Printing of `group`s and `node`s.
+- Generating an AST graph image for debugging.
 
 ## FAQ
 
