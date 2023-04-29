@@ -111,7 +111,8 @@ impl Parser {
 fn parse_decl(c: &mut TokenCursor) -> ast::Stmt {
     match c.peek() {
         Some(&Token::Function) => parse_function_decl(c),
-        Some(&Token::Let) => parse_variable_decl(c),
+        Some(&Token::Const) => parse_const_decl(c),
+        Some(&Token::Let) => parse_var_decl(c),
         _ => parse_stmt(c),
     }
 }
@@ -171,7 +172,39 @@ fn parse_function_args(c: &mut TokenCursor) {
     }
 }
 
-fn parse_variable_decl(c: &mut TokenCursor) -> ast::Stmt {
+fn parse_const_decl(c: &mut TokenCursor) -> ast::Stmt {
+    c.consume(Token::Const);
+
+    let id = parse_identifier(c);
+
+    // TODO: Enforce upper case style..
+
+    c.consume_msg(
+        Token::Colon,
+        "expected ':' for type annotation of constant value",
+    );
+
+    let typeid = parse_type(c);
+
+    c.consume_msg(
+        Token::Is,
+        "expected '=' for initialization of constant value",
+    );
+
+    let value = match typeid {
+        ast::TypeKind::Bool => parse_bool_literal(c),
+        ast::TypeKind::Number => parse_number_literal(c),
+        ast::TypeKind::String => parse_string_literal(c),
+    };
+
+    c.consume(Token::SemiColon);
+
+    ast::Stmt {
+        kind: ast::StmtKind::ConstDecl(Ptr::new(ast::ConstDecl { id, typeid, value })),
+    }
+}
+
+fn parse_var_decl(c: &mut TokenCursor) -> ast::Stmt {
     c.fast_forward();
     ast::Stmt {
         kind: ast::StmtKind::Unsupported,
@@ -262,26 +295,30 @@ fn parse_print_stmt(c: &mut TokenCursor) -> ast::Stmt {
     }
 }
 
-fn _parse_number_literal(c: &mut TokenCursor) -> ast::NumberLiteral {
-    ast::NumberLiteral {
-        value: match c.value() {
-            Some(Token::Number(n)) => {
-                c.advance();
-                n
-            }
-            _ => panic!("not a number literal"), // TODO: Proper error handling..
-        },
+fn parse_bool_literal(c: &mut TokenCursor) -> ast::Literal {
+    ast::Literal {
+        kind: ast::LiteralKind::Boolean(match c.value() {
+            Some(Token::True) => true,
+            Some(Token::False) => false,
+            _ => panic!("not a boolean literal"), // TODO: Proper error handling..
+        }),
     }
 }
 
-fn _parse_string_literal(c: &mut TokenCursor) -> ast::StringLiteral {
-    ast::StringLiteral {
-        value: match c.value() {
-            Some(Token::String(s)) => {
-                c.advance();
-                s
-            }
+fn parse_number_literal(c: &mut TokenCursor) -> ast::Literal {
+    ast::Literal {
+        kind: ast::LiteralKind::Number(match c.value() {
+            Some(Token::Number(n)) => n,
+            _ => panic!("not a number literal"), // TODO: Proper error handling..
+        }),
+    }
+}
+
+fn parse_string_literal(c: &mut TokenCursor) -> ast::Literal {
+    ast::Literal {
+        kind: ast::LiteralKind::String(match c.value() {
+            Some(Token::String(s)) => s,
             _ => panic!("not a string literal"), // TODO: Proper error handling..
-        },
+        }),
     }
 }
