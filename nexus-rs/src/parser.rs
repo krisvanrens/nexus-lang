@@ -62,7 +62,7 @@ impl TokenCursor {
 
     /// Temporary helper function to fast-forward unsupported tokens (while the predicate holds).
     fn fast_forward_while(&mut self, mut pred: impl FnMut(&Token) -> bool) {
-        while !self.eos() && pred(&self.curr.as_ref().unwrap()) {
+        while !self.eos() && pred(self.curr.as_ref().unwrap()) {
             self.advance();
         }
     }
