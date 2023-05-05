@@ -55,6 +55,7 @@ fn token_test() {
     test("mut", Token::Mut);
     test("fn", Token::Function);
     test("if", Token::If);
+    test("else", Token::Else);
     test("for", Token::For);
     test("while", Token::While);
     test("return", Token::Return);

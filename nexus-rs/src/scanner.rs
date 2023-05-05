@@ -323,6 +323,7 @@ fn parse_word(cursor: &mut Cursor) -> Result<Token, ScanError> {
             "String" => Token::StringId,
             "bool"   => Token::BoolId,
             "const"  => Token::Const,
+            "else"   => Token::Else,
             "false"  => Token::False,
             "fn"     => Token::Function,
             "for"    => Token::For,

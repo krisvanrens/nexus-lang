@@ -39,6 +39,7 @@ pub enum Token {
     Mut,          // 'mut'
     Function,     // 'fn'
     If,           // 'if'
+    Else,         // 'else'
     For,          // 'for'
     While,        // 'while'
     Return,       // 'return'
