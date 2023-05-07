@@ -23,9 +23,9 @@ pub enum StmtKind {
     Expr(Ptr<Expr>),
     ConstDecl(Ptr<ConstDecl>),
     FunctionDecl(Ptr<FunctionDecl>),
+    VarDecl(Ptr<VarDecl>),
     Node(Ptr<Node>),
     Print(Ptr<Print>),
-    Unsupported, // XXX: Temporary value for unfinished business..
 }
 
 /// A collection of statements.
@@ -51,7 +51,7 @@ pub struct FunctionDecl {
     pub id: String,
     pub args: Option<FunctionArgs>,
     pub ret_type: Option<TypeKind>,
-    //pub body: ..., // TODO
+    pub body: Stmt, // A block statement.
 }
 
 #[derive(Debug)]
@@ -61,6 +61,13 @@ pub struct FunctionArg {
 }
 
 pub type FunctionArgs = Vec<FunctionArg>;
+
+#[derive(Debug)]
+pub struct VarDecl {
+    pub id: String,
+    pub typeid: Option<TypeKind>,
+    pub value: Option<Expr>,
+}
 
 #[derive(Debug)]
 pub struct Expr {

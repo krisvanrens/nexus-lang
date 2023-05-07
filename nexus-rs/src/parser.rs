@@ -72,10 +72,15 @@ fn parse_function_decl(c: &mut TokenCursor) -> ast::Stmt {
         None
     };
 
-    let _body = parse_block_stmt(c); // TODO
+    let body = parse_block_stmt(c);
 
     ast::Stmt {
-        kind: ast::StmtKind::FunctionDecl(Ptr::new(ast::FunctionDecl { id, args, ret_type })),
+        kind: ast::StmtKind::FunctionDecl(Ptr::new(ast::FunctionDecl {
+            id,
+            args,
+            ret_type,
+            body,
+        })),
     }
 }
 
@@ -139,9 +144,26 @@ fn parse_const_decl(c: &mut TokenCursor) -> ast::Stmt {
 }
 
 fn parse_var_decl(c: &mut TokenCursor) -> ast::Stmt {
-    c.fast_forward();
+    c.consume(Token::Let);
+
+    let id = parse_identifier(c);
+
+    let typeid = if c.advance_if(&Token::Colon) {
+        Some(parse_type(c))
+    } else {
+        None
+    };
+
+    let value = if c.advance_if(&Token::Is) {
+        Some(parse_expr(c))
+    } else {
+        None
+    };
+
+    c.consume(Token::SemiColon);
+
     ast::Stmt {
-        kind: ast::StmtKind::Unsupported,
+        kind: ast::StmtKind::VarDecl(Ptr::new(ast::VarDecl { id, typeid, value })),
     } // TODO
 }
 
