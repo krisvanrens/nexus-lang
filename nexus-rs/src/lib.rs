@@ -18,3 +18,6 @@ pub mod scanner;
 
 /// Scanning/lexing token representations.
 pub mod token;
+
+/// Token cursor used for parsing.
+pub mod token_cursor;
