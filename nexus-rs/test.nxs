@@ -1,6 +1,7 @@
 // Comment.
 fn free(a: Number, b: bool, c: Number) -> Number {
-  42 + a + if b { c } else { 0 }; // Result comment.
+  let x : Number = 17;
+  return 42 + a + if b { c } else { 0 }; // Result comment.
 }
 
 const C : Number = 300000;
