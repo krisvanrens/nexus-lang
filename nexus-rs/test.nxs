@@ -19,13 +19,13 @@ fn main() {
 
   let x = free(2.889, true, local1() + local2());
 
-  let a = node "Input" ;
-  let b = node "Output" ;
+  let a = node "Input";
+  let b = node "Output";
   a.Out -> b.In;
 
-  let mut c = group "Subsystem for proc" ;
+  let mut c = group "Subsystem for proc";
   for i in 0..=3 {
-    let p = node "Processor" ;
+    let p = node "Processor";
     p.Input -> b.Output;
     c.add(p);
   }
