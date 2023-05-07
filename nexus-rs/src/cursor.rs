@@ -242,7 +242,7 @@ impl<'a> Cursor<'a> {
 }
 
 #[test]
-fn cursor_new_test() {
+fn new_test() {
     let empty = "".to_string();
     let line = "Test123".to_string();
 
@@ -254,7 +254,7 @@ fn cursor_new_test() {
 }
 
 #[test]
-fn cursor_eol_test() {
+fn eol_test() {
     let empty = "".to_string();
     let line = "abc".to_string();
 
@@ -272,7 +272,7 @@ fn cursor_eol_test() {
 }
 
 #[test]
-fn cursor_advance_test() {
+fn advance_test() {
     let line = "abcdefg".to_string();
 
     let mut c = Cursor::new(&line);
@@ -286,7 +286,7 @@ fn cursor_advance_test() {
 }
 
 #[test]
-fn cursor_advance_by_test() {
+fn advance_by_test() {
     let line = "ab_cd_ɘƒ_gh".to_string();
 
     let mut c = Cursor::new(&line);
@@ -304,7 +304,7 @@ fn cursor_advance_by_test() {
 }
 
 #[test]
-fn cursor_peek_test() {
+fn peek_test() {
     let line = "abcdefg".to_string();
 
     let mut c = Cursor::new(&line);
@@ -322,7 +322,7 @@ fn cursor_peek_test() {
 }
 
 #[test]
-fn cursor_peek_nth_test() {
+fn peek_nth_test() {
     let line = "abcdefg".to_string();
 
     let c = Cursor::new(&line);
@@ -333,7 +333,7 @@ fn cursor_peek_nth_test() {
 }
 
 #[test]
-fn cursor_peek_while_test() {
+fn peek_while_test() {
     let line = "abc def".to_string();
 
     let mut c = Cursor::new(&line);
@@ -391,7 +391,7 @@ fn parse_word_test() {
 }
 
 #[test]
-fn cursor_index_advance_test() {
+fn index_advance_test() {
     let mut cursor = Cursor::new("0123456789");
 
     assert_eq!(cursor.index(), Some(0));
@@ -408,7 +408,7 @@ fn cursor_index_advance_test() {
 }
 
 #[test]
-fn cursor_index_advance_by_test() {
+fn index_advance_by_test() {
     let mut cursor = Cursor::new("This is a test string");
     //                            0    5  7 9    14    EOL
 
