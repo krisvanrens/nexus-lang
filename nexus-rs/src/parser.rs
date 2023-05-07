@@ -197,12 +197,15 @@ fn parse_expr(c: &mut TokenCursor) -> ast::Expr {
 }
 
 fn parse_expr_stmt(c: &mut TokenCursor) -> ast::Stmt {
-    c.fast_forward_while(|t| t != &Token::SemiColon);
-    c.consume(Token::SemiColon);
+    let expr = parse_expr(c);
+
+    if !c.advance_if(&Token::SemiColon) {
+        // TODO: Mark block result value..
+    }
 
     ast::Stmt {
-        kind: ast::StmtKind::Unsupported,
-    } // TODO
+        kind: ast::StmtKind::Expr(Ptr::new(expr)),
+    }
 }
 
 fn parse_node_stmt(c: &mut TokenCursor) -> ast::Stmt {
