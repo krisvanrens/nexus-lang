@@ -162,7 +162,7 @@ fn parse_block_stmt(c: &mut TokenCursor) -> ast::Stmt {
         match c.peek() {
             Some(&Token::RightBrace) => break,
             None => panic!("unexpected EOS while parsing block statement"), // TODO: Proper error handling..
-            _ => body.push(parse_stmt(c)),
+            _ => body.push(parse_decl(c)),
         }
     }
 
