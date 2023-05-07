@@ -190,7 +190,7 @@ fn parse_type(c: &mut TokenCursor) -> ast::TypeKind {
 }
 
 fn parse_expr(c: &mut TokenCursor) -> ast::Expr {
-    c.fast_forward();
+    c.fast_forward_while(|t| t != &Token::SemiColon);
     ast::Expr {
         kind: ast::ExprKind::Empty,
     } // TODO
