@@ -49,10 +49,18 @@ pub struct ConstDecl {
 #[derive(Debug)]
 pub struct FunctionDecl {
     pub id: String,
-    //pub args: ..., // TODO
+    pub args: Option<FunctionArgs>,
     pub ret_type: Option<TypeKind>,
     //pub body: ..., // TODO
 }
+
+#[derive(Debug)]
+pub struct FunctionArg {
+    pub id: String,
+    pub typeid: TypeKind,
+}
+
+pub type FunctionArgs = Vec<FunctionArg>;
 
 #[derive(Debug)]
 pub struct Expr {

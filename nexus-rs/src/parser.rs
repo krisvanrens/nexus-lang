@@ -41,6 +41,16 @@ impl TokenCursor {
         self.curr = self.iter.next();
     }
 
+    /// Conditionally advance cursor (and return match result).
+    fn advance_if(&mut self, match_token: &Token) -> bool {
+        if self.peek() == Some(match_token) {
+            self.advance();
+            true
+        } else {
+            false
+        }
+    }
+
     /// Consume an expected token.
     fn consume(&mut self, expected: Token) {
         assert_eq!(self.curr, Some(expected));
@@ -124,10 +134,11 @@ fn parse_function_decl(c: &mut TokenCursor) -> ast::Stmt {
 
     c.consume_msg(Token::LeftParen, "expected '(' after function identifier"); // TODO: Proper error handling.
 
-    // TODO: Store function arguments..
-    if c.peek() != Some(&Token::RightParen) {
-        parse_function_args(c);
-    }
+    let args = if c.peek() != Some(&Token::RightParen) {
+        Some(parse_function_args(c))
+    } else {
+        None
+    };
 
     c.consume_msg(
         Token::RightParen,
@@ -144,32 +155,35 @@ fn parse_function_decl(c: &mut TokenCursor) -> ast::Stmt {
     let _body = parse_block_stmt(c); // TODO
 
     ast::Stmt {
-        kind: ast::StmtKind::FunctionDecl(Ptr::new(ast::FunctionDecl { id, ret_type })),
+        kind: ast::StmtKind::FunctionDecl(Ptr::new(ast::FunctionDecl { id, args, ret_type })),
     }
 }
 
-fn parse_function_args(c: &mut TokenCursor) {
-    let _id = parse_identifier(c);
+fn parse_function_arg(c: &mut TokenCursor) -> ast::FunctionArg {
+    let id = parse_identifier(c);
 
     c.consume_msg(
         Token::Colon,
         "expected ':' after function argument identifier",
     ); // TODO: Proper error handling.
 
-    let _typeid = parse_type(c);
+    let typeid = parse_type(c);
 
-    while c.peek() == Some(&Token::Comma) {
-        c.consume(Token::Comma);
+    ast::FunctionArg { id, typeid }
+}
 
-        let _id = parse_identifier(c);
+fn parse_function_args(c: &mut TokenCursor) -> ast::FunctionArgs {
+    let mut result = ast::FunctionArgs::new();
 
-        c.consume_msg(
-            Token::Colon,
-            "expected ':' after function argument identifier",
-        ); // TODO: Proper error handling.
+    loop {
+        result.push(parse_function_arg(c));
 
-        let _typeid = parse_type(c);
+        if !c.advance_if(&Token::Comma) {
+            break;
+        }
     }
+
+    result
 }
 
 fn parse_const_decl(c: &mut TokenCursor) -> ast::Stmt {
