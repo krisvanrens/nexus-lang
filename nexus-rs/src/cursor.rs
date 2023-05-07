@@ -3,7 +3,7 @@ use std::{iter::Peekable, str::Chars};
 #[cfg(test)]
 use pretty_assertions::assert_eq;
 
-/// Cursor to characters in a string, providing direct value access and advanced peeking.
+/// Cursor for characters in a string, providing direct value access and advanced peeking.
 #[derive(Debug)]
 pub struct Cursor<'a> {
     chars: Peekable<Chars<'a>>,
