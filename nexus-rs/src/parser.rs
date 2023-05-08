@@ -2,6 +2,7 @@ use crate::ast;
 use crate::ptr::Ptr;
 use crate::token::{Token, Tokens};
 use crate::token_cursor::TokenCursor;
+use lazy_static::lazy_static;
 
 /// Parser for Nexus.
 pub struct Parser {
@@ -196,8 +197,34 @@ fn parse_block_stmt(c: &mut TokenCursor) -> ast::Stmt {
 }
 
 fn parse_identifier(c: &mut TokenCursor) -> String {
+    lazy_static! {
+        static ref KEYWORDS: Tokens = vec![
+            Token::NumberId,
+            Token::StringId,
+            Token::BoolId,
+            Token::Const,
+            Token::Else,
+            Token::False,
+            Token::Function,
+            Token::For,
+            Token::Group,
+            Token::If,
+            Token::Let,
+            Token::Mut,
+            Token::Node,
+            Token::Print,
+            Token::Return,
+            Token::True,
+            Token::Use,
+            Token::While,
+        ];
+    }
+
     match c.value() {
         Some(Token::Identifier(i)) => i,
+        Some(t) if KEYWORDS.contains(&t) => {
+            panic!("cannot use a reserved language keyword as an identifier")
+        } // TODO: Proper error handling..
         _ => panic!("unexpected token"), // TODO: Proper error handling..
     }
 }
