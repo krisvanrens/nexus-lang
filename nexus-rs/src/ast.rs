@@ -20,13 +20,11 @@ pub struct Stmt {
 #[derive(Debug)]
 pub enum StmtKind {
     Block(Stmts),
-    Expr(Ptr<Expr>),
     ConstDecl(Ptr<ConstDecl>),
+    Expr(Ptr<Expr>),
     FunctionDecl(Ptr<FunctionDecl>),
-    VarDecl(Ptr<VarDecl>),
-    Group(Ptr<Group>), /// FIXME: Not a statement!
-    Node(Ptr<Node>),   /// FIXME: Not a statement!
     Print(Ptr<Print>),
+    VarDecl(Ptr<VarDecl>),
 }
 
 /// A collection of statements.
@@ -78,11 +76,11 @@ pub struct Expr {
 
 #[derive(Debug)]
 pub enum ExprKind {
+    Binary,
+    Empty,
+    Group,
     Literal,
     Unary,
-    Binary,
-    Group,
-    Empty,
 }
 
 #[derive(Debug)]
@@ -107,7 +105,7 @@ pub struct Literal {
 
 #[derive(Debug)]
 pub enum LiteralKind {
-    Boolean(bool),
+    Bool(bool),
     Number(f64),
     String(String),
 }

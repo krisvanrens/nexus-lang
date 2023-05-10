@@ -309,9 +309,8 @@ decl       = fn_decl | const_decl | var_decl | stmt ;
 fn_decl    = "fn" function ;
 const_decl = "const" ID ":" type "=" expr ";" ;
 var_decl   = "let" ( "mut" )? ID ( ( "=" expr ) | ( ":" type ) ( ":" type "=" expr ) )? ";" ;
-stmt       = expr_stmt | node_stmt | print_stmt | block ;
+stmt       = expr_stmt | print_stmt | block ;
 expr_stmt  = expr ";" ;
-node_stmt  = "node" expr ";" ;
 print_stmt = "print" expr ";" ;
 block      = "{" decl* "}" ;
 
@@ -321,7 +320,7 @@ args       = expr ( "," expr )* ;
 
 literal    = NUMBER | STRING | "true" | "false" ;
 expr       = literal | unary | binary | group ;
-unary      = ( "!" | "-" ) expr ;
+unary      = ( "!" | "-" | "group" | "node" ) expr ;
 operator   = "==" | "!=" | "<=" | ">=" | "<" | ">" | "+" | "-" | "*" | "/" ;
 binary     = expr operator expr ;
 group      = "(" expr ")" ;

@@ -173,8 +173,6 @@ fn parse_var_decl(c: &mut TokenCursor) -> ast::Stmt {
 fn parse_stmt(c: &mut TokenCursor) -> ast::Stmt {
     match c.peek() {
         Some(&Token::LeftBrace) => parse_block_stmt(c),
-        Some(&Token::Group) => parse_group_stmt(c),
-        Some(&Token::Node) => parse_node_stmt(c),
         Some(&Token::Print) => parse_print_stmt(c),
         _ => parse_expr_stmt(c),
     }
@@ -260,28 +258,28 @@ fn parse_expr_stmt(c: &mut TokenCursor) -> ast::Stmt {
     }
 }
 
-fn parse_group_stmt(c: &mut TokenCursor) -> ast::Stmt {
+fn parse_group_expr(c: &mut TokenCursor) -> ast::Expr {
     c.consume(Token::Group);
 
-    let expr = parse_expr(c);
+    let _expr = parse_expr(c);
 
     c.consume_msg(Token::SemiColon, "expected semicolon after statement");
 
-    ast::Stmt {
-        kind: ast::StmtKind::Group(Ptr::new(ast::Group { expr })),
-    }
+    ast::Expr {
+        kind: ast::ExprKind::Empty,
+    } // TODO
 }
 
-fn parse_node_stmt(c: &mut TokenCursor) -> ast::Stmt {
+fn parse_node_expr(c: &mut TokenCursor) -> ast::Expr {
     c.consume(Token::Node);
 
-    let expr = parse_expr(c);
+    let _expr = parse_expr(c);
 
     c.consume_msg(Token::SemiColon, "expected semicolon after statement");
 
-    ast::Stmt {
-        kind: ast::StmtKind::Node(Ptr::new(ast::Node { expr })),
-    }
+    ast::Expr {
+        kind: ast::ExprKind::Empty,
+    } // TODO
 }
 
 fn parse_print_stmt(c: &mut TokenCursor) -> ast::Stmt {
@@ -298,7 +296,7 @@ fn parse_print_stmt(c: &mut TokenCursor) -> ast::Stmt {
 
 fn parse_bool_literal(c: &mut TokenCursor) -> ast::Literal {
     ast::Literal {
-        kind: ast::LiteralKind::Boolean(match c.value() {
+        kind: ast::LiteralKind::Bool(match c.value() {
             Some(Token::True) => true,
             Some(Token::False) => false,
             _ => panic!("not a boolean literal"), // TODO: Proper error handling..
