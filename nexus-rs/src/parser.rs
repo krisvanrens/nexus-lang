@@ -147,6 +147,8 @@ fn parse_const_decl(c: &mut TokenCursor) -> ast::Stmt {
 fn parse_var_decl(c: &mut TokenCursor) -> ast::Stmt {
     c.consume(Token::Let);
 
+    let mutable = c.advance_if(&Token::Mut);
+
     let id = parse_identifier(c);
 
     let typeid = if c.advance_if(&Token::Colon) {
@@ -164,7 +166,7 @@ fn parse_var_decl(c: &mut TokenCursor) -> ast::Stmt {
     c.consume(Token::SemiColon);
 
     ast::Stmt {
-        kind: ast::StmtKind::VarDecl(Ptr::new(ast::VarDecl { id, typeid, value })),
+        kind: ast::StmtKind::VarDecl(Ptr::new(ast::VarDecl { id, mutable, typeid, value })),
     } // TODO
 }
 

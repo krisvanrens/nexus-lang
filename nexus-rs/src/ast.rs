@@ -65,6 +65,7 @@ pub type FunctionArgs = Vec<FunctionArg>;
 #[derive(Debug)]
 pub struct VarDecl {
     pub id: String,
+    pub mutable: bool,
     pub typeid: Option<TypeKind>,
     pub value: Option<Expr>,
 }
