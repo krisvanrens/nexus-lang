@@ -24,7 +24,8 @@ pub enum StmtKind {
     ConstDecl(Ptr<ConstDecl>),
     FunctionDecl(Ptr<FunctionDecl>),
     VarDecl(Ptr<VarDecl>),
-    Node(Ptr<Node>),
+    Group(Ptr<Group>), /// FIXME: Not a statement!
+    Node(Ptr<Node>),   /// FIXME: Not a statement!
     Print(Ptr<Print>),
 }
 
@@ -82,6 +83,11 @@ pub enum ExprKind {
     Binary,
     Group,
     Empty,
+}
+
+#[derive(Debug)]
+pub struct Group {
+    pub expr: Expr,
 }
 
 #[derive(Debug)]
