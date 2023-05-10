@@ -1,0 +1,9 @@
+let x1;
+let x2 : Number;
+let x3 = 42;
+let x4 : Number = 42;
+
+let mut x5;
+let mut x6 : Number;
+let mut x7 = 42;
+let mut x8 : Number = 42;
