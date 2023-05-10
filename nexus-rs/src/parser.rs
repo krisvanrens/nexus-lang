@@ -260,7 +260,7 @@ fn parse_expr_stmt(c: &mut TokenCursor) -> ast::Stmt {
 }
 
 fn parse_node_stmt(c: &mut TokenCursor) -> ast::Stmt {
-    c.consume(Token::Print);
+    c.consume(Token::Node);
 
     let expr = parse_expr(c);
 
@@ -272,7 +272,7 @@ fn parse_node_stmt(c: &mut TokenCursor) -> ast::Stmt {
 }
 
 fn parse_print_stmt(c: &mut TokenCursor) -> ast::Stmt {
-    c.consume(Token::Node);
+    c.consume(Token::Print);
 
     let expr = parse_expr(c);
 
