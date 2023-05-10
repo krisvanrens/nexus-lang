@@ -166,7 +166,12 @@ fn parse_var_decl(c: &mut TokenCursor) -> ast::Stmt {
     c.consume(Token::SemiColon);
 
     ast::Stmt {
-        kind: ast::StmtKind::VarDecl(Ptr::new(ast::VarDecl { id, mutable, typeid, value })),
+        kind: ast::StmtKind::VarDecl(Ptr::new(ast::VarDecl {
+            id,
+            mutable,
+            typeid,
+            value,
+        })),
     } // TODO
 }
 
