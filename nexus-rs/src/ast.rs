@@ -1,3 +1,6 @@
+use core::fmt;
+use strum_macros::Display;
+
 use crate::ptr::Ptr;
 
 /// AST node evaluation trait, used for simple evaluation.
@@ -16,8 +19,14 @@ pub struct Stmt {
     pub kind: StmtKind,
 }
 
+impl fmt::Display for Stmt {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "Stmt[{}]", self.kind)
+    }
+}
+
 /// Statement kind.
-#[derive(Debug)]
+#[derive(Debug, Display)]
 pub enum StmtKind {
     Block(Stmts),
     ConstDecl(Ptr<ConstDecl>),
@@ -31,7 +40,7 @@ pub enum StmtKind {
 pub type Stmts = Vec<Stmt>;
 
 /// Nexus fundamental type kind.
-#[derive(Debug)]
+#[derive(Debug, Display)]
 pub enum TypeKind {
     Bool,
     Number,
@@ -43,6 +52,12 @@ pub struct ConstDecl {
     pub id: String,
     pub typeid: TypeKind,
     pub value: Literal,
+}
+
+impl fmt::Display for ConstDecl {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "Const({}: {})", self.typeid, self.value)
+    }
 }
 
 #[derive(Debug)]
@@ -74,7 +89,7 @@ pub struct Expr {
     pub kind: ExprKind,
 }
 
-#[derive(Debug)]
+#[derive(Debug, Display)]
 pub enum ExprKind {
     Binary,
     Empty,
@@ -103,7 +118,13 @@ pub struct Literal {
     pub kind: LiteralKind,
 }
 
-#[derive(Debug)]
+impl fmt::Display for Literal {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "{}", self.kind)
+    }
+}
+
+#[derive(Debug, Display)]
 pub enum LiteralKind {
     Bool(bool),
     Number(f64),

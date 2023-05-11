@@ -34,6 +34,6 @@ fn main() {
         },
     ));
 
-    // TODO: Use token print trait..
-    println!("{:?}", parser.parse());
+    // TODO: Chunk and print properly..
+    parser.parse().into_iter().for_each(|n| println!("{n}"));
 }
