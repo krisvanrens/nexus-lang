@@ -15,8 +15,12 @@ struct Args {
 fn main() {
     let args = Args::parse();
 
-    let Ok(file) = FileReader::try_new(args.filename) else {
-        exit(1);
+    let file = match FileReader::try_new(args.filename) {
+        Ok(file) => file,
+        Err(e) => {
+            eprintln!("Failed to open file: {e}");
+            exit(1);
+        }
     };
 
     let mut scanner = scanner::Scanner::new();

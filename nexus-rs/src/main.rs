@@ -23,9 +23,12 @@ fn main() {
 }
 
 fn run_from_file(filename: String) {
-    let Ok(file) = FileReader::try_new(filename) else {
-        eprintln!("failed to open file");
-        exit(1);
+    let file = match FileReader::try_new(filename) {
+        Ok(file) => file,
+        Err(e) => {
+            eprintln!("Failed to open file: {e}");
+            exit(1);
+        }
     };
 
     let mut scanner = scanner::Scanner::new();
