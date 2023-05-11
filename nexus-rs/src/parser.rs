@@ -41,9 +41,10 @@ impl Parser {
 
 fn parse_decl(c: &mut TokenCursor) -> ast::Stmt {
     match c.peek() {
-        Some(&Token::Function) => parse_function_decl(c),
         Some(&Token::Const) => parse_const_decl(c),
+        Some(&Token::Function) => parse_function_decl(c),
         Some(&Token::Let) => parse_var_decl(c),
+        Some(&Token::Use) => parse_use_decl(c),
         _ => parse_stmt(c),
     }
 }
@@ -175,6 +176,22 @@ fn parse_var_decl(c: &mut TokenCursor) -> ast::Stmt {
     } // TODO
 }
 
+fn parse_use_decl(c: &mut TokenCursor) -> ast::Stmt {
+    c.consume(Token::Use);
+
+    // TODO: Check for global scope?
+
+    let filename = parse_string_literal(c);
+
+    c.consume_msg(Token::SemiColon, "expected semicolon after statement");
+
+    ast::Stmt {
+        kind: ast::StmtKind::UseDecl(Ptr::new(ast::UseDecl {
+            filename,
+        })),
+    } // TODO
+}
+
 fn parse_stmt(c: &mut TokenCursor) -> ast::Stmt {
     match c.peek() {
         Some(&Token::LeftBrace) => parse_block_stmt(c),
@@ -268,8 +285,6 @@ fn _parse_group_expr(c: &mut TokenCursor) -> ast::Expr {
 
     let _expr = parse_expr(c);
 
-    c.consume_msg(Token::SemiColon, "expected semicolon after statement");
-
     ast::Expr {
         kind: ast::ExprKind::Empty,
     } // TODO
@@ -279,8 +294,6 @@ fn _parse_node_expr(c: &mut TokenCursor) -> ast::Expr {
     c.consume(Token::Node);
 
     let _expr = parse_expr(c);
-
-    c.consume_msg(Token::SemiColon, "expected semicolon after statement");
 
     ast::Expr {
         kind: ast::ExprKind::Empty,

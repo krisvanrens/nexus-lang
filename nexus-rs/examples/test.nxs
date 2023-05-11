@@ -1,3 +1,5 @@
+use "other.nxs";
+
 // Comment.
 fn free(a: Number, b: bool, c: Number) -> Number {
   let x : Number = 17;

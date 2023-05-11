@@ -305,10 +305,11 @@ Note: the grammar will be extended as the language implementation progresses.
 program    = decl* EOF ;
 
 type       = "bool" | "Number" | "String" ;
-decl       = fn_decl | const_decl | var_decl | stmt ;
+decl       = fn_decl | const_decl | var_decl | use_decl | stmt ;
 fn_decl    = "fn" function ;
 const_decl = "const" ID ":" type "=" expr ";" ;
 var_decl   = "let" ( "mut" )? ID ( ( "=" expr ) | ( ":" type ) ( ":" type "=" expr ) )? ";" ;
+use_decl   = "use" STRING ";" ;
 stmt       = expr_stmt | print_stmt | block ;
 expr_stmt  = expr ";" ;
 print_stmt = "print" expr ";" ;

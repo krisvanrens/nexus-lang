@@ -33,6 +33,7 @@ pub enum StmtKind {
     Expr(Ptr<Expr>),
     FunctionDecl(Ptr<FunctionDecl>),
     Print(Ptr<Print>),
+    UseDecl(Ptr<UseDecl>),
     VarDecl(Ptr<VarDecl>),
 }
 
@@ -82,6 +83,11 @@ pub struct VarDecl {
     pub mutable: bool,
     pub typeid: Option<TypeKind>,
     pub value: Option<Expr>,
+}
+
+#[derive(Debug)]
+pub struct UseDecl {
+    pub filename: Literal,
 }
 
 #[derive(Debug)]
