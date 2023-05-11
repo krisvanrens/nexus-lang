@@ -326,6 +326,15 @@ binary     = expr operator expr ;
 group      = "(" expr ")" ;
 ```
 
+#### `// TODO`
+
+- `for`
+- `if`/`else`
+- `return`
+- `while`
+- closures
+- ranges
+
 ## Known limitations
 
 - Due to the current line-based scanning implementation, only a single scanning error per line will be detected. This is fine for now.
