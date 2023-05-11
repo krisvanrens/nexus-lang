@@ -34,6 +34,12 @@ fn main() {
         },
     ));
 
-    // TODO: Chunk and print properly..
-    parser.parse().into_iter().for_each(|n| println!("{n}"));
+    parser.parse().into_iter().for_each(|n| {
+        println!(
+            "{} {}: {}\n{n:?}",
+            "==".yellow().bold(),
+            "AST Node".bold(),
+            n.to_string().bright_red().dimmed()
+        )
+    });
 }
