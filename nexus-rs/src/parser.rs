@@ -260,10 +260,22 @@ fn parse_type(c: &mut TokenCursor) -> ast::TypeKind {
 }
 
 fn parse_expr(c: &mut TokenCursor) -> ast::Expr {
-    c.fast_forward_while(|t| t != &Token::SemiColon);
-    ast::Expr {
-        kind: ast::ExprKind::Empty,
-    } // TODO
+    if let Some(t) = c.peek() {
+        match t {
+            &Token::Number(_) => parse_number_literal(c),
+            &Token::String(_) => parse_string_literal(c),
+            &Token::True | &Token::False => parse_bool_literal(c),
+            _ => {
+                // TODO: ...
+                c.fast_forward_while(|t| dbg!(t) != &Token::SemiColon);
+                ast::Expr {
+                    kind: ast::ExprKind::Empty,
+                }
+            }
+        }
+    } else {
+        panic!("unexpected end of token stream"); // TODO: Proper error handling..
+    }
 }
 
 fn parse_expr_stmt(c: &mut TokenCursor) -> ast::Stmt {
@@ -310,30 +322,36 @@ fn parse_print_stmt(c: &mut TokenCursor) -> ast::Stmt {
     }
 }
 
-fn parse_bool_literal(c: &mut TokenCursor) -> ast::Literal {
-    ast::Literal {
-        kind: ast::LiteralKind::Bool(match c.value() {
-            Some(Token::True) => true,
-            Some(Token::False) => false,
-            _ => panic!("not a boolean literal"), // TODO: Proper error handling..
-        }),
+fn parse_bool_literal(c: &mut TokenCursor) -> ast::Expr {
+    ast::Expr {
+        kind: ast::ExprKind::Literal(Ptr::new(ast::Literal {
+            kind: ast::LiteralKind::Bool(match c.value() {
+                Some(Token::True) => true,
+                Some(Token::False) => false,
+                _ => panic!("not a boolean literal"), // TODO: Proper error handling..
+            }),
+        })),
     }
 }
 
-fn parse_number_literal(c: &mut TokenCursor) -> ast::Literal {
-    ast::Literal {
-        kind: ast::LiteralKind::Number(match c.value() {
-            Some(Token::Number(n)) => n,
-            _ => panic!("not a number literal"), // TODO: Proper error handling..
-        }),
+fn parse_number_literal(c: &mut TokenCursor) -> ast::Expr {
+    ast::Expr {
+        kind: ast::ExprKind::Literal(Ptr::new(ast::Literal {
+            kind: ast::LiteralKind::Number(match c.value() {
+                Some(Token::Number(n)) => n,
+                _ => panic!("not a number literal"), // TODO: Proper error handling..
+            }),
+        })),
     }
 }
 
-fn parse_string_literal(c: &mut TokenCursor) -> ast::Literal {
-    ast::Literal {
-        kind: ast::LiteralKind::String(match c.value() {
-            Some(Token::String(s)) => s,
-            _ => panic!("not a string literal"), // TODO: Proper error handling..
-        }),
+fn parse_string_literal(c: &mut TokenCursor) -> ast::Expr {
+    ast::Expr {
+        kind: ast::ExprKind::Literal(Ptr::new(ast::Literal {
+            kind: ast::LiteralKind::String(match c.value() {
+                Some(Token::String(s)) => s,
+                _ => panic!("not a string literal"), // TODO: Proper error handling..
+            }),
+        })),
     }
 }

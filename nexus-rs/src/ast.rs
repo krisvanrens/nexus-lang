@@ -52,7 +52,7 @@ pub enum TypeKind {
 pub struct ConstDecl {
     pub id: String,
     pub typeid: TypeKind,
-    pub value: Literal,
+    pub value: Expr,
 }
 
 impl fmt::Display for ConstDecl {
@@ -106,7 +106,7 @@ pub enum ExprKind {
     Binary,
     Empty,
     Group,
-    Literal,
+    Literal(Ptr<Literal>),
     Unary,
 }
 
