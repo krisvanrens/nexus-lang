@@ -1,0 +1,5 @@
+let x1 = true;
+let x2 = false;
+let x3 = 123;
+let x4 = 456.789;
+let x5 = "Hello";

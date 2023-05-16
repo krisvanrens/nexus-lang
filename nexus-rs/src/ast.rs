@@ -107,17 +107,21 @@ pub enum ExprKind {
     Empty,
     Group,
     Literal(Ptr<Literal>),
-    Unary,
+    Unary(Ptr<UnaryExpr>),
 }
 
 #[derive(Debug)]
-pub struct Group {
+pub struct UnaryExpr {
+    pub operator: UnaryOperatorKind,
     pub expr: Expr,
 }
 
-#[derive(Debug)]
-pub struct Node {
-    pub expr: Expr,
+#[derive(Debug, Display)]
+pub enum UnaryOperatorKind {
+    Bang,
+    Group,
+    Minus,
+    Node,
 }
 
 #[derive(Debug)]

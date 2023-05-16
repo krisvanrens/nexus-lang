@@ -262,9 +262,12 @@ fn parse_type(c: &mut TokenCursor) -> ast::TypeKind {
 fn parse_expr(c: &mut TokenCursor) -> ast::Expr {
     if let Some(t) = c.peek() {
         match t {
+            // Literal expressions:
             &Token::Number(_) => parse_number_literal(c),
             &Token::String(_) => parse_string_literal(c),
             &Token::True | &Token::False => parse_bool_literal(c),
+            // Unary expressions:
+            &Token::Bang | &Token::Minus | &Token::Group | &Token::Node => parse_unary_expr(c),
             _ => {
                 // TODO: ...
                 c.fast_forward_while(|t| dbg!(t) != &Token::SemiColon);
@@ -290,24 +293,21 @@ fn parse_expr_stmt(c: &mut TokenCursor) -> ast::Stmt {
     }
 }
 
-fn _parse_group_expr(c: &mut TokenCursor) -> ast::Expr {
-    c.consume(Token::Group);
+fn parse_unary_expr(c: &mut TokenCursor) -> ast::Expr {
+    let operator = match c.value() {
+        Some(Token::Bang) => ast::UnaryOperatorKind::Bang,
+        Some(Token::Minus) => ast::UnaryOperatorKind::Minus,
+        Some(Token::Group) => ast::UnaryOperatorKind::Group,
+        Some(Token::Node) => ast::UnaryOperatorKind::Node,
+        Some(_) => panic!("not a unary expression token"), // TODO: Proper error handling..
+        None => panic!("unexpected end of token stream"),  // TODO: Proper error handling..
+    };
 
-    let _expr = parse_expr(c);
-
-    ast::Expr {
-        kind: ast::ExprKind::Empty,
-    } // TODO
-}
-
-fn _parse_node_expr(c: &mut TokenCursor) -> ast::Expr {
-    c.consume(Token::Node);
-
-    let _expr = parse_expr(c);
+    let expr = parse_expr(c);
 
     ast::Expr {
-        kind: ast::ExprKind::Empty,
-    } // TODO
+        kind: ast::ExprKind::Unary(Ptr::new(ast::UnaryExpr { operator, expr })),
+    }
 }
 
 fn parse_print_stmt(c: &mut TokenCursor) -> ast::Stmt {
