@@ -268,8 +268,10 @@ fn parse_expr(c: &mut TokenCursor) -> ast::Expr {
             &Token::True | &Token::False => parse_bool_literal(c),
             // Unary expressions:
             &Token::Bang | &Token::Minus | &Token::Group | &Token::Node => parse_unary_expr(c),
+            // Group expressions:
+            &Token::LeftParen => parse_group_expr(c),
+            // TODO: ...
             _ => {
-                // TODO: ...
                 c.fast_forward_while(|t| dbg!(t) != &Token::SemiColon);
                 ast::Expr {
                     kind: ast::ExprKind::Empty,
@@ -307,6 +309,18 @@ fn parse_unary_expr(c: &mut TokenCursor) -> ast::Expr {
 
     ast::Expr {
         kind: ast::ExprKind::Unary(Ptr::new(ast::UnaryExpr { operator, expr })),
+    }
+}
+
+fn parse_group_expr(c: &mut TokenCursor) -> ast::Expr {
+    c.consume(Token::LeftParen);
+
+    let expr = parse_expr(c);
+
+    c.consume(Token::RightParen);
+
+    ast::Expr {
+        kind: ast::ExprKind::Group(Ptr::new(expr)),
     }
 }
 

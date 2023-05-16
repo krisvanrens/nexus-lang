@@ -105,7 +105,7 @@ impl fmt::Display for Expr {
 pub enum ExprKind {
     Binary,
     Empty,
-    Group,
+    Group(Ptr<Expr>),
     Literal(Ptr<Literal>),
     Unary(Ptr<UnaryExpr>),
 }
