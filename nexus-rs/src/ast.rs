@@ -87,12 +87,18 @@ pub struct VarDecl {
 
 #[derive(Debug)]
 pub struct UseDecl {
-    pub filename: Literal,
+    pub filename: Expr,
 }
 
 #[derive(Debug)]
 pub struct Expr {
     pub kind: ExprKind,
+}
+
+impl fmt::Display for Expr {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "{}", self.kind)
+    }
 }
 
 #[derive(Debug, Display)]

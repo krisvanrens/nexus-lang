@@ -186,9 +186,7 @@ fn parse_use_decl(c: &mut TokenCursor) -> ast::Stmt {
     c.consume_msg(Token::SemiColon, "expected semicolon after statement");
 
     ast::Stmt {
-        kind: ast::StmtKind::UseDecl(Ptr::new(ast::UseDecl {
-            filename,
-        })),
+        kind: ast::StmtKind::UseDecl(Ptr::new(ast::UseDecl { filename })),
     } // TODO
 }
 

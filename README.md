@@ -309,7 +309,7 @@ decl       = fn_decl | const_decl | var_decl | use_decl | stmt ;
 fn_decl    = "fn" function ;
 const_decl = "const" ID ":" type "=" expr ";" ;
 var_decl   = "let" ( "mut" )? ID ( ( "=" expr ) | ( ":" type ) ( ":" type "=" expr ) )? ";" ;
-use_decl   = "use" STRING ";" ;
+use_decl   = "use" expr ";" ;
 stmt       = expr_stmt | print_stmt | block ;
 expr_stmt  = expr ";" ;
 print_stmt = "print" expr ";" ;
