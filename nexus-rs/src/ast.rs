@@ -104,11 +104,34 @@ impl fmt::Display for Expr {
 
 #[derive(Debug, Display)]
 pub enum ExprKind {
-    Binary,
-    Empty,
+    Binary(Ptr<BinaryExpr>),
     Group(Ptr<Expr>),
     Literal(Ptr<Literal>),
     Unary(Ptr<UnaryExpr>),
+}
+
+#[derive(Debug)]
+pub struct BinaryExpr {
+    pub operator: BinaryOperator,
+    pub lhs: Expr,
+    pub rhs: Expr,
+}
+
+#[derive(Debug, Display)]
+pub enum BinaryOperator {
+    And,
+    Divide,
+    Eq,
+    Gt,
+    GtEq,
+    Lt,
+    LtEq,
+    Multiply,
+    NotEq,
+    Or,
+    Plus,
+    Remainder,
+    Subtract,
 }
 
 #[derive(Debug)]

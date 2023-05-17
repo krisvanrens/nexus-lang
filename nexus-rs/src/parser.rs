@@ -261,23 +261,34 @@ fn parse_type(c: &mut TokenCursor) -> ast::TypeKind {
 }
 
 fn parse_expr(c: &mut TokenCursor) -> ast::Expr {
-    if let Some(t) = c.peek() {
+    // TODO: Determine expression arity..
+    if let Some(t) = dbg!(c.peek()) {
         match t {
+            // Binary expressions:
+            &Token::And
+            | &Token::Slash
+            | &Token::Eq
+            | &Token::Gt
+            | &Token::GtEq
+            | &Token::Lt
+            | &Token::LtEq
+            | &Token::Star
+            | &Token::NotEq
+            | &Token::Or
+            | &Token::Plus
+            | &Token::Percent
+            | &Token::Minus => parse_binary_expr(c),
+            // Group expressions:
+            &Token::LeftParen => parse_group_expr(c),
             // Literal expressions:
             &Token::Number(_) => parse_number_literal(c),
             &Token::String(_) => parse_string_literal(c),
             &Token::True | &Token::False => parse_bool_literal(c),
             // Unary expressions:
-            &Token::Bang | &Token::Minus | &Token::Group | &Token::Node => parse_unary_expr(c),
-            // Group expressions:
-            &Token::LeftParen => parse_group_expr(c),
-            // TODO: ...
-            _ => {
-                c.fast_forward_while(|t| dbg!(t) != &Token::SemiColon);
-                ast::Expr {
-                    kind: ast::ExprKind::Empty,
-                }
+            &Token::Bang | &Token::Plus | &Token::Minus | &Token::Group | &Token::Node => {
+                parse_unary_expr(c)
             }
+            _ => panic!("unexpected token"), // TODO: Proper error handling..
         }
     } else {
         panic!("unexpected end of token stream"); // TODO: Proper error handling..
@@ -293,6 +304,34 @@ fn parse_expr_stmt(c: &mut TokenCursor) -> ast::Stmt {
 
     ast::Stmt {
         kind: ast::StmtKind::Expr(Ptr::new(expr)),
+    }
+}
+
+fn parse_binary_expr(c: &mut TokenCursor) -> ast::Expr {
+    let lhs = parse_expr(c);
+
+    let operator = match c.value() {
+        Some(Token::And) => ast::BinaryOperator::And,
+        Some(Token::Slash) => ast::BinaryOperator::Divide,
+        Some(Token::Eq) => ast::BinaryOperator::Eq,
+        Some(Token::Gt) => ast::BinaryOperator::Gt,
+        Some(Token::GtEq) => ast::BinaryOperator::GtEq,
+        Some(Token::Lt) => ast::BinaryOperator::Lt,
+        Some(Token::LtEq) => ast::BinaryOperator::LtEq,
+        Some(Token::Star) => ast::BinaryOperator::Multiply,
+        Some(Token::NotEq) => ast::BinaryOperator::NotEq,
+        Some(Token::Or) => ast::BinaryOperator::Or,
+        Some(Token::Plus) => ast::BinaryOperator::Plus,
+        Some(Token::Percent) => ast::BinaryOperator::Remainder,
+        Some(Token::Minus) => ast::BinaryOperator::Subtract,
+        Some(_) => panic!("not a binary expression token"), // TODO: Proper error handling..
+        None => panic!("unexpected end of token stream"),   // TODO: Proper error handling..
+    };
+
+    let rhs = parse_expr(c);
+
+    ast::Expr {
+        kind: ast::ExprKind::Binary(Ptr::new(ast::BinaryExpr { operator, lhs, rhs })),
     }
 }
 
