@@ -310,9 +310,9 @@ fn_decl    = "fn" function ;
 const_decl = "const" ID ":" type "=" expr ";" ;
 var_decl   = "let" ( "mut" )? ID ( ( "=" expr ) | ( ":" type ) ( ":" type "=" expr ) )? ";" ;
 use_decl   = "use" expr ";" ;
-stmt       = expr_stmt | print_stmt | return | block ;
+stmt       = expr_stmt | print | return | block ;
 expr_stmt  = expr ";" ;
-print_stmt = "print" expr ";" ;
+print      = "print" expr ";" ;
 return     = "return" expr ";" ;
 block      = "{" decl* "}" ;
 
@@ -328,16 +328,23 @@ binary     = expr operator expr ;
 group      = "(" expr ")" ;
 ```
 
+#### Glossary
+
+| Abbreviation | Meaning |
+| :----------: | :------ |
+| `decl` | Declaration |
+| `expr` | Expression  |
+| `stmt` | Statement   |
+
 #### `// TODO`
 
-- Assignment
-- Function call
-- `for`
-- `if`/`else`
-- `return`
-- `while`
-- Closures
-- Ranges
+- Assignment (stmt)
+- Function call (expr)
+- `for` (expr)
+- `if`/`else` (expr)
+- `while` (expr)
+- Closures (expr)
+- Ranges (expr)
 
 ## Known limitations
 
