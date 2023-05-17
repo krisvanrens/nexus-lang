@@ -261,7 +261,8 @@ fn parse_type(c: &mut TokenCursor) -> ast::TypeKind {
 }
 
 fn parse_expr(c: &mut TokenCursor) -> ast::Expr {
-    // TODO: Determine expression arity..
+    // TODO: Rework expression grammar!
+
     if let Some(t) = dbg!(c.peek()) {
         match t {
             // Binary expressions:
