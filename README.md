@@ -360,7 +360,7 @@ Precedence levels from *high to low* in order:
 | `<` `<=` `>=` `>` | Left-to-right | Relational operators     |
 | `==` `!=`         | Left-to-right | Equality operators       |
 | `&&`              | Left-to-right | Logical AND operator     |
-| `||`              | Left-to-right | Logical OR operator      |
+| `\|\|`            | Left-to-right | Logical OR operator      |
 | `..` `..=`        | Left-to-right | Range definitions        |
 
 ## Known limitations
