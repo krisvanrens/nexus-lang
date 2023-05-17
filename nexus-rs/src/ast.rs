@@ -112,13 +112,13 @@ pub enum ExprKind {
 
 #[derive(Debug)]
 pub struct BinaryExpr {
-    pub operator: BinaryOperator,
+    pub operator: BinaryOp,
     pub lhs: Expr,
     pub rhs: Expr,
 }
 
 #[derive(Debug, Display)]
-pub enum BinaryOperator {
+pub enum BinaryOp {
     And,
     Divide,
     Eq,
@@ -136,12 +136,12 @@ pub enum BinaryOperator {
 
 #[derive(Debug)]
 pub struct UnaryExpr {
-    pub operator: UnaryOperator,
+    pub operator: UnaryOp,
     pub expr: Expr,
 }
 
 #[derive(Debug, Display)]
-pub enum UnaryOperator {
+pub enum UnaryOp {
     Bang,
     Group,
     Minus,

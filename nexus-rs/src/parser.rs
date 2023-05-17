@@ -311,19 +311,19 @@ fn parse_binary_expr(c: &mut TokenCursor) -> ast::Expr {
     let lhs = parse_expr(c);
 
     let operator = match c.value() {
-        Some(Token::And) => ast::BinaryOperator::And,
-        Some(Token::Slash) => ast::BinaryOperator::Divide,
-        Some(Token::Eq) => ast::BinaryOperator::Eq,
-        Some(Token::Gt) => ast::BinaryOperator::Gt,
-        Some(Token::GtEq) => ast::BinaryOperator::GtEq,
-        Some(Token::Lt) => ast::BinaryOperator::Lt,
-        Some(Token::LtEq) => ast::BinaryOperator::LtEq,
-        Some(Token::Star) => ast::BinaryOperator::Multiply,
-        Some(Token::NotEq) => ast::BinaryOperator::NotEq,
-        Some(Token::Or) => ast::BinaryOperator::Or,
-        Some(Token::Plus) => ast::BinaryOperator::Plus,
-        Some(Token::Percent) => ast::BinaryOperator::Remainder,
-        Some(Token::Minus) => ast::BinaryOperator::Subtract,
+        Some(Token::And) => ast::BinaryOp::And,
+        Some(Token::Slash) => ast::BinaryOp::Divide,
+        Some(Token::Eq) => ast::BinaryOp::Eq,
+        Some(Token::Gt) => ast::BinaryOp::Gt,
+        Some(Token::GtEq) => ast::BinaryOp::GtEq,
+        Some(Token::Lt) => ast::BinaryOp::Lt,
+        Some(Token::LtEq) => ast::BinaryOp::LtEq,
+        Some(Token::Star) => ast::BinaryOp::Multiply,
+        Some(Token::NotEq) => ast::BinaryOp::NotEq,
+        Some(Token::Or) => ast::BinaryOp::Or,
+        Some(Token::Plus) => ast::BinaryOp::Plus,
+        Some(Token::Percent) => ast::BinaryOp::Remainder,
+        Some(Token::Minus) => ast::BinaryOp::Subtract,
         Some(_) => panic!("not a binary expression token"), // TODO: Proper error handling..
         None => panic!("unexpected end of token stream"),   // TODO: Proper error handling..
     };
@@ -337,11 +337,11 @@ fn parse_binary_expr(c: &mut TokenCursor) -> ast::Expr {
 
 fn parse_unary_expr(c: &mut TokenCursor) -> ast::Expr {
     let operator = match c.value() {
-        Some(Token::Bang) => ast::UnaryOperator::Bang,
-        Some(Token::Minus) => ast::UnaryOperator::Minus,
-        Some(Token::Group) => ast::UnaryOperator::Group,
-        Some(Token::Node) => ast::UnaryOperator::Node,
-        Some(Token::Plus) => ast::UnaryOperator::Plus,
+        Some(Token::Bang) => ast::UnaryOp::Bang,
+        Some(Token::Minus) => ast::UnaryOp::Minus,
+        Some(Token::Group) => ast::UnaryOp::Group,
+        Some(Token::Node) => ast::UnaryOp::Node,
+        Some(Token::Plus) => ast::UnaryOp::Plus,
         Some(_) => panic!("not a unary expression token"), // TODO: Proper error handling..
         None => panic!("unexpected end of token stream"),  // TODO: Proper error handling..
     };
