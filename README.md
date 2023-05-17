@@ -330,12 +330,14 @@ group      = "(" expr ")" ;
 
 #### `// TODO`
 
+- Assignment
+- Function call
 - `for`
 - `if`/`else`
 - `return`
 - `while`
-- closures
-- ranges
+- Closures
+- Ranges
 
 ## Known limitations
 
