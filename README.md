@@ -310,9 +310,10 @@ fn_decl    = "fn" function ;
 const_decl = "const" ID ":" type "=" expr ";" ;
 var_decl   = "let" ( "mut" )? ID ( ( "=" expr ) | ( ":" type ) ( ":" type "=" expr ) )? ";" ;
 use_decl   = "use" expr ";" ;
-stmt       = expr_stmt | print_stmt | block ;
+stmt       = expr_stmt | print_stmt | return | block ;
 expr_stmt  = expr ";" ;
 print_stmt = "print" expr ";" ;
+return     = "return" expr ";" ;
 block      = "{" decl* "}" ;
 
 function   = ID "(" params* ")" ( "->" type )? block ;

@@ -33,6 +33,7 @@ pub enum StmtKind {
     Expr(Ptr<Expr>),
     FunctionDecl(Ptr<FunctionDecl>),
     Print(Ptr<Print>),
+    Return(Ptr<Return>),
     UseDecl(Ptr<UseDecl>),
     VarDecl(Ptr<VarDecl>),
 }
@@ -126,6 +127,11 @@ pub enum UnaryOperatorKind {
 
 #[derive(Debug)]
 pub struct Print {
+    pub expr: Expr,
+}
+
+#[derive(Debug)]
+pub struct Return {
     pub expr: Expr,
 }
 
