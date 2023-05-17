@@ -118,11 +118,12 @@ pub struct UnaryExpr {
 }
 
 #[derive(Debug, Display)]
-pub enum UnaryOperatorKind {
+pub enum UnaryOperator {
     Bang,
     Group,
     Minus,
     Node,
+    Plus,
 }
 
 #[derive(Debug)]

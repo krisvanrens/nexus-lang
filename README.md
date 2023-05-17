@@ -322,7 +322,7 @@ args       = expr ( "," expr )* ;
 
 literal    = NUMBER | STRING | "true" | "false" ;
 expr       = literal | unary | binary | group ;
-unary      = ( "!" | "-" | "group" | "node" ) expr ;
+unary      = ( "!" | "+" | "-" | "group" | "node" ) expr ;
 operator   = "==" | "!=" | "<=" | ">=" | "<" | ">" | "||" | "&&" | "+" | "-" | "*" | "/" | "%" ;
 binary     = expr operator expr ;
 group      = "(" expr ")" ;

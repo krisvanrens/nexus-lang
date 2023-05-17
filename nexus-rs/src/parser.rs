@@ -298,10 +298,11 @@ fn parse_expr_stmt(c: &mut TokenCursor) -> ast::Stmt {
 
 fn parse_unary_expr(c: &mut TokenCursor) -> ast::Expr {
     let operator = match c.value() {
-        Some(Token::Bang) => ast::UnaryOperatorKind::Bang,
-        Some(Token::Minus) => ast::UnaryOperatorKind::Minus,
-        Some(Token::Group) => ast::UnaryOperatorKind::Group,
-        Some(Token::Node) => ast::UnaryOperatorKind::Node,
+        Some(Token::Bang) => ast::UnaryOperator::Bang,
+        Some(Token::Minus) => ast::UnaryOperator::Minus,
+        Some(Token::Group) => ast::UnaryOperator::Group,
+        Some(Token::Node) => ast::UnaryOperator::Node,
+        Some(Token::Plus) => ast::UnaryOperator::Plus,
         Some(_) => panic!("not a unary expression token"), // TODO: Proper error handling..
         None => panic!("unexpected end of token stream"),  // TODO: Proper error handling..
     };
