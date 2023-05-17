@@ -281,52 +281,63 @@ T.B.D.
 
 ## Language grammar
 
-Productions are in [Extended Backus-Naur Form (EBNF)](https://en.wikipedia.org/wiki/Extended_Backus%E2%80%93Naur_form).
+Productions are in [Extended Backus-Naur Form (EBNF)](https://en.wikipedia.org/wiki/Extended_Backus%E2%80%93Naur_form) (the [W3C form used for XML](https://www.w3.org/TR/xml/#sec-notation), to be specific).
 
 ### Lexical grammar
 
 ```ebnf
-ALPHA  = "a" | "..." | "z" | "A" | "..." | "Z" | "_" ;
-DIGIT  = "0" | "..." | "9" ;
-STRING = "\"" , <character>* - "\"" , "\"" ;
-NUMBER = DIGIT+ ( "." DIGIT+ )? ;
+ALPHA  = [a-zA-Z] | '_' ;
+DIGIT  = [0-9] ;
+STRING = '"' ( ? any character - '"' ? )* '"' ;
+NUMBER = DIGIT+ ( '.' DIGIT+ )? ;
 ID     = ALPHA ( ALPHA | DIGIT )* ;
 ```
 
-Note: for simplicity in the production rules, `ALPHA` is represented here as ASCII alphabetic.
+> **NOTE**: for simplicity in the production rules, `ALPHA` is represented here as ASCII alphabetic.
 However, in `nexus-rs`, it means any *alphabetic* character, as defined by [chapter 4](https://www.unicode.org/versions/Unicode15.0.0/ch04.pdf) of [Unicode standard](https://www.unicode.org/versions/Unicode15.0.0/).
-This means in practice it is possible to define identifiers named `ŮñĭçøƋɇ`.
+This means in practice it is possible to define identifiers named '`ŮñĭçøƋɇ`'.
 
 ### Main syntax (WIP)
-
-Note: the grammar will be extended as the language implementation progresses.
 
 ```ebnf
 program    = decl* EOF ;
 
-type       = "bool" | "Number" | "String" ;
 decl       = fn_decl | const_decl | var_decl | use_decl | stmt ;
-fn_decl    = "fn" function ;
-const_decl = "const" ID ":" type "=" expr ";" ;
-var_decl   = "let" ( "mut" )? ID ( ( "=" expr ) | ( ":" type ) ( ":" type "=" expr ) )? ";" ;
-use_decl   = "use" expr ";" ;
-stmt       = expr_stmt | print | return | block ;
-expr_stmt  = expr ";" ;
-print      = "print" expr ";" ;
-return     = "return" expr ";" ;
-block      = "{" decl* "}" ;
+fn_decl    = 'fn' function ;
+const_decl = 'const' ID ':' type '=' expr ';' ;
+var_decl   = 'let' ( 'mut' )? ID ( ( '=' expr ) | ( ':' type ) ( ':' type '=' expr ) )? ';' ;
+use_decl   = 'use' expr ';' ;
 
-function   = ID "(" params* ")" ( "->" type )? block ;
-params     = ID ":" type ( "," ID ":" type )* ;
-args       = expr ( "," expr )* ;
+stmt       = expr_stmt | assignment | print | return | block ;
+expr_stmt  = expr ';' ;
+assignment = ID '=' expr ';' ;
+print      = 'print' expr ';' ;
+return     = 'return' expr? ';' ;
+block      = '{' decl* '}' ;
 
-literal    = NUMBER | STRING | "true" | "false" ;
-expr       = literal | unary | binary | group ;
-unary      = ( "!" | "+" | "-" | "group" | "node" ) expr ;
-operator   = "==" | "!=" | "<=" | ">=" | "<" | ">" | "||" | "&&" | "+" | "-" | "*" | "/" | "%" ;
+literal    = NUMBER | STRING | 'true' | 'false' ;
+expr       = literal | unary | binary | group | call | closure | block ;
+unary      = ( '!' | '+' | '-' | 'group' | 'node' ) expr ;
+operator   = '==' | '!=' | '<=' | '>=' | '<' | '>' | '||' | '&&' | '+' | '-' | '*' | '/' | '%' | range ;
 binary     = expr operator expr ;
-group      = "(" expr ")" ;
+group      = '(' expr ')' ;
+call       = ID '(' args ')' ;
+closure    = ( '||' | '|' args '|' ) ( '->' type )? ( expr | block ) ;
+range      = '..' ( '=' )? ;
+
+function   = ID '(' params* ')' ( '->' type )? block ;
+params     = ID ':' type ( ',' ID ':' type )* ;
+args       = expr ( ',' expr )* ;
+type       = 'bool' | 'Number' | 'String' ;
 ```
+
+> **NOTE**: the grammar will be extended as the language implementation progresses.
+
+`// TODO:`
+
+- `for` (expr)
+- `if`/`else` (expr)
+- `while` (expr)
 
 #### Glossary
 
@@ -336,15 +347,21 @@ group      = "(" expr ")" ;
 | `expr` | Expression  |
 | `stmt` | Statement   |
 
-#### `// TODO`
+#### Operator precedence
 
-- Assignment (stmt)
-- Function call (expr)
-- `for` (expr)
-- `if`/`else` (expr)
-- `while` (expr)
-- Closures (expr)
-- Ranges (expr)
+Precedence levels from *high to low* in order:
+
+| Operators | Associativity | Description |
+| :-------: | :-----------: | :---------- |
+| `x()`             | Left-to-right | Functional call          |
+| `!` `+` `-`       | Right-to-left | Unary operators          |
+| `*` `/` `%`       | Left-to-right | Factor operators         |
+| `+` `-`           | Left-to-right | Addition and subtraction |
+| `<` `<=` `>=` `>` | Left-to-right | Relational operators     |
+| `==` `!=`         | Left-to-right | Equality operators       |
+| `&&`              | Left-to-right | Logical AND operator     |
+| `||`              | Left-to-right | Logical OR operator      |
+| `..` `..=`        | Left-to-right | Range definitions        |
 
 ## Known limitations
 
@@ -353,15 +370,15 @@ group      = "(" expr ")" ;
 ## TODO
 
 - Improve declarative approach for extending a module with components.
-- Simple suport for variable aliases (references)? Should be handy for shorthand names.
-- Immutability? Is the benefit of immutibility by default + move semantics beneficial for the use case of Nexus? Why or why not?
+- Simple support for variable aliases (references)? Should be handy for shorthand names.
+- Immutability? Is the benefit of immutability by default + move semantics beneficial for the use case of Nexus? Why or why not?
 - Support for objects? Groups using `group` should suffice.
 - Execution entry point? Just structural starting from the root `.nxs` file?
 - Object literal notation? (or JSON literal notation)
 - Add `match` expression? Should be simple for a few fundamental types.
 - Handling setting of component values...how/what/mutability?
 - Implicit return value (to omit `return` in most places)?
-- Add combined assigment/operators (`+=`/`-=`/`*=`/`/=`).
+- Add compound assignment/operators (`+=`/`-=`/`*=`/`/=`/`%=`).
 - Traits for fundamental types? E.g. `"sdfs".len() == 4` etc.
 - Is it possible to have `Number` be floating-point when sometimes used as integer?
 - Error handling? Result types?
@@ -376,11 +393,13 @@ group      = "(" expr ")" ;
 - Shadowing like Rust does?
 - Enforce style: upper snake case for `const`?
 - Function order is arbitrary like Rust?
-- `if` expressions _must_ be of type `bool`.
+- `if` expressions *must* be of type `bool`.
 - `else if` support.
 - Printing of `group`s and `node`s.
 - Generating an AST graph image for debugging.
 - Underscore for integer number separators?
+- Underscore for unused variables?
+- Force parentheses for certain operators, e.g. relational / equality operators?
 
 ## FAQ
 
@@ -391,4 +410,3 @@ From the dictionary:
 > **Nexus**; *nex·us*; meaning: *connection, link*
 
 Of course this ties back to its place as a component network-description language.
-
