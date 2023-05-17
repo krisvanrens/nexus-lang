@@ -113,7 +113,7 @@ pub enum ExprKind {
 
 #[derive(Debug)]
 pub struct UnaryExpr {
-    pub operator: UnaryOperatorKind,
+    pub operator: UnaryOperator,
     pub expr: Expr,
 }
 
