@@ -318,7 +318,11 @@ block      = '{' decl* '}' ;
 literal    = NUMBER | STRING | 'true' | 'false' ;
 expr       = literal | unary | binary | group | call | closure | block ;
 unary      = ( '!' | '+' | '-' | 'group' | 'node' ) expr ;
-operator   = '==' | '!=' | '<=' | '>=' | '<' | '>' | '||' | '&&' | '+' | '-' | '*' | '/' | '%' | range ;
+operator   = eq_ops | rel_ops | logic_ops | arith_ops | range ;
+eq_ops     = '==' | '!=' ;
+rel_ops    = '<=' | '>=' | '<' | '>' ;
+logic_ops  = '||' | '&&' ;
+arith_ops  = '+' | '-' | '*' | '/' | '%' ;
 binary     = expr operator expr ;
 group      = '(' expr ')' ;
 call       = ID '(' args ')' ;
@@ -345,6 +349,7 @@ type       = 'bool' | 'Number' | 'String' ;
 | :----------: | :------ |
 | `decl` | Declaration |
 | `expr` | Expression  |
+| `ops`  | Operations  |
 | `stmt` | Statement   |
 
 #### Operator precedence
