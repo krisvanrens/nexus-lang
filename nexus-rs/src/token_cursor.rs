@@ -6,7 +6,7 @@ use std::vec::IntoIter;
 #[derive(Debug)]
 pub struct TokenCursor {
     iter: Peekable<IntoIter<Token>>,
-    prev: Option<Token>,
+    prev: Option<Token>, // XXX: Do we need this?
     curr: Option<Token>,
 }
 
@@ -66,7 +66,7 @@ impl TokenCursor {
     /// assert_eq!(c.value(), Some(Token::Let));
     /// assert_eq!(c.peek(), Some(&Token::Arrow));
     /// ```
-    pub fn peek(&mut self) -> Option<&Token> {
+    pub fn peek(&self) -> Option<&Token> {
         self.curr.as_ref()
     }
 
@@ -85,7 +85,7 @@ impl TokenCursor {
     /// assert_eq!(c.peek(), Some(&Token::Arrow));
     /// assert_eq!(c.peek_next(), Some(Token::For));
     /// ```
-    pub fn peek_next(&mut self) -> Option<Token> {
+    pub fn peek_next(&self) -> Option<Token> {
         self.iter.clone().into_iter().next()
     }
 
