@@ -52,7 +52,7 @@ impl TokenCursor {
         value
     }
 
-    /// Peek value only (without advancing).
+    /// Peek upcoming value (without advancing).
     ///
     /// # Example
     ///
@@ -68,6 +68,25 @@ impl TokenCursor {
     /// ```
     pub fn peek(&mut self) -> Option<&Token> {
         self.curr.as_ref()
+    }
+
+    /// Peek one past the upcoming value (without advancing).
+    ///
+    /// # Example
+    ///
+    /// ```
+    /// use nexus_rs::token_cursor::TokenCursor;
+    /// use nexus_rs::token::Token;
+    ///
+    /// let t = vec![Token::Let, Token::Arrow, Token::For];
+    /// let mut c = TokenCursor::new(t);
+    ///
+    /// assert_eq!(c.value(), Some(Token::Let));
+    /// assert_eq!(c.peek(), Some(&Token::Arrow));
+    /// assert_eq!(c.peek_next(), Some(Token::For));
+    /// ```
+    pub fn peek_next(&mut self) -> Option<Token> {
+        self.iter.clone().into_iter().next()
     }
 
     /// Advance cursor.
@@ -205,6 +224,30 @@ fn value_test() {
     assert_eq!(c.value(), Some(Token::Let));
     assert_eq!(c.value(), Some(Token::Arrow));
     assert_eq!(c.value(), None);
+}
+
+#[test]
+fn peek_test() {
+    let t = vec![Token::Let, Token::Arrow];
+    let mut c = TokenCursor::new(t);
+
+    assert_eq!(c.value(), Some(Token::Let));
+    assert_eq!(c.peek(), Some(&Token::Arrow));
+    assert_eq!(c.value(), Some(Token::Arrow));
+    assert_eq!(c.peek(), None);
+    assert_eq!(c.value(), None);
+}
+
+#[test]
+fn peek_next_test() {
+    let t = vec![Token::Let, Token::Arrow, Token::For];
+    let mut c = TokenCursor::new(t);
+
+    assert_eq!(c.value(), Some(Token::Let));
+    assert_eq!(c.peek_next(), Some(Token::For));
+    assert_eq!(c.value(), Some(Token::Arrow));
+    assert_eq!(c.peek_next(), None);
+    assert_eq!(c.value(), Some(Token::For));
 }
 
 #[test]
