@@ -41,6 +41,7 @@ pub enum Token {
     If,           // 'if'
     Else,         // 'else'
     For,          // 'for'
+    In,           // 'in'
     While,        // 'while'
     Return,       // 'return'
     Use,          // 'use'

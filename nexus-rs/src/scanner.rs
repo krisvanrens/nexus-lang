@@ -329,6 +329,7 @@ fn parse_word(cursor: &mut Cursor) -> Result<Token, ScanError> {
             "for"    => Token::For,
             "group"  => Token::Group,
             "if"     => Token::If,
+            "in"     => Token::In,
             "let"    => Token::Let,
             "mut"    => Token::Mut,
             "node"   => Token::Node,
