@@ -1,6 +1,8 @@
 # nexus-lang
 
-[![MIT licensed](https://img.shields.io/github/license/krisvanrens/nexus-lang?style=for-the-badge)](./LICENSE)
+[![MIT licensed](https://img.shields.io/github/license/krisvanrens/nexus-lang)](./LICENSE)
+[![build + test](https://github.com/krisvanrens/nexus-lang/actions/workflows/rust.yml/badge.svg)](https://github.com/krisvanrens/nexus-lang/actions)
+
 
 The Nexus programming language.
 
