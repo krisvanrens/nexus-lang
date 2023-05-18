@@ -41,10 +41,10 @@ impl Parser {
 
 fn parse_decl(c: &mut TokenCursor) -> ast::Stmt {
     match c.peek() {
-        Some(&Token::Const) => parse_const_decl(c),
-        Some(&Token::Function) => parse_function_decl(c),
-        Some(&Token::Let) => parse_var_decl(c),
-        Some(&Token::Use) => parse_use_decl(c),
+        Some(Token::Const) => parse_const_decl(c),
+        Some(Token::Function) => parse_function_decl(c),
+        Some(Token::Let) => parse_var_decl(c),
+        Some(Token::Use) => parse_use_decl(c),
         _ => parse_stmt(c),
     }
 }
@@ -56,7 +56,7 @@ fn parse_function_decl(c: &mut TokenCursor) -> ast::Stmt {
 
     c.consume_msg(Token::LeftParen, "expected '(' after function identifier"); // TODO: Proper error handling.
 
-    let args = if c.peek() != Some(&Token::RightParen) {
+    let args = if c.peek() != Some(Token::RightParen) {
         Some(parse_function_args(c))
     } else {
         None
@@ -67,7 +67,7 @@ fn parse_function_decl(c: &mut TokenCursor) -> ast::Stmt {
         "expected ')' after function argument list",
     ); // TODO: Proper error handling.
 
-    let ret_type = if c.peek() == Some(&Token::Arrow) {
+    let ret_type = if c.peek() == Some(Token::Arrow) {
         c.consume_msg(Token::Arrow, "expected '->' in function declaration");
         Some(parse_type(c))
     } else {
@@ -105,7 +105,7 @@ fn parse_function_args(c: &mut TokenCursor) -> ast::FunctionArgs {
     loop {
         result.push(parse_function_arg(c));
 
-        if !c.advance_if(&Token::Comma) {
+        if !c.advance_if(Token::Comma) {
             break;
         }
     }
@@ -148,17 +148,17 @@ fn parse_const_decl(c: &mut TokenCursor) -> ast::Stmt {
 fn parse_var_decl(c: &mut TokenCursor) -> ast::Stmt {
     c.consume(Token::Let);
 
-    let mutable = c.advance_if(&Token::Mut);
+    let mutable = c.advance_if(Token::Mut);
 
     let id = parse_identifier(c);
 
-    let typeid = if c.advance_if(&Token::Colon) {
+    let typeid = if c.advance_if(Token::Colon) {
         Some(parse_type(c))
     } else {
         None
     };
 
-    let value = if c.advance_if(&Token::Is) {
+    let value = if c.advance_if(Token::Is) {
         Some(parse_expr(c))
     } else {
         None
@@ -192,9 +192,9 @@ fn parse_use_decl(c: &mut TokenCursor) -> ast::Stmt {
 
 fn parse_stmt(c: &mut TokenCursor) -> ast::Stmt {
     match c.peek() {
-        Some(&Token::LeftBrace) => parse_block_stmt(c),
-        Some(&Token::Print) => parse_print_stmt(c),
-        Some(&Token::Return) => parse_return_stmt(c),
+        Some(Token::LeftBrace) => parse_block_stmt(c),
+        Some(Token::Print) => parse_print_stmt(c),
+        Some(Token::Return) => parse_return_stmt(c),
         _ => parse_expr_stmt(c),
     }
 }
@@ -205,7 +205,7 @@ fn parse_block_stmt(c: &mut TokenCursor) -> ast::Stmt {
     let mut body = ast::Stmts::new();
     loop {
         match c.peek() {
-            Some(&Token::RightBrace) => break,
+            Some(Token::RightBrace) => break,
             None => panic!("unexpected EOS while parsing block statement"), // TODO: Proper error handling..
             _ => body.push(parse_decl(c)),
         }
@@ -313,7 +313,7 @@ fn parse_expr(c: &mut TokenCursor) -> ast::Expr {
 fn parse_expr_stmt(c: &mut TokenCursor) -> ast::Stmt {
     let expr = parse_expr(c);
 
-    if !c.advance_if(&Token::SemiColon) {
+    if !c.advance_if(Token::SemiColon) {
         // TODO: Mark block result value..
     }
 
