@@ -298,7 +298,7 @@ return     = 'return' expr? ';' ;
 block      = '{' decl* '}' ;
 
 literal    = NUMBER | STRING | 'true' | 'false' ;
-expr       = literal | unary | binary | group | call | closure | control | block ;
+expr       = ID | literal | unary | binary | group | call | closure | control | block ;
 unary      = ( '!' | '+' | '-' | 'group' | 'node' ) expr ;
 operator   = eq_ops | rel_ops | logic_ops | arith_ops | range ;
 eq_ops     = '==' | '!=' ;
