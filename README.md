@@ -316,7 +316,7 @@ return     = 'return' expr? ';' ;
 block      = '{' decl* '}' ;
 
 literal    = NUMBER | STRING | 'true' | 'false' ;
-expr       = literal | unary | binary | group | call | closure | block ;
+expr       = literal | unary | binary | group | call | closure | control | block ;
 unary      = ( '!' | '+' | '-' | 'group' | 'node' ) expr ;
 operator   = eq_ops | rel_ops | logic_ops | arith_ops | range ;
 eq_ops     = '==' | '!=' ;
@@ -327,6 +327,10 @@ binary     = expr operator expr ;
 group      = '(' expr ')' ;
 call       = ID '(' args ')' ;
 closure    = ( '||' | '|' args '|' ) ( '->' type )? ( expr | block ) ;
+control    = if | while | for ;
+if         = "if" expr block ;
+while      = "while" expr block ;
+for        = "for" ID "in" ( ( expr range expr ) | ID ) block ;
 range      = '..' ( '=' )? ;
 
 function   = ID '(' params* ')' ( '->' type )? block ;
@@ -336,12 +340,6 @@ type       = 'bool' | 'Number' | 'String' ;
 ```
 
 > **NOTE**: the grammar will be extended as the language implementation progresses.
-
-`// TODO:`
-
-- `for` (expr)
-- `if`/`else` (expr)
-- `while` (expr)
 
 #### Glossary
 
