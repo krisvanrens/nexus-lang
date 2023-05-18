@@ -23,13 +23,10 @@ fn main() {
 }
 
 fn run_from_file(filename: String) {
-    let file = match FileReader::try_new(filename) {
-        Ok(file) => file,
-        Err(e) => {
-            eprintln!("Failed to open file: {e}");
-            exit(1);
-        }
-    };
+    let file = FileReader::try_new(filename).unwrap_or_else(|e| {
+        eprintln!("Failed to open file: {e}");
+        exit(1);
+    });
 
     let mut scanner = scanner::Scanner::new();
 
