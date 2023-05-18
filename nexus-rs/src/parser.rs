@@ -261,53 +261,47 @@ fn parse_type(c: &mut TokenCursor) -> ast::TypeKind {
 }
 
 fn parse_expr(c: &mut TokenCursor) -> ast::Expr {
-    // TODO: Rework expression grammar!
-
     let cur_token = c.peek().expect("unexpected end of token stream"); // TODO: Proper error handling..
     let next_token = c.peek_next().expect("unexpected end of token stream"); // TODO: Proper error handling..
 
-    dbg!(cur_token);
-    dbg!(next_token);
+    // Match expressions in descending precedence order:
+    match (dbg!(cur_token), dbg!(next_token)) {
+        // Function call expression:
+        (Token::Identifier(_), Token::LeftParen) => parse_func_call_expr(c),
+        // Unary expressions:
+        (Token::Bang, _)
+        | (Token::Plus, _)
+        | (Token::Minus, _)
+        | (Token::Group, _)
+        | (Token::Node, _) => parse_unary_expr(c),
+        // Binary expressions:
+        (_, Token::Star)
+        | (_, Token::Slash)
+        | (_, Token::Percent)
+        | (_, Token::Plus)
+        | (_, Token::Minus)
+        | (_, Token::Lt)
+        | (_, Token::Gt)
+        | (_, Token::LtEq)
+        | (_, Token::GtEq)
+        | (_, Token::Eq)
+        | (_, Token::NotEq)
+        | (_, Token::And)
+        | (_, Token::Or) => parse_binary_expr(c),
+        // Literal expressions:
+        (Token::Number(_), _) => parse_number_literal(c),
+        (Token::String(_), _) => parse_string_literal(c),
+        (Token::True, _) | (Token::False, _) => parse_bool_literal(c),
+        // Group expressions:
+        (Token::LeftParen, _) => parse_group_expr(c),
+        _ => {
+            c.fast_forward_while(|t| t != &Token::SemiColon);
 
-    c.fast_forward_while(|t| t != &Token::SemiColon);
-
-    ast::Expr {
-        kind: ast::ExprKind::Unsupported,
-    }
-
-    /*
-    if let Some(t) = dbg!(c.peek()) {
-        match t {
-            // Binary expressions:
-            &Token::And
-            | &Token::Slash
-            | &Token::Eq
-            | &Token::Gt
-            | &Token::GtEq
-            | &Token::Lt
-            | &Token::LtEq
-            | &Token::Star
-            | &Token::NotEq
-            | &Token::Or
-            | &Token::Plus
-            | &Token::Percent
-            | &Token::Minus => parse_binary_expr(c),
-            // Group expressions:
-            &Token::LeftParen => parse_group_expr(c),
-            // Literal expressions:
-            &Token::Number(_) => parse_number_literal(c),
-            &Token::String(_) => parse_string_literal(c),
-            &Token::True | &Token::False => parse_bool_literal(c),
-            // Unary expressions:
-            &Token::Bang | &Token::Plus | &Token::Minus | &Token::Group | &Token::Node => {
-                parse_unary_expr(c)
+            ast::Expr {
+                kind: ast::ExprKind::Unsupported("...".to_string()),
             }
-            _ => panic!("unexpected token"), // TODO: Proper error handling..
         }
-    } else {
-        panic!("unexpected end of token stream"); // TODO: Proper error handling..
     }
-    */
 }
 
 fn parse_expr_stmt(c: &mut TokenCursor) -> ast::Stmt {
@@ -319,6 +313,13 @@ fn parse_expr_stmt(c: &mut TokenCursor) -> ast::Stmt {
 
     ast::Stmt {
         kind: ast::StmtKind::Expr(Ptr::new(expr)),
+    }
+}
+
+fn parse_func_call_expr(c: &mut TokenCursor) -> ast::Expr {
+    c.fast_forward_while(|t| t != &Token::SemiColon); // TODO
+    ast::Expr {
+        kind: ast::ExprKind::Unsupported("func_call".to_string()),
     }
 }
 

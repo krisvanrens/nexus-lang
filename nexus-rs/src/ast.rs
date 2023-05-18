@@ -108,7 +108,7 @@ pub enum ExprKind {
     Group(Ptr<Expr>),
     Literal(Ptr<Literal>),
     Unary(Ptr<UnaryExpr>),
-    Unsupported, // NOTE: Temporary stub for development.
+    Unsupported(String), // NOTE: Temporary stub for development.
 }
 
 #[derive(Debug)]
