@@ -265,6 +265,7 @@ T.B.D.
 | `fn`     | Function declaration.          |
 | `for`    | Loop expression.               |
 | `if`     | Conditional expression.        |
+| `in`     | Part of `for` loop syntax.     |
 | `let`    | Variable declaration.          |
 | `mut`    | Variable mutability specifier. |
 | `return` | Return statement.              |
@@ -351,6 +352,8 @@ type       = 'bool' | 'Number' | 'String' ;
 | `stmt` | Statement   |
 
 #### Operator precedence
+
+Operator precedence ordering is similar to C/C++ and Rust precedence levels.
 
 Precedence levels from *high to low* in order:
 
