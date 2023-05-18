@@ -69,9 +69,8 @@ let y = x; // OK.
 
 ### Block scope braces are strictly required
 
-Braces after `if`/`while`/`for`/etc. statements are strictly required:
-
-Example:
+Braces after `if`/`while`/`for`/etc. expressions are strictly required.
+E.g.:
 
 ```rust
 // Error: no block scope braces.
@@ -83,6 +82,8 @@ if expr {
     do_something();
 }
 ```
+
+Explicit scope limiting increases esthetic consistency, as well as maintainability.
 
 ## Tooling
 
