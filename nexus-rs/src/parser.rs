@@ -263,7 +263,13 @@ fn parse_type(c: &mut TokenCursor) -> ast::TypeKind {
 fn parse_expr(c: &mut TokenCursor) -> ast::Expr {
     // TODO: Rework expression grammar!
 
-    c.fast_forward_while(|t| dbg!(t) != &Token::SemiColon);
+    let cur_token = c.peek().expect("unexpected end of token stream"); // TODO: Proper error handling..
+    let next_token = c.peek_next().expect("unexpected end of token stream"); // TODO: Proper error handling..
+
+    dbg!(cur_token);
+    dbg!(next_token);
+
+    c.fast_forward_while(|t| t != &Token::SemiColon);
 
     ast::Expr {
         kind: ast::ExprKind::Unsupported,
