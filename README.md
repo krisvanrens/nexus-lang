@@ -3,7 +3,6 @@
 [![MIT licensed](https://img.shields.io/github/license/krisvanrens/nexus-lang)](./LICENSE)
 [![build + test](https://github.com/krisvanrens/nexus-lang/actions/workflows/rust.yml/badge.svg)](https://github.com/krisvanrens/nexus-lang/actions)
 
-
 The Nexus programming language.
 
 Nexus is a language for supporting software component network descriptions.
@@ -44,7 +43,7 @@ Nexus is geared towards simplicity, in the sense that it tries to support a mini
 
 ## Safety
 
-Nexus is opinionated in some respects, mostly to improve safety.
+Nexus is opinionated in some respects, mostly to improve language safety.
 The following subsections indicate in what specific ways.
 
 ### Using a value uninitialized is an error
@@ -68,43 +67,22 @@ x = true;
 let y = x; // OK.
 ```
 
-#### Argumentation
+### Block scope braces are strictly required
 
-Using values uninitialized (and having the interpreter assume a value) is an error in 99.99% of the cases.
+Braces after `if`/`while`/`for`/etc. statements are strictly required:
 
-Also, this initialization requirement implicitly assumes a variable to be declared (which is not even required in languages like JavaScript).
-Using a value undeclared always is an error.
+Example:
 
-### Block scopes are strictly required
+```rust
+// Error: no block scope braces.
+if expr
+    do_something();
 
-Braces after `if`/`while`/`for`/etc. statements are required:
-
-```js
-// OK:
+// OK.
 if expr {
     do_something();
 }
-
-// Error:
-if expr
-    do_something();
 ```
-
-In other words, only block statements are allowed.
-
-#### Argumentation
-
-The argumentation for strictly requiring braces is simple: this prevents statement blocks to be "cut up" accidentally.
-Consider this C code as an example:
-
-```c
-if (expr)
-    printf("A\n");
-    printf("B\n"); // Whoops.
-```
-
-This will always print `B`, regardless of the `condition`.
-However, due to the simple, unrelated matter of code formatting, it could easily be overlooked by a reviewer as a bug.
 
 ## Tooling
 
@@ -117,7 +95,7 @@ This has many aspects:
 ## Documentation and tests
 
 As soon as the language syntax and semantics settle, documentation will be added.
-The current leading implementatation of Nexus, `nexus_rs` will be documented and tested thoroughly.
+The current leading implementation of Nexus, `nexus_rs` will be documented and tested thoroughly.
 
 ## The component model
 
@@ -127,7 +105,7 @@ This section describes the abstract component model used to define networks for.
 
 ## Language API
 
-This section describes the API used to interact with a software component network decription system.
+This section describes the API used to interact with a software component network description system.
 It can also be used by other tools, e.g. a visualizer for networks described by Nexus.
 
 `// TODO`
@@ -387,7 +365,7 @@ Precedence levels from *high to low* in order:
 - Handling setting of component values...how/what/mutability?
 - Implicit return value (to omit `return` in most places)?
 - Add compound assignment/operators (`+=`/`-=`/`*=`/`/=`/`%=`).
-- Traits for fundamental types? E.g. `"sdfs".len() == 4` etc.
+- Traits for fundamental types? E.g. `"blah".len() == 4` etc.
 - Is it possible to have `Number` be floating-point when sometimes used as integer?
 - Error handling? Result types?
 - Support for integration into a visual IDE / generative tooling.
