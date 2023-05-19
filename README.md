@@ -297,7 +297,7 @@ print      = 'print' expr ';' ;
 return     = 'return' expr? ';' ;
 block      = '{' decl* '}' ;
 
-expr       = primary | unary | binary | assignment ;
+expr       = primary | unary | binary ;
 primary    = call | ID | literal | closure | control | group | block ;
 call       = ID '(' args ')' ;
 literal    = NUMBER | STRING | 'true' | 'false' ;
