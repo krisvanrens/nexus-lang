@@ -268,8 +268,8 @@ fn parse_expr(c: &mut TokenCursor) -> ast::Expr {
     match (dbg!(cur_token), dbg!(next_token)) {
         // Function call expression:
         (Token::Identifier(_), Token::LeftParen) => parse_func_call_expr(c),
-        // Identifier expressions:
-        (Token::Identifier(_), _) => parse_variable_expr(c),
+        // Variable expressions:
+        (Token::Identifier(_), _) => parse_var_expr(c),
         // Literal expressions:
         (Token::Number(_), _) => parse_number_literal(c),
         (Token::String(_), _) => parse_string_literal(c),
@@ -318,7 +318,7 @@ fn parse_expr_stmt(c: &mut TokenCursor) -> ast::Stmt {
     }
 }
 
-fn parse_variable_expr(c: &mut TokenCursor) -> ast::Expr {
+fn parse_var_expr(c: &mut TokenCursor) -> ast::Expr {
     let id = parse_identifier(c);
 
     ast::Expr {
