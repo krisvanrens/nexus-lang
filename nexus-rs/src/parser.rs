@@ -276,6 +276,8 @@ fn parse_expr(c: &mut TokenCursor) -> ast::Expr {
         (Token::True, _) | (Token::False, _) => parse_bool_literal(c),
         // Group expressions:
         (Token::LeftParen, _) => parse_group_expr(c),
+        // Block expressions:
+        (Token::LeftBrace, _) => parse_block_expr(c),
         // Unary expressions:
         (Token::Bang, _)
         | (Token::Plus, _)
@@ -376,6 +378,14 @@ fn parse_group_expr(c: &mut TokenCursor) -> ast::Expr {
 
     ast::Expr {
         kind: ast::ExprKind::Group(Ptr::new(expr)),
+    }
+}
+
+fn parse_block_expr(c: &mut TokenCursor) -> ast::Expr {
+    let body = parse_block_stmt(c);
+
+    ast::Expr {
+        kind: ast::ExprKind::Block(Ptr::new(ast::BlockExpr { body })),
     }
 }
 

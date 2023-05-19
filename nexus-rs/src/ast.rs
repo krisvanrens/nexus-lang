@@ -105,6 +105,7 @@ impl fmt::Display for Expr {
 #[derive(Debug, Display)]
 pub enum ExprKind {
     Binary(Ptr<BinaryExpr>),
+    Block(Ptr<BlockExpr>),
     Group(Ptr<Expr>),
     Literal(Ptr<Literal>),
     Unary(Ptr<UnaryExpr>),
@@ -134,6 +135,11 @@ pub enum BinaryOp {
     Plus,
     Remainder,
     Subtract,
+}
+
+#[derive(Debug)]
+pub struct BlockExpr {
+    pub body: Stmt,
 }
 
 #[derive(Debug)]
