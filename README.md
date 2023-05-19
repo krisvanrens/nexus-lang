@@ -291,7 +291,7 @@ var_decl   = 'let' ( 'mut' )? ID ( ( '=' expr ) | ( ':' type ) ( ':' type '=' ex
 use_decl   = 'use' expr ';' ;
 
 stmt       = expr_stmt | assignment | print | return | block ;
-expr_stmt  = expr ';' ;
+expr_stmt  = expr ( ';' )? ;
 assignment = ID '=' expr ';' ;
 print      = 'print' expr ';' ;
 return     = 'return' expr? ';' ;
