@@ -265,6 +265,10 @@ fn parse_expr(c: &mut TokenCursor) -> ast::Expr {
     let cur_token = c.peek().expect("unexpected end of token stream"); // TODO: Proper error handling..
     let next_token = c.peek_next().expect("unexpected end of token stream"); // TODO: Proper error handling..
 
+    // TODO: Expression parsing fails, due to the fact that e.g. a binary expression parse will recurse to here, over-
+    //        flowing the stack. Either the whole approach must be made recursive, or some smart matching rules must be
+    //        devised. Rework this parsing.
+
     // Match expressions in descending precedence order:
     match (dbg!(cur_token), dbg!(next_token)) {
         // Function call:
