@@ -109,6 +109,7 @@ pub enum ExprKind {
     Literal(Ptr<Literal>),
     Unary(Ptr<UnaryExpr>),
     Unsupported(String), // NOTE: Temporary stub for development.
+    Var(Ptr<Var>),
 }
 
 #[derive(Debug)]
@@ -176,6 +177,11 @@ pub enum LiteralKind {
     Bool(bool),
     Number(f64),
     String(String),
+}
+
+#[derive(Debug)]
+pub struct Var {
+    pub id: String,
 }
 
 /// Trait to enable self-evaluation.

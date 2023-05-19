@@ -268,6 +268,14 @@ fn parse_expr(c: &mut TokenCursor) -> ast::Expr {
     match (dbg!(cur_token), dbg!(next_token)) {
         // Function call expression:
         (Token::Identifier(_), Token::LeftParen) => parse_func_call_expr(c),
+        // Identifier expressions:
+        (Token::Identifier(_), _) => parse_variable_expr(c),
+        // Literal expressions:
+        (Token::Number(_), _) => parse_number_literal(c),
+        (Token::String(_), _) => parse_string_literal(c),
+        (Token::True, _) | (Token::False, _) => parse_bool_literal(c),
+        // Group expressions:
+        (Token::LeftParen, _) => parse_group_expr(c),
         // Unary expressions:
         (Token::Bang, _)
         | (Token::Plus, _)
@@ -288,12 +296,6 @@ fn parse_expr(c: &mut TokenCursor) -> ast::Expr {
         | (_, Token::NotEq)
         | (_, Token::And)
         | (_, Token::Or) => parse_binary_expr(c),
-        // Literal expressions:
-        (Token::Number(_), _) => parse_number_literal(c),
-        (Token::String(_), _) => parse_string_literal(c),
-        (Token::True, _) | (Token::False, _) => parse_bool_literal(c),
-        // Group expressions:
-        (Token::LeftParen, _) => parse_group_expr(c),
         _ => {
             c.fast_forward_while(|t| t != &Token::SemiColon);
 
@@ -316,10 +318,64 @@ fn parse_expr_stmt(c: &mut TokenCursor) -> ast::Stmt {
     }
 }
 
+fn parse_variable_expr(c: &mut TokenCursor) -> ast::Expr {
+    let id = parse_identifier(c);
+
+    ast::Expr {
+        kind: ast::ExprKind::Var(Ptr::new(ast::Var { id })),
+    }
+}
+
 fn parse_func_call_expr(c: &mut TokenCursor) -> ast::Expr {
     c.fast_forward_while(|t| t != &Token::SemiColon); // TODO
     ast::Expr {
         kind: ast::ExprKind::Unsupported("func_call".to_string()),
+    }
+}
+
+fn parse_bool_literal(c: &mut TokenCursor) -> ast::Expr {
+    ast::Expr {
+        kind: ast::ExprKind::Literal(Ptr::new(ast::Literal {
+            kind: ast::LiteralKind::Bool(match c.value() {
+                Some(Token::True) => true,
+                Some(Token::False) => false,
+                _ => panic!("not a boolean literal"), // TODO: Proper error handling..
+            }),
+        })),
+    }
+}
+
+fn parse_number_literal(c: &mut TokenCursor) -> ast::Expr {
+    ast::Expr {
+        kind: ast::ExprKind::Literal(Ptr::new(ast::Literal {
+            kind: ast::LiteralKind::Number(match c.value() {
+                Some(Token::Number(n)) => n,
+                _ => panic!("not a number literal"), // TODO: Proper error handling..
+            }),
+        })),
+    }
+}
+
+fn parse_string_literal(c: &mut TokenCursor) -> ast::Expr {
+    ast::Expr {
+        kind: ast::ExprKind::Literal(Ptr::new(ast::Literal {
+            kind: ast::LiteralKind::String(match c.value() {
+                Some(Token::String(s)) => s,
+                _ => panic!("not a string literal"), // TODO: Proper error handling..
+            }),
+        })),
+    }
+}
+
+fn parse_group_expr(c: &mut TokenCursor) -> ast::Expr {
+    c.consume(Token::LeftParen);
+
+    let expr = parse_expr(c);
+
+    c.consume(Token::RightParen);
+
+    ast::Expr {
+        kind: ast::ExprKind::Group(Ptr::new(expr)),
     }
 }
 
@@ -369,30 +425,6 @@ fn parse_unary_expr(c: &mut TokenCursor) -> ast::Expr {
     }
 }
 
-fn parse_group_expr(c: &mut TokenCursor) -> ast::Expr {
-    c.consume(Token::LeftParen);
-
-    let expr = parse_expr(c);
-
-    c.consume(Token::RightParen);
-
-    ast::Expr {
-        kind: ast::ExprKind::Group(Ptr::new(expr)),
-    }
-}
-
-fn parse_print_stmt(c: &mut TokenCursor) -> ast::Stmt {
-    c.consume(Token::Print);
-
-    let expr = parse_expr(c);
-
-    c.consume_msg(Token::SemiColon, "expected semicolon after statement");
-
-    ast::Stmt {
-        kind: ast::StmtKind::Print(Ptr::new(ast::Print { expr })),
-    }
-}
-
 fn parse_return_stmt(c: &mut TokenCursor) -> ast::Stmt {
     c.consume(Token::Return);
 
@@ -405,36 +437,14 @@ fn parse_return_stmt(c: &mut TokenCursor) -> ast::Stmt {
     }
 }
 
-fn parse_bool_literal(c: &mut TokenCursor) -> ast::Expr {
-    ast::Expr {
-        kind: ast::ExprKind::Literal(Ptr::new(ast::Literal {
-            kind: ast::LiteralKind::Bool(match c.value() {
-                Some(Token::True) => true,
-                Some(Token::False) => false,
-                _ => panic!("not a boolean literal"), // TODO: Proper error handling..
-            }),
-        })),
-    }
-}
+fn parse_print_stmt(c: &mut TokenCursor) -> ast::Stmt {
+    c.consume(Token::Print);
 
-fn parse_number_literal(c: &mut TokenCursor) -> ast::Expr {
-    ast::Expr {
-        kind: ast::ExprKind::Literal(Ptr::new(ast::Literal {
-            kind: ast::LiteralKind::Number(match c.value() {
-                Some(Token::Number(n)) => n,
-                _ => panic!("not a number literal"), // TODO: Proper error handling..
-            }),
-        })),
-    }
-}
+    let expr = parse_expr(c);
 
-fn parse_string_literal(c: &mut TokenCursor) -> ast::Expr {
-    ast::Expr {
-        kind: ast::ExprKind::Literal(Ptr::new(ast::Literal {
-            kind: ast::LiteralKind::String(match c.value() {
-                Some(Token::String(s)) => s,
-                _ => panic!("not a string literal"), // TODO: Proper error handling..
-            }),
-        })),
+    c.consume_msg(Token::SemiColon, "expected semicolon after statement");
+
+    ast::Stmt {
+        kind: ast::StmtKind::Print(Ptr::new(ast::Print { expr })),
     }
 }
