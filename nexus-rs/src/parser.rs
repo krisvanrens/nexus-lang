@@ -195,6 +195,7 @@ fn parse_stmt(c: &mut TokenCursor) -> ast::Stmt {
         Some(Token::LeftBrace) => parse_block_stmt(c),
         Some(Token::Print) => parse_print_stmt(c),
         Some(Token::Return) => parse_return_stmt(c),
+        Some(Token::Identifier(_)) => parse_assignment_stmt(c),
         _ => parse_expr_stmt(c),
     }
 }
@@ -435,6 +436,18 @@ fn parse_unary_expr(c: &mut TokenCursor) -> ast::Expr {
     }
 }
 
+fn parse_print_stmt(c: &mut TokenCursor) -> ast::Stmt {
+    c.consume(Token::Print);
+
+    let expr = parse_expr(c);
+
+    c.consume_msg(Token::SemiColon, "expected semicolon after statement");
+
+    ast::Stmt {
+        kind: ast::StmtKind::Print(Ptr::new(ast::Print { expr })),
+    }
+}
+
 fn parse_return_stmt(c: &mut TokenCursor) -> ast::Stmt {
     c.consume(Token::Return);
 
@@ -447,14 +460,16 @@ fn parse_return_stmt(c: &mut TokenCursor) -> ast::Stmt {
     }
 }
 
-fn parse_print_stmt(c: &mut TokenCursor) -> ast::Stmt {
-    c.consume(Token::Print);
+fn parse_assignment_stmt(c: &mut TokenCursor) -> ast::Stmt {
+    let id = parse_identifier(c);
+
+    c.consume(Token::Is);
 
     let expr = parse_expr(c);
 
     c.consume_msg(Token::SemiColon, "expected semicolon after statement");
 
     ast::Stmt {
-        kind: ast::StmtKind::Print(Ptr::new(ast::Print { expr })),
+        kind: ast::StmtKind::Assignment(Ptr::new(ast::Assignment { id, expr })),
     }
 }

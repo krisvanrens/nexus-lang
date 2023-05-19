@@ -28,6 +28,7 @@ impl fmt::Display for Stmt {
 /// Statement kind.
 #[derive(Debug, Display)]
 pub enum StmtKind {
+    Assignment(Ptr<Assignment>),
     Block(Stmts),
     ConstDecl(Ptr<ConstDecl>),
     Expr(Ptr<Expr>),
@@ -155,6 +156,12 @@ pub enum UnaryOp {
     Minus,
     Node,
     Plus,
+}
+
+#[derive(Debug)]
+pub struct Assignment {
+    pub id: String,
+    pub expr: Expr,
 }
 
 #[derive(Debug)]
