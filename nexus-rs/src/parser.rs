@@ -266,25 +266,25 @@ fn parse_expr(c: &mut TokenCursor) -> ast::Expr {
 
     // Match expressions in descending precedence order:
     match (dbg!(cur_token), dbg!(next_token)) {
-        // Function call expression:
+        // Function call:
         (Token::Identifier(_), Token::LeftParen) => parse_func_call_expr(c),
-        // Variable expressions:
+        // Variable:
         (Token::Identifier(_), _) => parse_var_expr(c),
-        // Literal expressions:
+        // Literal:
         (Token::Number(_), _) => parse_number_literal(c),
         (Token::String(_), _) => parse_string_literal(c),
         (Token::True, _) | (Token::False, _) => parse_bool_literal(c),
-        // Group expressions:
+        // Group:
         (Token::LeftParen, _) => parse_group_expr(c),
-        // Block expressions:
+        // Block:
         (Token::LeftBrace, _) => parse_block_expr(c),
-        // Unary expressions:
+        // Unary:
         (Token::Bang, _)
         | (Token::Plus, _)
         | (Token::Minus, _)
         | (Token::Group, _)
         | (Token::Node, _) => parse_unary_expr(c),
-        // Binary expressions:
+        // Binary:
         (_, Token::Star)
         | (_, Token::Slash)
         | (_, Token::Percent)
