@@ -436,7 +436,7 @@ fn parse_unary_expr(c: &mut TokenCursor) -> ast::Expr {
     let expr = parse_expr(c);
 
     ast::Expr {
-        kind: ast::ExprKind::Unary(Ptr::new(ast::UnaryExpr { operator, expr })),
+        kind: ast::ExprKind::Unary(Ptr::new(ast::UnaryExpr { op: operator, expr })),
     }
 }
 

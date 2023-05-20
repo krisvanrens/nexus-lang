@@ -116,7 +116,7 @@ pub enum ExprKind {
 
 #[derive(Debug)]
 pub struct BinaryExpr {
-    pub operator: BinaryOp,
+    pub op: BinaryOp,
     pub lhs: Expr,
     pub rhs: Expr,
 }
@@ -145,7 +145,7 @@ pub struct BlockExpr {
 
 #[derive(Debug)]
 pub struct UnaryExpr {
-    pub operator: UnaryOp,
+    pub op: UnaryOp,
     pub expr: Expr,
 }
 
