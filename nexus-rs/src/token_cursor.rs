@@ -51,6 +51,25 @@ impl TokenCursor {
         value
     }
 
+    /// Take previous value.
+    ///
+    /// # Example
+    ///
+    /// ```
+    /// use nexus_rs::token_cursor::TokenCursor;
+    /// use nexus_rs::token::Token;
+    ///
+    /// let t = vec![Token::Let, Token::Arrow];
+    /// let mut c = TokenCursor::new(t);
+    ///
+    /// assert_eq!(c.previous(), None);
+    /// c.advance();
+    /// assert_eq!(c.previous(), Some(Token::Let));
+    /// ```
+    pub fn previous(&mut self) -> Option<Token> {
+        self.prev.take()
+    }
+
     /// Peek upcoming value (without advancing).
     ///
     /// # Example
@@ -223,6 +242,20 @@ fn value_test() {
     assert_eq!(c.value(), Some(Token::Let));
     assert_eq!(c.value(), Some(Token::Arrow));
     assert_eq!(c.value(), None);
+}
+
+#[test]
+fn previous_test() {
+    let t = vec![Token::Let, Token::Arrow];
+    let mut c = TokenCursor::new(t);
+
+    assert_eq!(c.previous(), None);
+    c.advance();
+    assert_eq!(c.previous(), Some(Token::Let));
+    c.advance();
+    assert_eq!(c.previous(), Some(Token::Arrow));
+
+    assert_eq!(c.previous(), None);
 }
 
 #[test]
