@@ -1,6 +1,5 @@
 use crate::token::{Token, Tokens};
-use std::iter::Peekable;
-use std::vec::IntoIter;
+use std::{iter::Peekable, vec::IntoIter};
 
 /// Cursor for tokens in a token collection.
 #[derive(Debug)]
