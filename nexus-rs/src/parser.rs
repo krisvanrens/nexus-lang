@@ -9,6 +9,28 @@ pub struct Parser {
     cursor: TokenCursor,
 }
 
+/// Preprocess token stream.
+fn preprocess(tokens: Tokens) -> Tokens {
+    let mut result = Tokens::new();
+
+    // TODO: For now, ignore closures and transform a '||' into 'Or':
+    let mut found_pipe = false;
+    tokens.into_iter().for_each(|t| {
+        if found_pipe && t == Token::Pipe {
+            result.push(Token::Or);
+            found_pipe = false;
+        } else {
+            found_pipe = t == Token::Pipe;
+
+            if !found_pipe {
+                result.push(t);
+            }
+        }
+    });
+
+    result
+}
+
 impl Parser {
     /// Create a new parser from a collection of tokens.
     ///
@@ -23,7 +45,7 @@ impl Parser {
     /// ```
     pub fn new(tokens: Tokens) -> Self {
         Parser {
-            cursor: TokenCursor::new(tokens),
+            cursor: TokenCursor::new(preprocess(tokens)),
         }
     }
 
@@ -268,23 +290,86 @@ fn parse_expr(c: &mut TokenCursor) -> ast::Expr {
 }
 
 fn parse_expr_or(c: &mut TokenCursor) -> ast::Expr {
-    parse_expr_and(c)
+    let expr = parse_expr_and(c);
+
+    if matches!(c.peek(), Some(Token::Or)) {
+        let op = parse_binary_op(c.value());
+        let lhs = expr;
+        let rhs = parse_expr_and(c);
+
+        ast::Expr {
+            kind: ast::ExprKind::Binary(Ptr::new(ast::BinaryExpr { op, lhs, rhs })),
+        }
+    } else {
+        expr
+    }
 }
 
 fn parse_expr_and(c: &mut TokenCursor) -> ast::Expr {
-    parse_expr_equality(c)
+    let expr = parse_expr_equality(c);
+
+    if matches!(c.peek(), Some(Token::And)) {
+        let op = parse_binary_op(c.value());
+        let lhs = expr;
+        let rhs = parse_expr_equality(c);
+
+        ast::Expr {
+            kind: ast::ExprKind::Binary(Ptr::new(ast::BinaryExpr { op, lhs, rhs })),
+        }
+    } else {
+        expr
+    }
 }
 
 fn parse_expr_equality(c: &mut TokenCursor) -> ast::Expr {
-    parse_expr_relational(c)
+    let expr = parse_expr_relational(c);
+
+    if matches!(c.peek(), Some(Token::Eq) | Some(Token::NotEq)) {
+        let op = parse_binary_op(c.value());
+        let lhs = expr;
+        let rhs = parse_expr_relational(c);
+
+        ast::Expr {
+            kind: ast::ExprKind::Binary(Ptr::new(ast::BinaryExpr { op, lhs, rhs })),
+        }
+    } else {
+        expr
+    }
 }
 
 fn parse_expr_relational(c: &mut TokenCursor) -> ast::Expr {
-    parse_expr_term(c)
+    let expr = parse_expr_term(c);
+
+    if matches!(
+        c.peek(),
+        Some(Token::Lt) | Some(Token::Gt) | Some(Token::LtEq) | Some(Token::GtEq)
+    ) {
+        let op = parse_binary_op(c.value());
+        let lhs = expr;
+        let rhs = parse_expr_term(c);
+
+        ast::Expr {
+            kind: ast::ExprKind::Binary(Ptr::new(ast::BinaryExpr { op, lhs, rhs })),
+        }
+    } else {
+        expr
+    }
 }
 
 fn parse_expr_term(c: &mut TokenCursor) -> ast::Expr {
-    parse_expr_factor(c)
+    let expr = parse_expr_factor(c);
+
+    if matches!(c.peek(), Some(Token::Plus) | Some(Token::Minus)) {
+        let op = parse_binary_op(c.value());
+        let lhs = expr;
+        let rhs = parse_expr_factor(c);
+
+        ast::Expr {
+            kind: ast::ExprKind::Binary(Ptr::new(ast::BinaryExpr { op, lhs, rhs })),
+        }
+    } else {
+        expr
+    }
 }
 
 fn parse_expr_factor(c: &mut TokenCursor) -> ast::Expr {

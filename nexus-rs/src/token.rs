@@ -1,6 +1,7 @@
 /// Scanning/lexing token representation used in the Nexus grammar.
 #[derive(Clone, Debug, PartialEq)]
 pub enum Token {
+    Empty,        // "Empty" token, used for stream preprocessing.
     LeftParen,    // '('
     RightParen,   // ')'
     LeftBrace,    // '{'

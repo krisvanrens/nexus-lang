@@ -1,3 +1,18 @@
+// Factors:
 let x1 = 42 * 17;
-let x2 = 23 - x1;
-let x3 = x1 + 31;
+let x2 = 42 / 17;
+let x3 = 23 % x1;
+// Terms:
+let x4 = x1 + 31;
+let x5 = x1 - 31;
+// Relational:
+let x6 = x1 < 31;
+let x7 = x1 > 31;
+let x8 = x1 <= 31;
+let x9 = x1 >= 31;
+// Equality:
+let x10 = x1 == 31;
+let x11 = x1 != 31;
+// Logical:
+let x12 = true && false;
+let x13 = x12 || true;
