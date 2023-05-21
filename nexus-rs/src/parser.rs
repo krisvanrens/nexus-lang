@@ -294,7 +294,7 @@ fn parse_expr_factor(c: &mut TokenCursor) -> ast::Expr {
         c.peek(),
         Some(Token::Star) | Some(Token::Slash) | Some(Token::Percent)
     ) {
-        let op = parse_binary_op(c.previous());
+        let op = parse_binary_op(c.value());
         let lhs = expr;
         let rhs = parse_expr_unary(c);
 
