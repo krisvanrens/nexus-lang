@@ -290,57 +290,57 @@ fn parse_expr(c: &mut TokenCursor) -> ast::Expr {
 }
 
 fn parse_expr_or(c: &mut TokenCursor) -> ast::Expr {
-    let expr = parse_expr_and(c);
+    let mut expr = parse_expr_and(c);
 
-    if matches!(c.peek(), Some(Token::Or)) {
+    while matches!(c.peek(), Some(Token::Or)) {
         let op = parse_binary_op(c.value());
         let lhs = expr;
         let rhs = parse_expr_and(c);
 
-        ast::Expr {
+        expr = ast::Expr {
             kind: ast::ExprKind::Binary(Ptr::new(ast::BinaryExpr { op, lhs, rhs })),
-        }
-    } else {
-        expr
+        };
     }
+
+    expr
 }
 
 fn parse_expr_and(c: &mut TokenCursor) -> ast::Expr {
-    let expr = parse_expr_equality(c);
+    let mut expr = parse_expr_equality(c);
 
-    if matches!(c.peek(), Some(Token::And)) {
+    while matches!(c.peek(), Some(Token::And)) {
         let op = parse_binary_op(c.value());
         let lhs = expr;
         let rhs = parse_expr_equality(c);
 
-        ast::Expr {
+        expr = ast::Expr {
             kind: ast::ExprKind::Binary(Ptr::new(ast::BinaryExpr { op, lhs, rhs })),
-        }
-    } else {
-        expr
+        };
     }
+
+    expr
 }
 
 fn parse_expr_equality(c: &mut TokenCursor) -> ast::Expr {
-    let expr = parse_expr_relational(c);
+    let mut expr = parse_expr_relational(c);
 
-    if matches!(c.peek(), Some(Token::Eq) | Some(Token::NotEq)) {
+    while matches!(c.peek(), Some(Token::Eq) | Some(Token::NotEq)) {
         let op = parse_binary_op(c.value());
         let lhs = expr;
         let rhs = parse_expr_relational(c);
 
-        ast::Expr {
+        expr = ast::Expr {
             kind: ast::ExprKind::Binary(Ptr::new(ast::BinaryExpr { op, lhs, rhs })),
-        }
-    } else {
-        expr
+        };
     }
+
+    expr
 }
 
 fn parse_expr_relational(c: &mut TokenCursor) -> ast::Expr {
-    let expr = parse_expr_term(c);
+    let mut expr = parse_expr_term(c);
 
-    if matches!(
+    while matches!(
         c.peek(),
         Some(Token::Lt) | Some(Token::Gt) | Some(Token::LtEq) | Some(Token::GtEq)
     ) {
@@ -348,34 +348,34 @@ fn parse_expr_relational(c: &mut TokenCursor) -> ast::Expr {
         let lhs = expr;
         let rhs = parse_expr_term(c);
 
-        ast::Expr {
+        expr = ast::Expr {
             kind: ast::ExprKind::Binary(Ptr::new(ast::BinaryExpr { op, lhs, rhs })),
-        }
-    } else {
-        expr
+        };
     }
+
+    expr
 }
 
 fn parse_expr_term(c: &mut TokenCursor) -> ast::Expr {
-    let expr = parse_expr_factor(c);
+    let mut expr = parse_expr_factor(c);
 
-    if matches!(c.peek(), Some(Token::Plus) | Some(Token::Minus)) {
+    while matches!(c.peek(), Some(Token::Plus) | Some(Token::Minus)) {
         let op = parse_binary_op(c.value());
         let lhs = expr;
         let rhs = parse_expr_factor(c);
 
-        ast::Expr {
+        expr = ast::Expr {
             kind: ast::ExprKind::Binary(Ptr::new(ast::BinaryExpr { op, lhs, rhs })),
-        }
-    } else {
-        expr
+        };
     }
+
+    expr
 }
 
 fn parse_expr_factor(c: &mut TokenCursor) -> ast::Expr {
-    let expr = parse_expr_unary(c);
+    let mut expr = parse_expr_unary(c);
 
-    if matches!(
+    while matches!(
         c.peek(),
         Some(Token::Star) | Some(Token::Slash) | Some(Token::Percent)
     ) {
@@ -383,12 +383,12 @@ fn parse_expr_factor(c: &mut TokenCursor) -> ast::Expr {
         let lhs = expr;
         let rhs = parse_expr_unary(c);
 
-        ast::Expr {
+        expr = ast::Expr {
             kind: ast::ExprKind::Binary(Ptr::new(ast::BinaryExpr { op, lhs, rhs })),
-        }
-    } else {
-        expr
+        };
     }
+
+    expr
 }
 
 fn parse_expr_unary(c: &mut TokenCursor) -> ast::Expr {
