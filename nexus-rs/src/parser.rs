@@ -217,7 +217,12 @@ fn parse_stmt(c: &mut TokenCursor) -> ast::Stmt {
         Some(Token::LeftBrace) => parse_block_stmt(c),
         Some(Token::Print) => parse_print_stmt(c),
         Some(Token::Return) => parse_return_stmt(c),
-        Some(Token::Identifier(_)) => parse_assignment_stmt(c),
+        Some(Token::Identifier(_)) => match c.peek_next() {
+            Some(Token::Arrow) => parse_connect_stmt(c),
+            Some(Token::Is) => parse_assignment_stmt(c),
+            None => panic!("unexpected EOS while parsing statement"), // TODO: Proper error handling..
+            _ => panic!("unexpected token"), // TODO: Proper error handling..
+        },
         _ => parse_expr_stmt(c),
     }
 }
@@ -580,5 +585,19 @@ fn parse_assignment_stmt(c: &mut TokenCursor) -> ast::Stmt {
 
     ast::Stmt {
         kind: ast::StmtKind::Assignment(Ptr::new(ast::Assignment { id, expr })),
+    }
+}
+
+fn parse_connect_stmt(c: &mut TokenCursor) -> ast::Stmt {
+    let source = parse_identifier(c);
+
+    c.consume(Token::Arrow);
+
+    let sink = parse_identifier(c);
+
+    c.consume_msg(Token::SemiColon, "expected semicolon after statement");
+
+    ast::Stmt {
+        kind: ast::StmtKind::Connect(Ptr::new(ast::Connect { source, sink })),
     }
 }

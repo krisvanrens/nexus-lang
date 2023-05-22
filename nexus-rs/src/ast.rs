@@ -30,6 +30,7 @@ impl fmt::Display for Stmt {
 pub enum StmtKind {
     Assignment(Ptr<Assignment>),
     Block(Stmts),
+    Connect(Ptr<Connect>),
     ConstDecl(Ptr<ConstDecl>),
     Expr(Ptr<Expr>),
     FunctionDecl(Ptr<FunctionDecl>),
@@ -162,6 +163,12 @@ pub enum UnaryOp {
 pub struct Assignment {
     pub id: String,
     pub expr: Expr,
+}
+
+#[derive(Debug)]
+pub struct Connect {
+    pub source: String,
+    pub sink: String,
 }
 
 #[derive(Debug)]

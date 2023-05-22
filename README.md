@@ -290,9 +290,10 @@ const_decl = 'const' ID ':' type '=' expr ';' ;
 var_decl   = 'let' ( 'mut' )? ID ( ( '=' expr ) | ( ':' type ) ( ':' type '=' expr ) )? ';' ;
 use_decl   = 'use' expr ';' ;
 
-stmt       = expr_stmt | assignment | print | return | block ;
+stmt       = expr_stmt | assignment | connect | print | return | block ;
 expr_stmt  = expr ( ';' )? ;
 assignment = ID '=' expr ';' ;
+connect    = ID '->' ID ';' ;
 print      = 'print' expr ';' ;
 return     = 'return' expr? ';' ;
 block      = '{' decl* '}' ;
