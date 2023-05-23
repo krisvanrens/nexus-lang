@@ -289,18 +289,17 @@ fn parse_type(c: &mut TokenCursor) -> ast::TypeKind {
 }
 
 fn parse_expr(c: &mut TokenCursor) -> ast::Expr {
-    // TODO: Rename / fuse functions where applicable!
-
-    parse_expr_or(c)
+    // NOTE: The recursion level encodes the operator precedence.
+    parse_or_expr(c)
 }
 
-fn parse_expr_or(c: &mut TokenCursor) -> ast::Expr {
-    let mut expr = parse_expr_and(c);
+fn parse_or_expr(c: &mut TokenCursor) -> ast::Expr {
+    let mut expr = parse_and_expr(c);
 
     while matches!(c.peek(), Some(Token::Or)) {
-        let op = parse_binary_op(c.value());
+        let op = ast::BinaryOp::Or;
         let lhs = expr;
-        let rhs = parse_expr_and(c);
+        let rhs = parse_and_expr(c);
 
         expr = ast::Expr {
             kind: ast::ExprKind::Binary(Ptr::new(ast::BinaryExpr { op, lhs, rhs })),
@@ -310,13 +309,13 @@ fn parse_expr_or(c: &mut TokenCursor) -> ast::Expr {
     expr
 }
 
-fn parse_expr_and(c: &mut TokenCursor) -> ast::Expr {
-    let mut expr = parse_expr_equality(c);
+fn parse_and_expr(c: &mut TokenCursor) -> ast::Expr {
+    let mut expr = parse_equality_expr(c);
 
     while matches!(c.peek(), Some(Token::And)) {
-        let op = parse_binary_op(c.value());
+        let op = ast::BinaryOp::And;
         let lhs = expr;
-        let rhs = parse_expr_equality(c);
+        let rhs = parse_equality_expr(c);
 
         expr = ast::Expr {
             kind: ast::ExprKind::Binary(Ptr::new(ast::BinaryExpr { op, lhs, rhs })),
@@ -326,13 +325,13 @@ fn parse_expr_and(c: &mut TokenCursor) -> ast::Expr {
     expr
 }
 
-fn parse_expr_equality(c: &mut TokenCursor) -> ast::Expr {
-    let mut expr = parse_expr_relational(c);
+fn parse_equality_expr(c: &mut TokenCursor) -> ast::Expr {
+    let mut expr = parse_relational_expr(c);
 
     while matches!(c.peek(), Some(Token::Eq) | Some(Token::NotEq)) {
         let op = parse_binary_op(c.value());
         let lhs = expr;
-        let rhs = parse_expr_relational(c);
+        let rhs = parse_relational_expr(c);
 
         expr = ast::Expr {
             kind: ast::ExprKind::Binary(Ptr::new(ast::BinaryExpr { op, lhs, rhs })),
@@ -342,7 +341,7 @@ fn parse_expr_equality(c: &mut TokenCursor) -> ast::Expr {
     expr
 }
 
-fn parse_expr_relational(c: &mut TokenCursor) -> ast::Expr {
+fn parse_relational_expr(c: &mut TokenCursor) -> ast::Expr {
     let mut expr = parse_expr_term(c);
 
     while matches!(
@@ -362,12 +361,12 @@ fn parse_expr_relational(c: &mut TokenCursor) -> ast::Expr {
 }
 
 fn parse_expr_term(c: &mut TokenCursor) -> ast::Expr {
-    let mut expr = parse_expr_factor(c);
+    let mut expr = parse_factor_expr(c);
 
     while matches!(c.peek(), Some(Token::Plus) | Some(Token::Minus)) {
         let op = parse_binary_op(c.value());
         let lhs = expr;
-        let rhs = parse_expr_factor(c);
+        let rhs = parse_factor_expr(c);
 
         expr = ast::Expr {
             kind: ast::ExprKind::Binary(Ptr::new(ast::BinaryExpr { op, lhs, rhs })),
@@ -377,8 +376,8 @@ fn parse_expr_term(c: &mut TokenCursor) -> ast::Expr {
     expr
 }
 
-fn parse_expr_factor(c: &mut TokenCursor) -> ast::Expr {
-    let mut expr = parse_expr_unary(c);
+fn parse_factor_expr(c: &mut TokenCursor) -> ast::Expr {
+    let mut expr = parse_unary_expr(c);
 
     while matches!(
         c.peek(),
@@ -386,7 +385,7 @@ fn parse_expr_factor(c: &mut TokenCursor) -> ast::Expr {
     ) {
         let op = parse_binary_op(c.value());
         let lhs = expr;
-        let rhs = parse_expr_unary(c);
+        let rhs = parse_unary_expr(c);
 
         expr = ast::Expr {
             kind: ast::ExprKind::Binary(Ptr::new(ast::BinaryExpr { op, lhs, rhs })),
@@ -396,7 +395,7 @@ fn parse_expr_factor(c: &mut TokenCursor) -> ast::Expr {
     expr
 }
 
-fn parse_expr_unary(c: &mut TokenCursor) -> ast::Expr {
+fn parse_unary_expr(c: &mut TokenCursor) -> ast::Expr {
     if matches!(
         c.peek(),
         Some(Token::Bang)
@@ -405,18 +404,23 @@ fn parse_expr_unary(c: &mut TokenCursor) -> ast::Expr {
             | Some(Token::Node)
             | Some(Token::Plus)
     ) {
-        parse_unary_expr(c)
+        let operator = parse_unary_op(c.value());
+        let expr = parse_expr(c);
+
+        ast::Expr {
+            kind: ast::ExprKind::Unary(Ptr::new(ast::UnaryExpr { op: operator, expr })),
+        }
     } else {
-        parse_expr_call(c)
+        parse_call_expr(c)
     }
 }
 
-fn parse_expr_call(c: &mut TokenCursor) -> ast::Expr {
+fn parse_call_expr(c: &mut TokenCursor) -> ast::Expr {
     // TODO
-    parse_expr_primary(c)
+    parse_primary_expr(c)
 }
 
-fn parse_expr_primary(c: &mut TokenCursor) -> ast::Expr {
+fn parse_primary_expr(c: &mut TokenCursor) -> ast::Expr {
     match c.peek() {
         Some(Token::Number(_)) => parse_number_literal(c),
         Some(Token::String(_)) => parse_string_literal(c),
@@ -426,6 +430,7 @@ fn parse_expr_primary(c: &mut TokenCursor) -> ast::Expr {
         Some(Token::LeftBrace) => parse_block_expr(c),
         None => panic!("unexpected end of token stream"), // TODO: Proper error handling..
         _ => {
+            // XXX: Flush until semicolon.
             c.fast_forward_while(|t| t != &Token::SemiColon);
 
             ast::Expr {
@@ -512,6 +517,18 @@ fn parse_block_expr(c: &mut TokenCursor) -> ast::Expr {
     }
 }
 
+fn parse_unary_op(t: Option<Token>) -> ast::UnaryOp {
+    match t {
+        Some(Token::Bang) => ast::UnaryOp::Bang,
+        Some(Token::Minus) => ast::UnaryOp::Minus,
+        Some(Token::Group) => ast::UnaryOp::Group,
+        Some(Token::Node) => ast::UnaryOp::Node,
+        Some(Token::Plus) => ast::UnaryOp::Plus,
+        Some(_) => panic!("not a unary expression token"), // TODO: Proper error handling..
+        None => panic!("unexpected end of token stream"),  // TODO: Proper error handling..
+    }
+}
+
 fn parse_binary_op(t: Option<Token>) -> ast::BinaryOp {
     match t {
         Some(Token::And) => ast::BinaryOp::And,
@@ -529,24 +546,6 @@ fn parse_binary_op(t: Option<Token>) -> ast::BinaryOp {
         Some(Token::Minus) => ast::BinaryOp::Subtract,
         Some(_) => panic!("not a binary expression token"), // TODO: Proper error handling..
         None => panic!("unexpected end of token stream"),   // TODO: Proper error handling..
-    }
-}
-
-fn parse_unary_expr(c: &mut TokenCursor) -> ast::Expr {
-    let operator = match c.value() {
-        Some(Token::Bang) => ast::UnaryOp::Bang,
-        Some(Token::Minus) => ast::UnaryOp::Minus,
-        Some(Token::Group) => ast::UnaryOp::Group,
-        Some(Token::Node) => ast::UnaryOp::Node,
-        Some(Token::Plus) => ast::UnaryOp::Plus,
-        Some(_) => panic!("not a unary expression token"), // TODO: Proper error handling..
-        None => panic!("unexpected end of token stream"),  // TODO: Proper error handling..
-    };
-
-    let expr = parse_expr(c);
-
-    ast::Expr {
-        kind: ast::ExprKind::Unary(Ptr::new(ast::UnaryExpr { op: operator, expr })),
     }
 }
 
