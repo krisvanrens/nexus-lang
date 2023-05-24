@@ -199,28 +199,28 @@ There are three fundamental data types:
 
 ## Implementation status
 
-### Milestone 0: ideation, base setup
+### Milestone 0: ideation, base setup (v0.1)
 
 - [x] Lexing/scanning setup.
 - [x] Scanner error handling.
 - [x] Interpretation from source file (`.nxs`).
 - [x] Command-line REPL setup.
 
-### Milestone 1: language setup
+### Milestone 1: language setup (v0.2)
 
 - [ ] First thorough iteration of grammar rules.
 - [ ] Parsing setup.
 - [ ] Parsing error handling.
 - [ ] Debugging commands in REPL and interpreter.
 
-### Milestone 2: foundations
+### Milestone 2: foundations (v0.3)
 
-- [ ] Fundamental type `Number`.
-- [ ] Fundamental type `String`.
+- [ ] Setup interpretation.
+- [ ] Setup identifier resolving and scope handling.
 - [ ] Simple arithmetic expressions.
 - [ ] Printing of values.
 
-### Milestone 3: basics
+### Milestone 3: basics (v0.4)
 
 - [ ] Including other files with `use`
 - [ ] Functions using `fn`.
@@ -243,6 +243,7 @@ T.B.D.
 | Keyword | Description |
 | :-----: | :---------- |
 | `const`  | Constant declaration.          |
+| `else`   | Conditional expression.        |
 | `fn`     | Function declaration.          |
 | `for`    | Loop expression.               |
 | `if`     | Conditional expression.        |
@@ -364,7 +365,7 @@ Precedence levels from *high to low* in order:
 - Support for objects? Groups using `group` should suffice.
 - Execution entry point? Just structural starting from the root `.nxs` file?
 - Object literal notation? (or JSON literal notation)
-- Add `match` expression? Should be simple for a few fundamental types.
+- Add `match` expression? Should be relatively simple for a few fundamental types.
 - Handling setting of component values...how/what/mutability?
 - Implicit return value (to omit `return` in most places)?
 - Add compound assignment/operators (`+=`/`-=`/`*=`/`/=`/`%=`).
@@ -389,6 +390,8 @@ Precedence levels from *high to low* in order:
 - Underscore for integer number separators?
 - Underscore for unused variables?
 - Force parentheses for certain operators, e.g. relational / equality operators?
+- Add `Node` and `Group` as a fundamental type to allow for expressions to evaluate to them?
+- Are `node` and `group` really unary operators?
 
 ## FAQ
 
