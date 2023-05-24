@@ -195,7 +195,7 @@ fn parse_var_decl(c: &mut TokenCursor) -> ast::Stmt {
             typeid,
             value,
         })),
-    } // TODO
+    }
 }
 
 fn parse_use_decl(c: &mut TokenCursor) -> ast::Stmt {
@@ -209,7 +209,7 @@ fn parse_use_decl(c: &mut TokenCursor) -> ast::Stmt {
 
     ast::Stmt {
         kind: ast::StmtKind::UseDecl(Ptr::new(ast::UseDecl { filename })),
-    } // TODO
+    }
 }
 
 fn parse_stmt(c: &mut TokenCursor) -> ast::Stmt {
@@ -416,7 +416,10 @@ fn parse_unary_expr(c: &mut TokenCursor) -> ast::Expr {
 }
 
 fn parse_call_expr(c: &mut TokenCursor) -> ast::Expr {
-    // TODO
+    // TODO:
+    //  - peek: ID, peek_next: LeftParen
+    //  - parse (optional) args
+
     parse_primary_expr(c)
 }
 
