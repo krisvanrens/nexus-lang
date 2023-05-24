@@ -323,7 +323,7 @@ binary     = expr operator expr ;
 function   = ID '(' params* ')' ( '->' type )? block ;
 params     = ID ':' type ( ',' ID ':' type )* ;
 args       = expr ( ',' expr )* ;
-type       = 'bool' | `Component` | `Group` | 'Number' | 'String' ;
+type       = 'bool' | 'Component' | 'Group' | 'Number' | 'String' ;
 ```
 
 > **NOTE**: the grammar will be extended as the language implementation progresses.
