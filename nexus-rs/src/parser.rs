@@ -203,7 +203,7 @@ fn parse_use_decl(c: &mut TokenCursor) -> ast::Stmt {
 
     // TODO: Check for global scope?
 
-    let filename = parse_string_literal(c);
+    let filename = parse_expr(c);
 
     c.consume_msg(Token::SemiColon, "expected semicolon after statement");
 
