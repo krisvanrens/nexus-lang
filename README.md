@@ -234,9 +234,11 @@ T.B.D.
 
 | Keyword | Description |
 | :-----: | :---------- |
-| `bool`   | Boolean logic type. |
+| `Group`  | Component group.    |
+| `Node`   | Component.          |
 | `Number` | Number type.        |
 | `String` | String type.        |
+| `bool`   | Boolean logic type. |
 
 ### Base language keywords
 
@@ -321,7 +323,7 @@ binary     = expr operator expr ;
 function   = ID '(' params* ')' ( '->' type )? block ;
 params     = ID ':' type ( ',' ID ':' type )* ;
 args       = expr ( ',' expr )* ;
-type       = 'bool' | 'Number' | 'String' ;
+type       = 'bool' | `Component` | `Group` | 'Number' | 'String' ;
 ```
 
 > **NOTE**: the grammar will be extended as the language implementation progresses.
@@ -390,8 +392,8 @@ Precedence levels from *high to low* in order:
 - Underscore for integer number separators?
 - Underscore for unused variables?
 - Force parentheses for certain operators, e.g. relational / equality operators?
-- Add `Node` and `Group` as a fundamental type to allow for expressions to evaluate to them?
 - Are `node` and `group` really unary operators?
+- Array and subscript operators? Is it possible to implement this using `Groups` somehow?
 
 ## FAQ
 
