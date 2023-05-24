@@ -1,4 +1,5 @@
-fn func() {
+fn func() -> Number {
+  42
 }
 
 let x = func();

@@ -1,4 +1,4 @@
-let x1 = (42);
-let x2 = ((42));
-let x3 = (((42)));
-let x4 = (((x1)));
+let x1 = group "Test";
+let x2 = group "Test" + 42;
+let x3 = group ""; // Should fail.
+let x4 = group 42; // Should fail.

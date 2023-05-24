@@ -1,0 +1,4 @@
+print;
+print "Hello";
+print 42;
+print "Hello" + 42;
