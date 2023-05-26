@@ -324,7 +324,7 @@ binary     = expr operator expr ;
 function   = ID '(' params* ')' ( '->' type )? block ;
 params     = ID ':' type ( ',' ID ':' type )* ;
 args       = expr ( ',' expr )* ;
-type       = 'bool' | 'Component' | 'Group' | 'Number' | 'String' ;
+type       = 'bool' | 'Node' | 'Group' | 'Number' | 'String' ;
 ```
 
 > **NOTE**: the grammar will be extended as the language implementation progresses.
@@ -374,11 +374,11 @@ Precedence levels from *high to low* in order:
 - Add compound assignment/operators (`+=`/`-=`/`*=`/`/=`/`%=`).
 - Traits for fundamental types? E.g. `"blah".len() == 4` etc.
 - Is it possible to have `Number` be floating-point when sometimes used as integer?
-- Error handling? Result types?
+- Error handling? Result types? Not now.
 - Support for integration into a visual IDE / generative tooling.
 - Require safe edge types? How? Should be dealt with in the API -- possibly a responsibility of the component network integration.
 - Provide clear and good error messages on every level.
-- FFI? How to deal with FFI of rich Unicode strings?
+- FFI? How to deal with FFI of rich Unicode strings? Allow Unicode in Nexus, but restrict to ASCII over FFI boundaries?
 - Add `loop` expression? This will also require `break` and `continue` (which would be nice anyway..).
 - What is the difference between the front- and backend API? Is there a difference at all? What are the needs for a visualization tool vs. those of the component network integration itself?
 - Tool idea: Nexus to Graphviz Dot description.
@@ -392,7 +392,6 @@ Precedence levels from *high to low* in order:
 - Generating an AST graph image for debugging.
 - Underscore for integer number separators?
 - Underscore for unused variables?
-- Force parentheses for certain operators, e.g. relational / equality operators?
 - Are `node` and `group` really unary operators?
 - Array and subscript operators? Is it possible to implement this using `Groups` somehow?
 

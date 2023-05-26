@@ -47,7 +47,7 @@ pub enum Token {
     Return,       // 'return'
     Use,          // 'use'
     BoolId,       // 'bool'
-    ComponentId,  // 'Component'
+    NodeId,       // 'Node'
     GroupId,      // 'Group'
     NumberId,     // 'Number'
     StringId,     // 'String'

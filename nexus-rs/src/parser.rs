@@ -156,8 +156,8 @@ fn parse_const_decl(c: &mut TokenCursor) -> ast::Stmt {
 
     let value = match typeid {
         ast::TypeKind::Bool => parse_bool_literal(c),
-        ast::TypeKind::Component => panic!("cannot create a Component type literal"),
         ast::TypeKind::Group => panic!("cannot create a Group type literal"),
+        ast::TypeKind::Node => panic!("cannot create a Node type literal"),
         ast::TypeKind::Number => parse_number_literal(c),
         ast::TypeKind::String => parse_string_literal(c),
     };
@@ -246,7 +246,7 @@ fn parse_identifier(c: &mut TokenCursor) -> String {
     lazy_static! {
         static ref KEYWORDS: Tokens = vec![
             Token::BoolId,
-            Token::ComponentId,
+            Token::NodeId,
             Token::Const,
             Token::Else,
             Token::False,
@@ -280,7 +280,7 @@ fn parse_identifier(c: &mut TokenCursor) -> String {
 fn parse_type(c: &mut TokenCursor) -> ast::TypeKind {
     match c.value() {
         Some(Token::BoolId) => ast::TypeKind::Bool,
-        Some(Token::ComponentId) => ast::TypeKind::Component,
+        Some(Token::NodeId) => ast::TypeKind::Node,
         Some(Token::GroupId) => ast::TypeKind::Group,
         Some(Token::NumberId) => ast::TypeKind::Number,
         Some(Token::StringId) => ast::TypeKind::String,

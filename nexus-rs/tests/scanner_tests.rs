@@ -62,6 +62,8 @@ fn token_test() {
     test("return", Token::Return);
     test("use", Token::Use);
     test("bool", Token::BoolId);
+    test("Group", Token::GroupId);
+    test("Node", Token::NodeId);
     test("Number", Token::NumberId);
     test("String", Token::StringId);
     test("print", Token::Print);
