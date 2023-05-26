@@ -2,4 +2,7 @@ fn func() -> Number {
   42
 }
 
-let x = func();
+let x1 = func();
+let x2 = func(a);
+let x3 = func(a, b);
+let x4 = func(a, b, c);

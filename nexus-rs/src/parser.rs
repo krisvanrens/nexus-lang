@@ -422,12 +422,19 @@ fn parse_call_expr(c: &mut TokenCursor) -> ast::Expr {
 
             c.consume(Token::LeftParen);
 
-            // TODO: parse (optional) args..
+            let mut args = Vec::new();
+            while c.peek() != Some(Token::RightParen) {
+                args.push(parse_expr(c));
+
+                if !c.advance_if(Token::Comma) {
+                    break;
+                }
+            }
 
             c.consume(Token::RightParen);
 
             ast::Expr {
-                kind: ast::ExprKind::FuncCall(Ptr::new(ast::FuncCallExpr { id })),
+                kind: ast::ExprKind::FuncCall(Ptr::new(ast::FuncCallExpr { id, args })),
             }
         }
         _ => parse_primary_expr(c),
