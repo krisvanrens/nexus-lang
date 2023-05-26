@@ -346,15 +346,15 @@ Precedence levels from *high to low* in order:
 
 | Operators | Associativity | Description |
 | :-------: | :-----------: | :---------- |
-| `x()`             | Left-to-right | Functional call          |
-| `!` `+` `-`       | Right-to-left | Unary operators          |
-| `*` `/` `%`       | Left-to-right | Factor operators         |
-| `+` `-`           | Left-to-right | Addition and subtraction |
-| `<` `<=` `>=` `>` | Left-to-right | Relational operators     |
-| `==` `!=`         | Left-to-right | Equality operators       |
-| `&&`              | Left-to-right | Logical AND operator     |
-| `\|\|`            | Left-to-right | Logical OR operator      |
-| `..` `..=`        | Left-to-right | Range definitions        |
+| `.` `x()`         | Left-to-right | Member access, functional call |
+| `!` `+` `-`       | Right-to-left | Unary operators                |
+| `*` `/` `%`       | Left-to-right | Factor operators               |
+| `+` `-`           | Left-to-right | Addition and subtraction       |
+| `<` `<=` `>=` `>` | Left-to-right | Relational operators           |
+| `==` `!=`         | Left-to-right | Equality operators             |
+| `&&`              | Left-to-right | Logical AND operator           |
+| `\|\|`            | Left-to-right | Logical OR operator            |
+| `..` `..=`        | Left-to-right | Range definitions              |
 
 ## Known limitations
 
