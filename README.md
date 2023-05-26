@@ -340,7 +340,7 @@ type       = 'bool' | 'Component' | 'Group' | 'Number' | 'String' ;
 
 #### Operator precedence
 
-Operator precedence ordering is similar to C/C++ and Rust precedence levels.
+Operator precedence ordering is similar to Rust and C/C++ precedence levels.
 
 Precedence levels from *high to low* in order:
 
