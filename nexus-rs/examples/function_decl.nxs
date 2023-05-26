@@ -1,0 +1,9 @@
+fn func1() {}
+fn func2(a: bool) {}
+fn func3(a: bool, b: String) {}
+fn func4() -> Number {}
+fn func5(a: bool) -> Number {}
+fn func6(a: bool, b: String) -> Number {}
+fn func7() -> bool {}
+fn func8() -> Group {}
+fn func9() -> Node {}
