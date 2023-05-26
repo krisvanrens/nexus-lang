@@ -404,3 +404,10 @@ From the dictionary:
 > **Nexus**; *nex·us*; meaning: *connection, link*
 
 Of course this ties back to its place as a component network-description language.
+
+### Why hand-code all the parsing etcetera?
+
+Yes.
+I know.
+There's excellent crates like [`syn`](https://github.com/dtolnay/syn) (for parsing Rust code) and [`pest`](https://github.com/pest-parser/pest) (for writing parsers), and probably many more.
+But a large part of the fun of coding up homegrown projects like this is that it's OK to write most of it yourself, learning from the process and enjoying it!
