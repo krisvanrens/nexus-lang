@@ -416,11 +416,22 @@ fn parse_unary_expr(c: &mut TokenCursor) -> ast::Expr {
 }
 
 fn parse_call_expr(c: &mut TokenCursor) -> ast::Expr {
-    // TODO:
-    //  - peek: ID, peek_next: LeftParen
-    //  - parse (optional) args
+    match (c.peek(), c.peek_next()) {
+        (Some(Token::Identifier(_)), Some(Token::LeftParen)) => {
+            let id = parse_identifier(c);
 
-    parse_primary_expr(c)
+            c.consume(Token::LeftParen);
+
+            // TODO: parse (optional) args..
+
+            c.consume(Token::RightParen);
+
+            ast::Expr {
+                kind: ast::ExprKind::FuncCall(Ptr::new(ast::FuncCallExpr { id })),
+            }
+        }
+        _ => parse_primary_expr(c),
+    }
 }
 
 fn parse_primary_expr(c: &mut TokenCursor) -> ast::Expr {

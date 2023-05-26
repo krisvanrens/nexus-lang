@@ -108,6 +108,7 @@ impl fmt::Display for Expr {
 pub enum ExprKind {
     Binary(Ptr<BinaryExpr>),
     Block(Ptr<BlockExpr>),
+    FuncCall(Ptr<FuncCallExpr>),
     Group(Ptr<Expr>),
     Literal(Ptr<Literal>),
     Unary(Ptr<UnaryExpr>),
@@ -142,6 +143,11 @@ pub enum BinaryOp {
 #[derive(Debug)]
 pub struct BlockExpr {
     pub body: Stmt,
+}
+
+#[derive(Debug)]
+pub struct FuncCallExpr {
+    pub id: String,
 }
 
 #[derive(Debug)]
