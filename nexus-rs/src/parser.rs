@@ -411,8 +411,24 @@ fn parse_unary_expr(c: &mut TokenCursor) -> ast::Expr {
             kind: ast::ExprKind::Unary(Ptr::new(ast::UnaryExpr { op: operator, expr })),
         }
     } else {
-        parse_call_expr(c)
+        parse_dot_expr(c)
     }
+}
+
+fn parse_dot_expr(c: &mut TokenCursor) -> ast::Expr {
+    let mut expr = parse_call_expr(c);
+
+    while matches!(c.peek(), Some(Token::Dot)) {
+        let op = parse_binary_op(c.value());
+        let lhs = expr;
+        let rhs = parse_call_expr(c);
+
+        expr = ast::Expr {
+            kind: ast::ExprKind::Binary(Ptr::new(ast::BinaryExpr { op, lhs, rhs })),
+        };
+    }
+
+    expr
 }
 
 fn parse_call_expr(c: &mut TokenCursor) -> ast::Expr {
@@ -553,6 +569,7 @@ fn parse_unary_op(t: Option<Token>) -> ast::UnaryOp {
 fn parse_binary_op(t: Option<Token>) -> ast::BinaryOp {
     match t {
         Some(Token::And) => ast::BinaryOp::And,
+        Some(Token::Dot) => ast::BinaryOp::Dot,
         Some(Token::Slash) => ast::BinaryOp::Divide,
         Some(Token::Eq) => ast::BinaryOp::Eq,
         Some(Token::Gt) => ast::BinaryOp::Gt,

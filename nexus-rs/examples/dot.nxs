@@ -1,0 +1,4 @@
+a.b;
+a.b.c.d;
+let x = func().b.c;
+func().b.c = "blah";

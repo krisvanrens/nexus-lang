@@ -127,6 +127,7 @@ pub struct BinaryExpr {
 pub enum BinaryOp {
     And,
     Divide,
+    Dot,
     Eq,
     Gt,
     GtEq,

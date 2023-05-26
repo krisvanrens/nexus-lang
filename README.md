@@ -312,12 +312,13 @@ if         = "if" expr block ;
 while      = "while" expr block ;
 for        = "for" ID "in" ( ( expr range expr ) | ID ) block ;
 unary      = ( '!' | '+' | '-' | 'group' | 'node' ) expr ;
-operator   = eq_ops | rel_ops | logic_ops | arith_ops | range ;
+operator   = eq_ops | rel_ops | logic_ops | arith_ops | range | dot ;
 eq_ops     = '==' | '!=' ;
 rel_ops    = '<=' | '>=' | '<' | '>' ;
 logic_ops  = '||' | '&&' ;
 arith_ops  = '+' | '-' | '*' | '/' | '%' ;
 range      = '..' ( '=' )? ;
+dot        = '.' ;
 binary     = expr operator expr ;
 
 function   = ID '(' params* ')' ( '->' type )? block ;
