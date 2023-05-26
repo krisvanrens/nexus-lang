@@ -169,14 +169,14 @@ pub enum UnaryOp {
 
 #[derive(Debug)]
 pub struct Assignment {
-    pub id: String,
-    pub expr: Expr,
+    pub lhs: Expr,
+    pub rhs: Expr,
 }
 
 #[derive(Debug)]
 pub struct Connect {
-    pub source: String,
-    pub sink: String,
+    pub source: Expr,
+    pub sink: Expr,
 }
 
 #[derive(Debug)]

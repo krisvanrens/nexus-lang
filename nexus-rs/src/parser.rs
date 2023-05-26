@@ -13,7 +13,7 @@ pub struct Parser {
 fn preprocess(tokens: Tokens) -> Tokens {
     let mut result = Tokens::new();
 
-    // TODO: For now, ignore closures and transform a '||' into 'Or':
+    // TODO: For now, ignore non-capturing closures and transform a '||' into 'Or':
     let mut found_pipe = false;
     tokens.into_iter().for_each(|t| {
         if found_pipe && t == Token::Pipe {
@@ -217,12 +217,6 @@ fn parse_stmt(c: &mut TokenCursor) -> ast::Stmt {
         Some(Token::LeftBrace) => parse_block_stmt(c),
         Some(Token::Print) => parse_print_stmt(c),
         Some(Token::Return) => parse_return_stmt(c),
-        Some(Token::Identifier(_)) => match c.peek_next() {
-            Some(Token::Arrow) => parse_connect_stmt(c),
-            Some(Token::Is) => parse_assignment_stmt(c),
-            None => panic!("unexpected EOS while parsing statement"), // TODO: Proper error handling..
-            _ => panic!("unexpected token"), // TODO: Proper error handling..
-        },
         _ => parse_expr_stmt(c),
     }
 }
@@ -480,12 +474,19 @@ fn parse_primary_expr(c: &mut TokenCursor) -> ast::Expr {
 fn parse_expr_stmt(c: &mut TokenCursor) -> ast::Stmt {
     let expr = parse_expr(c);
 
-    if !c.advance_if(Token::SemiColon) {
-        // TODO: Mark block result value?
-    }
+    match dbg!(c.peek()) {
+        Some(Token::Arrow) => parse_connect_stmt(expr, c),
+        Some(Token::Is) => parse_assignment_stmt(expr, c),
+        None => panic!("unexpected EOS while parsing statement"), // TODO: Proper error handling..
+        _ => {
+            if !c.advance_if(Token::SemiColon) {
+                // TODO: Mark block result value?
+            }
 
-    ast::Stmt {
-        kind: ast::StmtKind::Expr(Ptr::new(expr)),
+            ast::Stmt {
+                kind: ast::StmtKind::Expr(Ptr::new(expr)),
+            }
+        }
     }
 }
 
@@ -570,18 +571,18 @@ fn parse_binary_op(t: Option<Token>) -> ast::BinaryOp {
     match t {
         Some(Token::And) => ast::BinaryOp::And,
         Some(Token::Dot) => ast::BinaryOp::Dot,
-        Some(Token::Slash) => ast::BinaryOp::Divide,
         Some(Token::Eq) => ast::BinaryOp::Eq,
         Some(Token::Gt) => ast::BinaryOp::Gt,
         Some(Token::GtEq) => ast::BinaryOp::GtEq,
         Some(Token::Lt) => ast::BinaryOp::Lt,
         Some(Token::LtEq) => ast::BinaryOp::LtEq,
-        Some(Token::Star) => ast::BinaryOp::Multiply,
+        Some(Token::Minus) => ast::BinaryOp::Subtract,
         Some(Token::NotEq) => ast::BinaryOp::NotEq,
         Some(Token::Or) => ast::BinaryOp::Or,
-        Some(Token::Plus) => ast::BinaryOp::Plus,
         Some(Token::Percent) => ast::BinaryOp::Remainder,
-        Some(Token::Minus) => ast::BinaryOp::Subtract,
+        Some(Token::Plus) => ast::BinaryOp::Plus,
+        Some(Token::Slash) => ast::BinaryOp::Divide,
+        Some(Token::Star) => ast::BinaryOp::Multiply,
         Some(_) => panic!("not a binary expression token"), // TODO: Proper error handling..
         None => panic!("unexpected end of token stream"),   // TODO: Proper error handling..
     }
@@ -611,26 +612,22 @@ fn parse_return_stmt(c: &mut TokenCursor) -> ast::Stmt {
     }
 }
 
-fn parse_assignment_stmt(c: &mut TokenCursor) -> ast::Stmt {
-    let id = parse_identifier(c);
-
+fn parse_assignment_stmt(lhs: ast::Expr, c: &mut TokenCursor) -> ast::Stmt {
     c.consume(Token::Is);
 
-    let expr = parse_expr(c);
+    let rhs = parse_expr(c);
 
     c.consume_msg(Token::SemiColon, "expected semicolon after statement");
 
     ast::Stmt {
-        kind: ast::StmtKind::Assignment(Ptr::new(ast::Assignment { id, expr })),
+        kind: ast::StmtKind::Assignment(Ptr::new(ast::Assignment { lhs, rhs })),
     }
 }
 
-fn parse_connect_stmt(c: &mut TokenCursor) -> ast::Stmt {
-    let source = parse_identifier(c);
-
+fn parse_connect_stmt(source: ast::Expr, c: &mut TokenCursor) -> ast::Stmt {
     c.consume(Token::Arrow);
 
-    let sink = parse_identifier(c);
+    let sink = parse_expr(c);
 
     c.consume_msg(Token::SemiColon, "expected semicolon after statement");
 
