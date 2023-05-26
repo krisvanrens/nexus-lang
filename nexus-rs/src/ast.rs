@@ -47,6 +47,8 @@ pub type Stmts = Vec<Stmt>;
 #[derive(Debug, Display)]
 pub enum TypeKind {
     Bool,
+    Component,
+    Group,
     Number,
     String,
 }
