@@ -6,6 +6,10 @@ use std::{
 
 /// Iterable wrapper around a buffered file reader.
 ///
+/// The main difference to using the buffered file reader directly is that each line reading iteration results in a
+///  `String` value directly, rather than a `Option<Result<String>>` (which is the case for iterating over `BufReader`).
+/// A failing line read will result in a panic (don't use in production!).
+///
 /// # Example
 ///
 /// ```no_run
@@ -56,7 +60,9 @@ impl Iterator for FileReaderIterator {
 
     fn next(&mut self) -> Option<Self::Item> {
         if let Some(result) = self.lines.next() {
-            let line = result.expect("failed to read line");
+            let line = result.unwrap_or_else(|e| {
+                panic!("failed to read line ({e})");
+            });
             Some(line)
         } else {
             None
