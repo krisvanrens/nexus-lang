@@ -13,7 +13,7 @@ pub trait Eval<R, E> {
         F: FnMut(&E) -> R;
 }
 
-/// Statement representation.
+/// General statement representation.
 #[derive(Debug)]
 pub struct Stmt {
     pub kind: StmtKind,
@@ -118,7 +118,7 @@ impl fmt::Display for Expr {
 pub enum ExprKind {
     Binary(Ptr<BinaryExpr>),
     Block(Ptr<BlockExpr>),
-    FuncCall(Ptr<FuncCallExpr>),
+    FuncCall(Ptr<FuncCall>),
     Group(Ptr<Expr>),
     Literal(Ptr<Literal>),
     Unary(Ptr<UnaryExpr>),
@@ -160,7 +160,7 @@ pub struct BlockExpr {
 
 /// Function call expression.
 #[derive(Debug)]
-pub struct FuncCallExpr {
+pub struct FuncCall {
     pub id: String,
     pub args: Vec<Expr>,
 }

@@ -449,7 +449,7 @@ fn parse_call_expr(c: &mut TokenCursor) -> ast::Expr {
             c.consume(Token::RightParen);
 
             ast::Expr {
-                kind: ast::ExprKind::FuncCall(Ptr::new(ast::FuncCallExpr { id, args })),
+                kind: ast::ExprKind::FuncCall(Ptr::new(ast::FuncCall { id, args })),
             }
         }
         _ => parse_primary_expr(c),
