@@ -5,7 +5,6 @@ use std::{iter::Peekable, vec::IntoIter};
 #[derive(Debug)]
 pub struct TokenCursor {
     iter: Peekable<IntoIter<Token>>,
-    prev: Option<Token>, // XXX: Do we need this?
     curr: Option<Token>,
 }
 
@@ -24,11 +23,7 @@ impl TokenCursor {
     pub fn new(tokens: Tokens) -> Self {
         let mut iter = tokens.into_iter().peekable();
         let curr = iter.next();
-        TokenCursor {
-            iter,
-            prev: None,
-            curr,
-        }
+        TokenCursor { iter, curr }
     }
 
     /// Take value and advance cursor.
@@ -104,7 +99,6 @@ impl TokenCursor {
     /// assert_eq!(c.peek(), None);
     /// ```
     pub fn advance(&mut self) {
-        self.prev = self.curr.take();
         self.curr = self.iter.next();
     }
 
