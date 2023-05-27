@@ -5,6 +5,18 @@ use std::{
 };
 
 /// Iterable wrapper around a buffered file reader.
+///
+/// # Example
+///
+/// ```no_run
+/// use nexus_rs::filereader::FileReader;
+///
+/// let file = FileReader::try_new("example.txt").unwrap();
+///
+/// for line in file {
+///   println!("{line}");
+/// }
+/// ```
 pub struct FileReader {
     reader: BufReader<File>,
 }
