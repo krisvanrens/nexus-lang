@@ -464,6 +464,9 @@ fn parse_primary_expr(c: &mut TokenCursor) -> ast::Expr {
         Some(Token::Identifier(_)) => parse_var_expr(c),
         Some(Token::LeftParen) => parse_group_expr(c),
         Some(Token::LeftBrace) => parse_block_expr(c),
+        Some(Token::SemiColon) => ast::Expr {
+            kind: ast::ExprKind::Empty(),
+        },
         None => panic!("unexpected end of token stream"), // TODO: Proper error handling..
         _ => panic!("unexpected token"),                  // TODO: Proper error handling..
     }
