@@ -37,8 +37,8 @@ pub mod nxs_parser {
     pub mod token_cursor;
 }
 
-pub use utils::*;
 pub use nxs_ast::*;
 pub use nxs_parser::*;
 pub use nxs_scanner::*;
 pub use nxs_token::*;
+pub use utils::*;

@@ -1,6 +1,6 @@
 use super::token_cursor::TokenCursor;
-use crate::{ast, ptr::Ptr};
 use crate::token::{Token, Tokens};
+use crate::{ast, ptr::Ptr};
 use lazy_static::lazy_static;
 
 /// Parser for Nexus.
