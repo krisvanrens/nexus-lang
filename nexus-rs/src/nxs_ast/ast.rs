@@ -53,6 +53,7 @@ pub enum TypeKind {
     String,
 }
 
+/// Constant declaration.
 #[derive(Debug)]
 pub struct ConstDecl {
     pub id: String,
@@ -66,6 +67,7 @@ impl fmt::Display for ConstDecl {
     }
 }
 
+/// Function declaration.
 #[derive(Debug)]
 pub struct FunctionDecl {
     pub id: String,
@@ -74,14 +76,17 @@ pub struct FunctionDecl {
     pub body: Stmt, // A block statement.
 }
 
+/// Function argument.
 #[derive(Debug)]
 pub struct FunctionArg {
     pub id: String,
     pub typeid: TypeKind,
 }
 
+/// A collection of function arguments.
 pub type FunctionArgs = Vec<FunctionArg>;
 
+/// Variable declaration.
 #[derive(Debug)]
 pub struct VarDecl {
     pub id: String,
@@ -90,11 +95,13 @@ pub struct VarDecl {
     pub value: Option<Expr>,
 }
 
+/// Using declaration.
 #[derive(Debug)]
 pub struct UseDecl {
     pub filename: Expr,
 }
 
+/// General expression representation.
 #[derive(Debug)]
 pub struct Expr {
     pub kind: ExprKind,
@@ -106,6 +113,7 @@ impl fmt::Display for Expr {
     }
 }
 
+/// Expression kind.
 #[derive(Debug, Display)]
 pub enum ExprKind {
     Binary(Ptr<BinaryExpr>),
@@ -117,6 +125,7 @@ pub enum ExprKind {
     Var(Ptr<Var>),
 }
 
+/// Binary expression.
 #[derive(Debug)]
 pub struct BinaryExpr {
     pub op: BinaryOp,
@@ -124,6 +133,7 @@ pub struct BinaryExpr {
     pub rhs: Expr,
 }
 
+/// Binary operator.
 #[derive(Debug, Display)]
 pub enum BinaryOp {
     And,
@@ -142,23 +152,27 @@ pub enum BinaryOp {
     Subtract,
 }
 
+/// Blocking expression.
 #[derive(Debug)]
 pub struct BlockExpr {
     pub body: Stmt,
 }
 
+/// Function call expression.
 #[derive(Debug)]
 pub struct FuncCallExpr {
     pub id: String,
     pub args: Vec<Expr>,
 }
 
+/// Unary expression.
 #[derive(Debug)]
 pub struct UnaryExpr {
     pub op: UnaryOp,
     pub expr: Expr,
 }
 
+/// Unary operator.
 #[derive(Debug, Display)]
 pub enum UnaryOp {
     Bang,
@@ -168,28 +182,33 @@ pub enum UnaryOp {
     Plus,
 }
 
+/// Assignment statement.
 #[derive(Debug)]
 pub struct Assignment {
     pub lhs: Expr,
     pub rhs: Expr,
 }
 
+/// Connect statement.
 #[derive(Debug)]
 pub struct Connect {
     pub source: Expr,
     pub sink: Expr,
 }
 
+/// Print statement.
 #[derive(Debug)]
 pub struct Print {
     pub expr: Expr,
 }
 
+/// Return statement.
 #[derive(Debug)]
 pub struct Return {
     pub expr: Expr,
 }
 
+/// Literal value.
 #[derive(Debug)]
 pub struct Literal {
     pub kind: LiteralKind,
@@ -201,6 +220,7 @@ impl fmt::Display for Literal {
     }
 }
 
+/// Literal value kind.
 #[derive(Debug, Display)]
 pub enum LiteralKind {
     Bool(bool),
@@ -208,6 +228,7 @@ pub enum LiteralKind {
     String(String),
 }
 
+/// Variable expression.
 #[derive(Debug)]
 pub struct Var {
     pub id: String,

@@ -1,11 +1,13 @@
 /// File reader based on a buffered, line-by-line file reader.
 pub mod filereader;
 
+/// Module group for lexing token-related items.
 pub mod nxs_token {
     /// Scanning/lexing token representations.
     pub mod token;
 }
 
+/// Module group for AST (Abstract Syntax Tree)-related items.
 pub mod nxs_ast {
     /// AST definitions for Nexus.
     pub mod ast;
@@ -14,6 +16,7 @@ pub mod nxs_ast {
     pub mod ptr;
 }
 
+/// Module group for lexing/scanner-related items.
 pub mod nxs_scanner {
     /// Scanner/lexer for Nexus.
     pub mod scanner;
@@ -22,6 +25,7 @@ pub mod nxs_scanner {
     pub mod cursor;
 }
 
+/// Module group for parsing-related items.
 pub mod nxs_parser {
     /// Parser for Nexus.
     pub mod parser;

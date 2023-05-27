@@ -1,6 +1,6 @@
-/// Immovable pointer type.
+/// Immovable pointer type, able to take DSTs.
 ///
-/// The idea for this was taken from the `P<T>` AST pointer type in the Rust compiler.
+/// The idea for this was taken from the `P<T>` "frozen" AST pointer type in the Rust compiler.
 #[derive(Debug)]
 pub struct Ptr<T: ?Sized> {
     ptr: Box<T>,
