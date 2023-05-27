@@ -1,5 +1,5 @@
 use clap::Parser;
-use nexus_rs::{filereader::*, parser::*, scanner::*, token::*};
+use nexus_rs::{filereader::*, *};
 use rustyline::{error::ReadlineError, DefaultEditor};
 use std::process::exit;
 

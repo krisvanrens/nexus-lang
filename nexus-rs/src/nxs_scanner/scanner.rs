@@ -1,5 +1,5 @@
 use super::cursor::Cursor;
-use crate::token::token::{Token, Tokens};
+use crate::token::{Token, Tokens};
 use lazy_static::lazy_static;
 use std::collections::HashMap;
 use std::fmt::Display;
@@ -73,7 +73,7 @@ impl Scanner {
     /// # Example
     ///
     /// ```
-    /// use nexus_rs::{scanner::scanner::Scanner, token::token::Token};
+    /// use nexus_rs::{scanner::Scanner, token::Token};
     ///
     /// let mut s = Scanner::new();
     /// if let Ok(tokens) = s.scan("let x;".to_string()) {

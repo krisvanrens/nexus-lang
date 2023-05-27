@@ -1,4 +1,4 @@
-use crate::token::token::{Token, Tokens};
+use crate::token::{Token, Tokens};
 use std::{iter::Peekable, vec::IntoIter};
 
 /// Cursor for tokens in a token collection.
@@ -15,8 +15,8 @@ impl TokenCursor {
     /// # Example
     ///
     /// ```
-    /// use nexus_rs::parser::token_cursor::TokenCursor;
-    /// use nexus_rs::token::token::Tokens;
+    /// use nexus_rs::token_cursor::TokenCursor;
+    /// use nexus_rs::token::Tokens;
     ///
     /// let t = Tokens::new();
     /// let c = TokenCursor::new(t);
@@ -36,8 +36,8 @@ impl TokenCursor {
     /// # Example
     ///
     /// ```
-    /// use nexus_rs::parser::token_cursor::TokenCursor;
-    /// use nexus_rs::token::token::Token;
+    /// use nexus_rs::token_cursor::TokenCursor;
+    /// use nexus_rs::token::Token;
     ///
     /// let t = vec![Token::Let];
     /// let mut c = TokenCursor::new(t);
@@ -56,8 +56,8 @@ impl TokenCursor {
     /// # Example
     ///
     /// ```
-    /// use nexus_rs::parser::token_cursor::TokenCursor;
-    /// use nexus_rs::token::token::Token;
+    /// use nexus_rs::token_cursor::TokenCursor;
+    /// use nexus_rs::token::Token;
     ///
     /// let t = vec![Token::Let, Token::Arrow];
     /// let mut c = TokenCursor::new(t);
@@ -74,8 +74,8 @@ impl TokenCursor {
     /// # Example
     ///
     /// ```
-    /// use nexus_rs::parser::token_cursor::TokenCursor;
-    /// use nexus_rs::token::token::Token;
+    /// use nexus_rs::token_cursor::TokenCursor;
+    /// use nexus_rs::token::Token;
     ///
     /// let t = vec![Token::Let, Token::Arrow, Token::For];
     /// let mut c = TokenCursor::new(t);
@@ -93,8 +93,8 @@ impl TokenCursor {
     /// # Example
     ///
     /// ```
-    /// use nexus_rs::parser::token_cursor::TokenCursor;
-    /// use nexus_rs::token::token::Token;
+    /// use nexus_rs::token_cursor::TokenCursor;
+    /// use nexus_rs::token::Token;
     ///
     /// let t = vec![Token::Let];
     /// let mut c = TokenCursor::new(t);
@@ -113,8 +113,8 @@ impl TokenCursor {
     /// # Example
     ///
     /// ```
-    /// use nexus_rs::parser::token_cursor::TokenCursor;
-    /// use nexus_rs::token::token::Token;
+    /// use nexus_rs::token_cursor::TokenCursor;
+    /// use nexus_rs::token::Token;
     ///
     /// let t = vec![Token::Let, Token::Arrow];
     /// let mut c = TokenCursor::new(t);
@@ -136,8 +136,8 @@ impl TokenCursor {
     /// # Example
     ///
     /// ```
-    /// use nexus_rs::parser::token_cursor::TokenCursor;
-    /// use nexus_rs::token::token::Token;
+    /// use nexus_rs::token_cursor::TokenCursor;
+    /// use nexus_rs::token::Token;
     ///
     /// let t = vec![Token::Let, Token::Arrow];
     /// let mut c = TokenCursor::new(t);
@@ -155,8 +155,8 @@ impl TokenCursor {
     /// # Example
     ///
     /// ```
-    /// use nexus_rs::parser::token_cursor::TokenCursor;
-    /// use nexus_rs::token::token::Token;
+    /// use nexus_rs::token_cursor::TokenCursor;
+    /// use nexus_rs::token::Token;
     ///
     /// let t = vec![Token::Let, Token::Arrow];
     /// let mut c = TokenCursor::new(t);
@@ -174,8 +174,8 @@ impl TokenCursor {
     /// # Example
     ///
     /// ```
-    /// use nexus_rs::parser::token_cursor::TokenCursor;
-    /// use nexus_rs::token::token::Token;
+    /// use nexus_rs::token_cursor::TokenCursor;
+    /// use nexus_rs::token::Token;
     ///
     /// let t = vec![Token::Let];
     /// let mut c = TokenCursor::new(t);

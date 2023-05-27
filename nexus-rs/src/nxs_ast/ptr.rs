@@ -12,7 +12,7 @@ impl<T: 'static> Ptr<T> {
     /// # Example
     ///
     /// ```
-    /// use nexus_rs::ast::ptr::Ptr;
+    /// use nexus_rs::ptr::Ptr;
     ///
     /// let x = 42;
     /// let p = Ptr::new(x);
@@ -28,7 +28,7 @@ impl<T: 'static> Ptr<T> {
     /// # Example
     ///
     /// ```
-    /// use nexus_rs::ast::ptr::Ptr;
+    /// use nexus_rs::ptr::Ptr;
     ///
     /// let p = Ptr::new(42);
     /// assert_eq!(p.into_inner(), 42);

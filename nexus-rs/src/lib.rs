@@ -1,12 +1,12 @@
 /// File reader based on a buffered, line-by-line file reader.
 pub mod filereader;
 
-pub mod token {
+pub mod nxs_token {
     /// Scanning/lexing token representations.
     pub mod token;
 }
 
-pub mod ast {
+pub mod nxs_ast {
     /// AST definitions for Nexus.
     pub mod ast;
 
@@ -14,7 +14,7 @@ pub mod ast {
     pub mod ptr;
 }
 
-pub mod scanner {
+pub mod nxs_scanner {
     /// Scanner/lexer for Nexus.
     pub mod scanner;
 
@@ -22,10 +22,15 @@ pub mod scanner {
     pub mod cursor;
 }
 
-pub mod parser {
+pub mod nxs_parser {
     /// Parser for Nexus.
     pub mod parser;
 
     /// Token cursor used for parsing.
     pub mod token_cursor;
 }
+
+pub use nxs_ast::*;
+pub use nxs_parser::*;
+pub use nxs_scanner::*;
+pub use nxs_token::*;
