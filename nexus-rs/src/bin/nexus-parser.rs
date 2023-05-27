@@ -1,6 +1,6 @@
 use clap::Parser;
 use colored::Colorize;
-use nexus_rs::{filereader::FileReader, parser::parser, scanner::scanner, token::Tokens};
+use nexus_rs::{filereader::FileReader, parser::parser, scanner::scanner, token::token::Tokens};
 use std::process::exit;
 
 /// Nexus programming language scanner/lexer tester.

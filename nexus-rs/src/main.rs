@@ -31,7 +31,7 @@ fn run_from_file(filename: String) {
     let mut scanner = scanner::Scanner::new();
 
     let mut parser = parser::Parser::new(file.into_iter().enumerate().fold(
-        Tokens::new(),
+        token::Tokens::new(),
         |mut acc, line| {
             let (index, line) = line;
             match scanner.scan(line) {

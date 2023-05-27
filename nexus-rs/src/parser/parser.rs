@@ -1,6 +1,6 @@
 use super::token_cursor::TokenCursor;
 use crate::ast::{ast, ptr::Ptr};
-use crate::token::{Token, Tokens};
+use crate::token::token::{Token, Tokens};
 use lazy_static::lazy_static;
 
 /// Parser for Nexus.
@@ -36,7 +36,7 @@ impl Parser {
     /// # Example
     ///
     /// ```
-    /// use nexus_rs::token::Tokens;
+    /// use nexus_rs::token::token::Tokens;
     /// use nexus_rs::parser::parser::Parser;
     ///
     /// let t = Tokens::new();

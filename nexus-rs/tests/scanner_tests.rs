@@ -1,4 +1,4 @@
-use nexus_rs::{scanner::*, token::Token};
+use nexus_rs::{scanner::*, token::token::Token};
 
 #[cfg(test)]
 use pretty_assertions::assert_eq;

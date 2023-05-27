@@ -1,8 +1,10 @@
 /// File reader based on a buffered, line-by-line file reader.
 pub mod filereader;
 
-/// Scanning/lexing token representations.
-pub mod token;
+pub mod token {
+    /// Scanning/lexing token representations.
+    pub mod token;
+}
 
 pub mod ast {
     /// AST definitions for Nexus.
