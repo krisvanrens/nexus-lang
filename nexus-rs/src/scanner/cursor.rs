@@ -19,7 +19,7 @@ impl<'a> Cursor<'a> {
     /// # Example
     ///
     /// ```
-    /// use nexus_rs::cursor::Cursor;
+    /// use nexus_rs::scanner::cursor::Cursor;
     ///
     /// let s = "Hello".to_string();
     /// let c = Cursor::new(&s);
@@ -44,7 +44,7 @@ impl<'a> Cursor<'a> {
     /// # Example
     ///
     /// ```
-    /// use nexus_rs::cursor::Cursor;
+    /// use nexus_rs::scanner::cursor::Cursor;
     ///
     /// let s = "ab".to_string();
     /// let mut c = Cursor::new(&s);
@@ -62,7 +62,7 @@ impl<'a> Cursor<'a> {
     /// # Example
     ///
     /// ```
-    /// use nexus_rs::cursor::Cursor;
+    /// use nexus_rs::scanner::cursor::Cursor;
     ///
     /// let s = "abc".to_string();
     /// let mut c = Cursor::new(&s);
@@ -88,7 +88,7 @@ impl<'a> Cursor<'a> {
     /// # Example
     ///
     /// ```
-    /// use nexus_rs::cursor::Cursor;
+    /// use nexus_rs::scanner::cursor::Cursor;
     ///
     /// let s = "abcdefg".to_string();
     /// let mut c = Cursor::new(&s);
@@ -123,7 +123,7 @@ impl<'a> Cursor<'a> {
     /// # Example
     ///
     /// ```
-    /// use nexus_rs::cursor::Cursor;
+    /// use nexus_rs::scanner::cursor::Cursor;
     ///
     /// let s = "ab".to_string();
     /// let mut c = Cursor::new(&s);
@@ -145,7 +145,7 @@ impl<'a> Cursor<'a> {
     /// # Example
     ///
     /// ```
-    /// use nexus_rs::cursor::Cursor;
+    /// use nexus_rs::scanner::cursor::Cursor;
     ///
     /// let s = "abc".to_string();
     /// let c = Cursor::new(&s);
@@ -175,7 +175,7 @@ impl<'a> Cursor<'a> {
     /// # Example
     ///
     /// ```
-    /// use nexus_rs::cursor::Cursor;
+    /// use nexus_rs::scanner::cursor::Cursor;
     ///
     /// let s = "abc123 def".to_string();
     /// let c = Cursor::new(&s);
@@ -203,7 +203,7 @@ impl<'a> Cursor<'a> {
     /// # Example
     ///
     /// ```
-    /// use nexus_rs::cursor::Cursor;
+    /// use nexus_rs::scanner::cursor::Cursor;
     ///
     /// let s = "abcdefg".to_string();
     /// let mut c = Cursor::new(&s);
@@ -227,7 +227,7 @@ impl<'a> Cursor<'a> {
     /// # Example
     ///
     /// ```
-    /// use nexus_rs::cursor::Cursor;
+    /// use nexus_rs::scanner::cursor::Cursor;
     ///
     /// let s = "x".to_string();
     /// let mut c = Cursor::new(&s);

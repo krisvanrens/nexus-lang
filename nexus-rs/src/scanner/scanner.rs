@@ -1,4 +1,4 @@
-use crate::cursor::Cursor;
+use super::cursor::Cursor;
 use crate::token::{Token, Tokens};
 use lazy_static::lazy_static;
 use std::collections::HashMap;
@@ -14,7 +14,7 @@ use std::f64::consts::PI;
 /// Scanner for Nexus.
 ///
 /// **Note**: at this moment, the scanner is *not* suitable for out-of-order parallel operation.
-/// Due to support for multiline comments in Nexus, line scans are noncommutative.
+/// Due to support for multiline comments in Nexus, line scans are non-commutative.
 pub struct Scanner {
     comment_: bool, //<! Indicates multiline comment state.
 }
@@ -73,7 +73,7 @@ impl Scanner {
     /// # Example
     ///
     /// ```
-    /// use nexus_rs::{scanner::Scanner, token::Token};
+    /// use nexus_rs::{scanner::scanner::Scanner, token::Token};
     ///
     /// let mut s = Scanner::new();
     /// if let Ok(tokens) = s.scan("let x;".to_string()) {

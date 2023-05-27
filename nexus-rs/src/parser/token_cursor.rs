@@ -15,7 +15,7 @@ impl TokenCursor {
     /// # Example
     ///
     /// ```
-    /// use nexus_rs::token_cursor::TokenCursor;
+    /// use nexus_rs::parser::token_cursor::TokenCursor;
     /// use nexus_rs::token::Tokens;
     ///
     /// let t = Tokens::new();
@@ -36,7 +36,7 @@ impl TokenCursor {
     /// # Example
     ///
     /// ```
-    /// use nexus_rs::token_cursor::TokenCursor;
+    /// use nexus_rs::parser::token_cursor::TokenCursor;
     /// use nexus_rs::token::Token;
     ///
     /// let t = vec![Token::Let];
@@ -51,31 +51,12 @@ impl TokenCursor {
         value
     }
 
-    /// Take previous value.
-    ///
-    /// # Example
-    ///
-    /// ```
-    /// use nexus_rs::token_cursor::TokenCursor;
-    /// use nexus_rs::token::Token;
-    ///
-    /// let t = vec![Token::Let, Token::Arrow];
-    /// let mut c = TokenCursor::new(t);
-    ///
-    /// assert_eq!(c.previous(), None);
-    /// c.advance();
-    /// assert_eq!(c.previous(), Some(Token::Let));
-    /// ```
-    pub fn previous(&mut self) -> Option<Token> {
-        self.prev.take()
-    }
-
     /// Peek upcoming value (without advancing).
     ///
     /// # Example
     ///
     /// ```
-    /// use nexus_rs::token_cursor::TokenCursor;
+    /// use nexus_rs::parser::token_cursor::TokenCursor;
     /// use nexus_rs::token::Token;
     ///
     /// let t = vec![Token::Let, Token::Arrow];
@@ -93,7 +74,7 @@ impl TokenCursor {
     /// # Example
     ///
     /// ```
-    /// use nexus_rs::token_cursor::TokenCursor;
+    /// use nexus_rs::parser::token_cursor::TokenCursor;
     /// use nexus_rs::token::Token;
     ///
     /// let t = vec![Token::Let, Token::Arrow, Token::For];
@@ -112,7 +93,7 @@ impl TokenCursor {
     /// # Example
     ///
     /// ```
-    /// use nexus_rs::token_cursor::TokenCursor;
+    /// use nexus_rs::parser::token_cursor::TokenCursor;
     /// use nexus_rs::token::Token;
     ///
     /// let t = vec![Token::Let];
@@ -132,7 +113,7 @@ impl TokenCursor {
     /// # Example
     ///
     /// ```
-    /// use nexus_rs::token_cursor::TokenCursor;
+    /// use nexus_rs::parser::token_cursor::TokenCursor;
     /// use nexus_rs::token::Token;
     ///
     /// let t = vec![Token::Let, Token::Arrow];
@@ -155,7 +136,7 @@ impl TokenCursor {
     /// # Example
     ///
     /// ```
-    /// use nexus_rs::token_cursor::TokenCursor;
+    /// use nexus_rs::parser::token_cursor::TokenCursor;
     /// use nexus_rs::token::Token;
     ///
     /// let t = vec![Token::Let, Token::Arrow];
@@ -174,7 +155,7 @@ impl TokenCursor {
     /// # Example
     ///
     /// ```
-    /// use nexus_rs::token_cursor::TokenCursor;
+    /// use nexus_rs::parser::token_cursor::TokenCursor;
     /// use nexus_rs::token::Token;
     ///
     /// let t = vec![Token::Let, Token::Arrow];
@@ -193,7 +174,7 @@ impl TokenCursor {
     /// # Example
     ///
     /// ```
-    /// use nexus_rs::token_cursor::TokenCursor;
+    /// use nexus_rs::parser::token_cursor::TokenCursor;
     /// use nexus_rs::token::Token;
     ///
     /// let t = vec![Token::Let];
@@ -205,23 +186,6 @@ impl TokenCursor {
     /// ```
     pub fn eos(&self) -> bool {
         self.curr.is_none()
-    }
-}
-
-// Temporary helpers.
-impl TokenCursor {
-    /// Temporary helper function to fast-forward unsupported tokens (until EOS).
-    pub fn fast_forward(&mut self) {
-        while !self.eos() {
-            self.advance();
-        }
-    }
-
-    /// Temporary helper function to fast-forward unsupported tokens (while the predicate holds).
-    pub fn fast_forward_while(&mut self, mut pred: impl FnMut(&Token) -> bool) {
-        while !self.eos() && pred(self.curr.as_ref().unwrap()) {
-            self.advance();
-        }
     }
 }
 
@@ -242,20 +206,6 @@ fn value_test() {
     assert_eq!(c.value(), Some(Token::Let));
     assert_eq!(c.value(), Some(Token::Arrow));
     assert_eq!(c.value(), None);
-}
-
-#[test]
-fn previous_test() {
-    let t = vec![Token::Let, Token::Arrow];
-    let mut c = TokenCursor::new(t);
-
-    assert_eq!(c.previous(), None);
-    c.advance();
-    assert_eq!(c.previous(), Some(Token::Let));
-    c.advance();
-    assert_eq!(c.previous(), Some(Token::Arrow));
-
-    assert_eq!(c.previous(), None);
 }
 
 #[test]

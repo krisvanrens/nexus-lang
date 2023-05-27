@@ -1,7 +1,7 @@
+use super::token_cursor::TokenCursor;
 use crate::ast;
 use crate::ptr::Ptr;
 use crate::token::{Token, Tokens};
-use crate::token_cursor::TokenCursor;
 use lazy_static::lazy_static;
 
 /// Parser for Nexus.
@@ -38,7 +38,7 @@ impl Parser {
     ///
     /// ```
     /// use nexus_rs::token::Tokens;
-    /// use nexus_rs::parser::Parser;
+    /// use nexus_rs::parser::parser::Parser;
     ///
     /// let t = Tokens::new();
     /// let p = Parser::new(t);
@@ -466,14 +466,7 @@ fn parse_primary_expr(c: &mut TokenCursor) -> ast::Expr {
         Some(Token::LeftParen) => parse_group_expr(c),
         Some(Token::LeftBrace) => parse_block_expr(c),
         None => panic!("unexpected end of token stream"), // TODO: Proper error handling..
-        _ => {
-            // XXX: Flush until semicolon.
-            c.fast_forward_while(|t| t != &Token::SemiColon);
-
-            ast::Expr {
-                kind: ast::ExprKind::Unsupported("...".to_string()),
-            }
-        }
+        _ => panic!("unexpected token"),                  // TODO: Proper error handling..
     }
 }
 
