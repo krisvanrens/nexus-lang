@@ -118,6 +118,7 @@ impl fmt::Display for Expr {
 pub enum ExprKind {
     Binary(Ptr<BinaryExpr>),
     Block(Ptr<BlockExpr>),
+    Empty(),
     FuncCall(Ptr<FuncCall>),
     Group(Ptr<Expr>),
     Literal(Ptr<Literal>),
