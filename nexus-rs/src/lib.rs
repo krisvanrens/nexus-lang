@@ -1,5 +1,8 @@
-/// File reader based on a buffered, line-by-line file reader.
-pub mod filereader;
+/// Module group for utilities.
+pub mod utils {
+    /// File reader based on a buffered, line-by-line file reader.
+    pub mod filereader;
+}
 
 /// Module group for lexing token-related items.
 pub mod nxs_token {
@@ -34,6 +37,7 @@ pub mod nxs_parser {
     pub mod token_cursor;
 }
 
+pub use utils::*;
 pub use nxs_ast::*;
 pub use nxs_parser::*;
 pub use nxs_scanner::*;
