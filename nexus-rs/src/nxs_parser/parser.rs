@@ -296,7 +296,7 @@ fn parse_or_expr(c: &mut TokenCursor) -> ast::Expr {
     let mut expr = parse_and_expr(c);
 
     while matches!(c.peek(), Some(Token::Or)) {
-        let op = ast::BinaryOp::Or;
+        let op = parse_binary_op(c.value());
         let lhs = expr;
         let rhs = parse_and_expr(c);
 
@@ -312,7 +312,7 @@ fn parse_and_expr(c: &mut TokenCursor) -> ast::Expr {
     let mut expr = parse_equality_expr(c);
 
     while matches!(c.peek(), Some(Token::And)) {
-        let op = ast::BinaryOp::And;
+        let op = parse_binary_op(c.value());
         let lhs = expr;
         let rhs = parse_equality_expr(c);
 
