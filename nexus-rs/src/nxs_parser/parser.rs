@@ -472,7 +472,7 @@ fn parse_primary_expr(c: &mut TokenCursor) -> ast::Expr {
 fn parse_expr_stmt(c: &mut TokenCursor) -> ast::Stmt {
     let expr = parse_expr(c);
 
-    match dbg!(c.peek()) {
+    match c.peek() {
         Some(Token::Arrow) => parse_connect_stmt(expr, c),
         Some(Token::Is) => parse_assignment_stmt(expr, c),
         None => panic!("unexpected EOS while parsing statement"), // TODO: Proper error handling..
