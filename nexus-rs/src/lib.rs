@@ -1,14 +1,16 @@
-/// AST definitions for Nexus.
-pub mod ast;
-
 /// File reader based on a buffered, line-by-line file reader.
 pub mod filereader;
 
-/// Pointer-wrapper used in the AST.
-pub mod ptr;
-
 /// Scanning/lexing token representations.
 pub mod token;
+
+pub mod ast {
+    /// AST definitions for Nexus.
+    pub mod ast;
+
+    /// Pointer-wrapper used in the AST.
+    pub mod ptr;
+}
 
 pub mod scanner {
     /// Scanner/lexer for Nexus.

@@ -1,6 +1,5 @@
 use super::token_cursor::TokenCursor;
-use crate::ast;
-use crate::ptr::Ptr;
+use crate::ast::{ast, ptr::Ptr};
 use crate::token::{Token, Tokens};
 use lazy_static::lazy_static;
 

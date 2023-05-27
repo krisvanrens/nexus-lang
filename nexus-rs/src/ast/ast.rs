@@ -1,7 +1,7 @@
 use core::fmt;
 use strum_macros::Display;
 
-use crate::ptr::Ptr;
+use super::ptr::Ptr;
 
 /// AST node evaluation trait, used for simple evaluation.
 ///
