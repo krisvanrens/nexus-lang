@@ -289,6 +289,11 @@ fn parse_type(c: &mut TokenCursor) -> ast::TypeKind {
 
 fn parse_expr(c: &mut TokenCursor) -> ast::Expr {
     // NOTE: The recursion depth encodes the operator precedence.
+    parse_range_expr(c)
+}
+
+fn parse_range_expr(c: &mut TokenCursor) -> ast::Expr {
+    // TODO
     parse_or_expr(c)
 }
 

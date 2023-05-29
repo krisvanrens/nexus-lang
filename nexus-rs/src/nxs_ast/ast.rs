@@ -122,6 +122,7 @@ pub enum ExprKind {
     FuncCall(Ptr<FuncCall>),
     Group(Ptr<Expr>),
     Literal(Ptr<Literal>),
+    Range(Ptr<Range>),
     Unary(Ptr<UnaryExpr>),
     Var(Ptr<Var>),
 }
@@ -227,6 +228,21 @@ pub enum LiteralKind {
     Bool(bool),
     Number(f64),
     String(String),
+}
+
+/// Range expression.
+#[derive(Debug)]
+pub struct Range {
+    pub kind: RangeKind,
+    pub start: Expr,
+    pub end: Expr,
+}
+
+/// Literal value kind.
+#[derive(Debug, Display)]
+pub enum RangeKind {
+    Exclusive,
+    Inclusive,
 }
 
 /// Variable expression.
