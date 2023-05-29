@@ -43,7 +43,7 @@ fn run_from_file(filename: String) {
         },
     ));
 
-    println!("{:?}", parser.parse()); // XXX
+    println!("{}", parser.parse()); // XXX
 }
 
 fn run_repl() {
@@ -59,7 +59,7 @@ fn run_repl() {
                     .expect("failed to store line to history");
                 match scanner::Scanner::new().scan(line) {
                     Ok(tokens) => {
-                        println!("{:?}", parser::Parser::new(tokens).parse()); // XXX
+                        println!("{}", parser::Parser::new(tokens).parse()); // XXX
                     }
                     Err(error) => eprintln!("{error:?}"),
                 }

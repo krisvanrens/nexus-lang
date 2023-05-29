@@ -35,9 +35,9 @@ fn main() {
         },
     ));
 
-    parser.parse().into_iter().for_each(|n| {
+    parser.parse().inner().into_iter().for_each(|n| {
         println!(
-            "{} {}: {}\n{n:?}",
+            "{} {}: {}",
             "==".yellow().bold(),
             "AST Node".bold(),
             n.to_string().bright_red().dimmed()

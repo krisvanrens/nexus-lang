@@ -1,5 +1,4 @@
 use core::fmt;
-use strum_macros::Display;
 
 use super::ptr::Ptr;
 
@@ -26,7 +25,7 @@ impl fmt::Display for Stmt {
 }
 
 /// Statement kind.
-#[derive(Debug, Display)]
+#[derive(Debug)]
 pub enum StmtKind {
     Assignment(Ptr<Assignment>),
     Block(Stmts),
@@ -40,17 +39,63 @@ pub enum StmtKind {
     VarDecl(Ptr<VarDecl>),
 }
 
-/// A collection of statements.
-pub type Stmts = Vec<Stmt>;
+impl fmt::Display for StmtKind {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+            match self {
+                StmtKind::Assignment(x) => write!(f, "AssignmentStmt {{ {x} }}"),
+                StmtKind::Block(x) => write!(f, "BlockStmt {{ {x} }}"),
+                StmtKind::Connect(x) => write!(f, "ConnectStmt {{ {x} }}"),
+                StmtKind::ConstDecl(x) => write!(f, "ConstDeclStmt {{ {x} }}"),
+                StmtKind::Expr(x) => write!(f, "ExprStmt {{ {x} }}"),
+                StmtKind::FunctionDecl(x) => write!(f, "FunctionDeclStmt {{ {x} }}"),
+                StmtKind::Print(x) => write!(f, "PrintStmt {{ {x} }}"),
+                StmtKind::Return(x) => write!(f, "ReturnStmt {{ {x} }}"),
+                StmtKind::UseDecl(x) => write!(f, "UseDeclStmt {{ {x} }}"),
+                StmtKind::VarDecl(x) => write!(f, "VarDeclStmt {{ {x} }}"),
+            }
+    }
+}
+
+// TODO: Use newtype proper (see: https://github.com/apolitical/impl-display-for-vec)
+#[derive(Debug)]
+pub struct Stmts(pub Vec<Stmt>);
+
+impl Stmts {
+    pub fn new() -> Self {
+        Stmts(Vec::<Stmt>::new())
+    }
+
+    pub fn push(&mut self, s: Stmt) {
+        self.0.push(s)
+    }
+
+    pub fn inner(&mut self) -> &mut Vec<Stmt> {
+        &mut self.0
+    }
+}
+
+impl fmt::Display for Stmts {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        // TODO
+        write!(f, "TODO")
+    }
+}
 
 /// Nexus fundamental type kind.
-#[derive(Debug, Display)]
+#[derive(Debug)]
 pub enum TypeKind {
     Bool,
     Group,
     Node,
     Number,
     String,
+}
+
+impl fmt::Display for TypeKind {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        // TODO
+        write!(f, "TODO")
+    }
 }
 
 /// Constant declaration.
@@ -76,6 +121,13 @@ pub struct FunctionDecl {
     pub body: Stmt, // A block statement.
 }
 
+impl fmt::Display for FunctionDecl {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        // TODO
+        write!(f, "FunctionDecl TODO")
+    }
+}
+
 /// Function argument.
 #[derive(Debug)]
 pub struct FunctionArg {
@@ -95,10 +147,23 @@ pub struct VarDecl {
     pub value: Option<Expr>,
 }
 
+impl fmt::Display for VarDecl {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        // TODO
+        write!(f, "VarDecl TODO")
+    }
+}
+
 /// Using declaration.
 #[derive(Debug)]
 pub struct UseDecl {
     pub filename: Expr,
+}
+
+impl fmt::Display for UseDecl {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "UseDecl {}", self.filename)
+    }
 }
 
 /// General expression representation.
@@ -114,7 +179,7 @@ impl fmt::Display for Expr {
 }
 
 /// Expression kind.
-#[derive(Debug, Display)]
+#[derive(Debug)]
 pub enum ExprKind {
     Binary(Ptr<BinaryExpr>),
     Block(Ptr<BlockExpr>),
@@ -127,6 +192,17 @@ pub enum ExprKind {
     Var(Ptr<Var>),
 }
 
+impl fmt::Display for ExprKind {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match self {
+            ExprKind::Range(x) => write!(f, "RangeExpr {{ {x} }}"),
+            ExprKind::Literal(x) => write!(f, "LiteralExpr {{ {x} }}"),
+            ExprKind::Var(x) => write!(f, "VarExpr {{ {x} }}"),
+            _ => write!(f, "TODO"),
+        }
+    }
+}
+
 /// Binary expression.
 #[derive(Debug)]
 pub struct BinaryExpr {
@@ -136,7 +212,7 @@ pub struct BinaryExpr {
 }
 
 /// Binary operator.
-#[derive(Debug, Display)]
+#[derive(Debug)]
 pub enum BinaryOp {
     And,
     Divide,
@@ -175,7 +251,7 @@ pub struct UnaryExpr {
 }
 
 /// Unary operator.
-#[derive(Debug, Display)]
+#[derive(Debug)]
 pub enum UnaryOp {
     Bang,
     Group,
@@ -191,11 +267,25 @@ pub struct Assignment {
     pub rhs: Expr,
 }
 
+impl fmt::Display for Assignment {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        // TODO
+        write!(f, "Assignment TODO")
+    }
+}
+
 /// Connect statement.
 #[derive(Debug)]
 pub struct Connect {
     pub source: Expr,
     pub sink: Expr,
+}
+
+impl fmt::Display for Connect {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        // TODO
+        write!(f, "Connect TODO")
+    }
 }
 
 /// Print statement.
@@ -204,10 +294,24 @@ pub struct Print {
     pub expr: Expr,
 }
 
+impl fmt::Display for Print {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        // TODO
+        write!(f, "Print TODO")
+    }
+}
+
 /// Return statement.
 #[derive(Debug)]
 pub struct Return {
     pub expr: Expr,
+}
+
+impl fmt::Display for Return {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        // TODO
+        write!(f, "Return TODO")
+    }
 }
 
 /// Literal value.
@@ -223,11 +327,21 @@ impl fmt::Display for Literal {
 }
 
 /// Literal value kind.
-#[derive(Debug, Display)]
+#[derive(Debug)]
 pub enum LiteralKind {
     Bool(bool),
     Number(f64),
     String(String),
+}
+
+impl fmt::Display for LiteralKind {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match self {
+            LiteralKind::Bool(x) => write!(f, "Bool {{ {x} }}"),
+            LiteralKind::Number(x) => write!(f, "Number {{ {x} }}"),
+            LiteralKind::String(x) => write!(f, "String {{ {x} }}"),
+        }
+    }
 }
 
 /// Range expression.
@@ -238,17 +352,42 @@ pub struct Range {
     pub end: Expr,
 }
 
-/// Literal value kind.
-#[derive(Debug, Display)]
+impl fmt::Display for Range {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "Range {{ {} {} {} }}", self.start, self.kind, self.end)
+    }
+}
+
+/// Range kind.
+#[derive(Debug)]
 pub enum RangeKind {
     Exclusive,
     Inclusive,
+}
+
+impl fmt::Display for RangeKind {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(
+            f,
+            "{}",
+            match self {
+                RangeKind::Exclusive => "..",
+                RangeKind::Inclusive => "..=",
+            }
+        )
+    }
 }
 
 /// Variable expression.
 #[derive(Debug)]
 pub struct Var {
     pub id: String,
+}
+
+impl fmt::Display for Var {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "Var {{ {} }}", self.id)
+    }
 }
 
 /// Trait to enable self-evaluation.
