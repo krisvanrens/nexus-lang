@@ -293,8 +293,39 @@ fn parse_expr(c: &mut TokenCursor) -> ast::Expr {
 }
 
 fn parse_range_expr(c: &mut TokenCursor) -> ast::Expr {
-    // TODO
-    parse_or_expr(c)
+    let mut expr = parse_or_expr(c);
+
+    if matches!(c.peek(), Some(Token::Range)) {
+        c.consume(Token::Range);
+
+        let kind = if c.peek() == Some(Token::Is) {
+            c.consume(Token::Is);
+            ast::RangeKind::Inclusive
+        } else {
+            ast::RangeKind::Exclusive
+        };
+
+        let start = expr;
+        let end = parse_or_expr(c);
+
+        let check_range_expr_type = |e: &ast::Expr| {
+            if !matches!(
+                e.kind,
+                ast::ExprKind::Literal(_) | ast::ExprKind::Var(_) | ast::ExprKind::Group(_)
+            ) {
+                panic!("expected literal, identifier or group expression for range delimiter");
+            }
+        };
+
+        check_range_expr_type(&start);
+        check_range_expr_type(&end);
+
+        expr = ast::Expr {
+            kind: ast::ExprKind::Range(Ptr::new(ast::Range { kind, start, end })),
+        };
+    }
+
+    expr
 }
 
 fn parse_or_expr(c: &mut TokenCursor) -> ast::Expr {
