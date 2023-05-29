@@ -1,9 +1,19 @@
+use core::fmt;
+
 /// Immovable pointer type, able to take DSTs.
 ///
 /// The idea for this was taken from the `P<T>` "frozen" AST pointer type in the Rust compiler.
-#[derive(Debug)]
 pub struct Ptr<T: ?Sized> {
     ptr: Box<T>,
+}
+
+impl<T> fmt::Debug for Ptr<T>
+where
+    T: fmt::Debug,
+{
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "Ptr -> {:?}", self.ptr)
+    }
 }
 
 impl<T: 'static> Ptr<T> {
