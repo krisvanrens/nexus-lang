@@ -297,7 +297,7 @@ stmt       = expr_stmt | assignment | connect | print | return | block ;
 expr_stmt  = expr ( ';' )? ;
 assignment = ID '=' expr ';' ;
 connect    = ID '->' ID ';' ;
-print      = 'print' expr ';' ;
+print      = 'print' ( expr | ) ';' ;
 return     = 'return' expr? ';' ;
 block      = '{' decl* '}' ;
 
