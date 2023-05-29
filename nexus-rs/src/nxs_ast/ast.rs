@@ -41,18 +41,19 @@ pub enum StmtKind {
 
 impl fmt::Display for StmtKind {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-            match self {
-                StmtKind::Assignment(x) => write!(f, "AssignmentStmt {{ {x} }}"),
-                StmtKind::Block(x) => write!(f, "BlockStmt {{ {x} }}"),
-                StmtKind::Connect(x) => write!(f, "ConnectStmt {{ {x} }}"),
-                StmtKind::ConstDecl(x) => write!(f, "ConstDeclStmt {{ {x} }}"),
-                StmtKind::Expr(x) => write!(f, "ExprStmt {{ {x} }}"),
-                StmtKind::FunctionDecl(x) => write!(f, "FunctionDeclStmt {{ {x} }}"),
-                StmtKind::Print(x) => write!(f, "PrintStmt {{ {x} }}"),
-                StmtKind::Return(x) => write!(f, "ReturnStmt {{ {x} }}"),
-                StmtKind::UseDecl(x) => write!(f, "UseDeclStmt {{ {x} }}"),
-                StmtKind::VarDecl(x) => write!(f, "VarDeclStmt {{ {x} }}"),
-            }
+        match self {
+            // TODO: Create macro for this? Or use EnumIter from Strum.
+            StmtKind::Assignment(x) => write!(f, "AssignmentStmt {{ {x} }}"),
+            StmtKind::Block(x) => write!(f, "BlockStmt {{ {x} }}"),
+            StmtKind::Connect(x) => write!(f, "ConnectStmt {{ {x} }}"),
+            StmtKind::ConstDecl(x) => write!(f, "ConstDeclStmt {{ {x} }}"),
+            StmtKind::Expr(x) => write!(f, "ExprStmt {{ {x} }}"),
+            StmtKind::FunctionDecl(x) => write!(f, "FunctionDeclStmt {{ {x} }}"),
+            StmtKind::Print(x) => write!(f, "PrintStmt {{ {x} }}"),
+            StmtKind::Return(x) => write!(f, "ReturnStmt {{ {x} }}"),
+            StmtKind::UseDecl(x) => write!(f, "UseDeclStmt {{ {x} }}"),
+            StmtKind::VarDecl(x) => write!(f, "VarDeclStmt {{ {x} }}"),
+        }
     }
 }
 
