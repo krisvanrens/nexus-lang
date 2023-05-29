@@ -301,7 +301,7 @@ print      = 'print' ( expr | ) ';' ;
 return     = 'return' expr? ';' ;
 block      = '{' decl* '}' ;
 
-expr       = primary | unary | binary ;
+expr       = primary | unary | binary | range_expr ;
 primary    = call | ID | literal | closure | control | group | block ;
 call       = ID '(' args ')' ;
 literal    = NUMBER | STRING | 'true' | 'false' ;
@@ -310,16 +310,16 @@ control    = if | while | for ;
 group      = '(' expr ')' ;
 if         = "if" expr block ;
 while      = "while" expr block ;
-for        = "for" ID "in" ( ( expr range expr ) | ID ) block ;
+for        = "for" ID "in" ( ( range_expr ) | ID ) block ;
 unary      = ( '!' | '+' | '-' | 'group' | 'node' ) expr ;
-operator   = eq_ops | rel_ops | logic_ops | arith_ops | range | dot ;
+operator   = eq_ops | rel_ops | logic_ops | arith_ops | dot ;
 eq_ops     = '==' | '!=' ;
 rel_ops    = '<=' | '>=' | '<' | '>' ;
 logic_ops  = '||' | '&&' ;
 arith_ops  = '+' | '-' | '*' | '/' | '%' ;
-range      = '..' ( '=' )? ;
 dot        = '.' ;
 binary     = expr operator expr ;
+range_expr = ( literal | ID | group ) '..' ( '=' )? ( literal | ID | group ) ;
 
 function   = ID '(' params* ')' ( '->' type )? block ;
 params     = ID ':' type ( ',' ID ':' type )* ;
