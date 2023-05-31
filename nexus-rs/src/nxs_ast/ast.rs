@@ -1,4 +1,5 @@
 use core::fmt;
+use strum_macros::Display;
 
 use super::ptr::Ptr;
 
@@ -83,20 +84,13 @@ impl fmt::Display for Stmts {
 }
 
 /// Nexus fundamental type kind.
-#[derive(Debug)]
+#[derive(Debug, Display)]
 pub enum TypeKind {
     Bool,
     Group,
     Node,
     Number,
     String,
-}
-
-impl fmt::Display for TypeKind {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        // TODO
-        write!(f, "TODO")
-    }
 }
 
 /// Constant declaration.
@@ -124,8 +118,19 @@ pub struct FunctionDecl {
 
 impl fmt::Display for FunctionDecl {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        // TODO
-        write!(f, "FunctionDecl TODO")
+        write!(
+            f,
+            "FunctionDecl {{ {} ({}) -> {} }}",
+            self.id,
+            match self.args {
+                Some(_) => "..TODO..".to_owned(),
+                None => "".to_owned(),
+            },
+            match &self.ret_type {
+                Some(t) => format!("{t}"),
+                None => "unknown".to_owned(),
+            }
+        )
     }
 }
 
@@ -134,6 +139,12 @@ impl fmt::Display for FunctionDecl {
 pub struct FunctionArg {
     pub id: String,
     pub typeid: TypeKind,
+}
+
+impl fmt::Display for FunctionArg {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "TODO")
+    }
 }
 
 /// A collection of function arguments.
@@ -150,8 +161,20 @@ pub struct VarDecl {
 
 impl fmt::Display for VarDecl {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        // TODO
-        write!(f, "VarDecl TODO")
+        write!(
+            f,
+            "VarDecl {{ {} {}: {} = {} }}",
+            self.id,
+            if self.mutable { "mut " } else { "" },
+            match &self.typeid {
+                Some(t) => format!("{t}"),
+                None => "unknown".to_owned(),
+            },
+            match &self.value {
+                Some(v) => format!("{v}"),
+                None => "unknown".to_owned(),
+            }
+        )
     }
 }
 
@@ -196,8 +219,9 @@ pub enum ExprKind {
 impl fmt::Display for ExprKind {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
-            ExprKind::Range(x) => write!(f, "RangeExpr {{ {x} }}"),
+            ExprKind::FuncCall(x) => write!(f, "FuncCallExpr {{ {x} }}"),
             ExprKind::Literal(x) => write!(f, "LiteralExpr {{ {x} }}"),
+            ExprKind::Range(x) => write!(f, "RangeExpr {{ {x} }}"),
             ExprKind::Var(x) => write!(f, "VarExpr {{ {x} }}"),
             _ => write!(f, "TODO"),
         }
@@ -213,7 +237,7 @@ pub struct BinaryExpr {
 }
 
 /// Binary operator.
-#[derive(Debug)]
+#[derive(Debug, Display)]
 pub enum BinaryOp {
     And,
     Divide,
@@ -244,6 +268,12 @@ pub struct FuncCall {
     pub args: Vec<Expr>,
 }
 
+impl fmt::Display for FuncCall {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "FuncCall {{ {} (..TODO..) }}", self.id)
+    }
+}
+
 /// Unary expression.
 #[derive(Debug)]
 pub struct UnaryExpr {
@@ -252,7 +282,7 @@ pub struct UnaryExpr {
 }
 
 /// Unary operator.
-#[derive(Debug)]
+#[derive(Debug, Display)]
 pub enum UnaryOp {
     Bang,
     Group,
