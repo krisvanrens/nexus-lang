@@ -1,0 +1,5 @@
+let x1;
+x1 = 42;
+
+let x2 = node "Blah";
+x2.property = 42;

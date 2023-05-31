@@ -270,7 +270,16 @@ pub struct FuncCall {
 
 impl fmt::Display for FuncCall {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "FuncCall {{ {} (..TODO..) }}", self.id)
+        write!(
+            f,
+            "FuncCall {{ {} ({}) }}",
+            self.id,
+            self.args
+                .iter()
+                .map(|a| format!("{a}"))
+                .collect::<Vec<String>>()
+                .join(", ")
+        )
     }
 }
 
@@ -300,8 +309,7 @@ pub struct Assignment {
 
 impl fmt::Display for Assignment {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        // TODO
-        write!(f, "Assignment TODO")
+        write!(f, "Assignment {{ {} = {} }}", self.lhs, self.rhs)
     }
 }
 
@@ -314,8 +322,7 @@ pub struct Connect {
 
 impl fmt::Display for Connect {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        // TODO
-        write!(f, "Connect TODO")
+        write!(f, "Connect {{ {} -> {} }}", self.source, self.sink)
     }
 }
 
@@ -327,8 +334,7 @@ pub struct Print {
 
 impl fmt::Display for Print {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        // TODO
-        write!(f, "Print TODO")
+        write!(f, "Print {{ {} }}", self.expr)
     }
 }
 
@@ -340,8 +346,7 @@ pub struct Return {
 
 impl fmt::Display for Return {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        // TODO
-        write!(f, "Return TODO")
+        write!(f, "Return {{ {} }}", self.expr)
     }
 }
 
