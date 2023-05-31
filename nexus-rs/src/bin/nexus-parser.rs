@@ -35,7 +35,7 @@ fn main() {
         },
     ));
 
-    parser.parse().inner().into_iter().for_each(|n| {
+    parser.parse().inner().iter_mut().for_each(|n| {
         println!(
             "{} {}: {}",
             "==".yellow().bold(),
