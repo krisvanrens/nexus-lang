@@ -7,3 +7,8 @@ fn func6(a: bool, b: String) -> Number {}
 fn func7() -> bool {}
 fn func8() -> Group {}
 fn func9() -> Node {}
+
+fn func10(a: Number, b: Number) -> Node {
+  let result = a + b;
+  result
+}

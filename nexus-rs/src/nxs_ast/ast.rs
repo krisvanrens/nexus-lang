@@ -21,7 +21,7 @@ pub struct Stmt {
 
 impl fmt::Display for Stmt {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "Stmt[{}]", self.kind)
+        write!(f, "{}", self.kind)
     }
 }
 
@@ -78,8 +78,19 @@ impl Stmts {
 
 impl fmt::Display for Stmts {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        // TODO
-        write!(f, "TODO")
+        write!(
+            f,
+            "{}",
+            if self.0.is_empty() {
+                "(empty)".to_owned()
+            } else {
+                self.0
+                    .iter()
+                    .map(|s| format!("{s}"))
+                    .collect::<Vec<String>>()
+                    .join(", ")
+            }
+        )
     }
 }
 
@@ -120,16 +131,17 @@ impl fmt::Display for FunctionDecl {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(
             f,
-            "FunctionDecl {{ {} ({}) -> {} }}",
+            "FunctionDecl {{ {} ({}) -> {} {{ {} }} }}",
             self.id,
-            match self.args {
-                Some(_) => "..TODO..".to_owned(),
+            match &self.args {
+                Some(a) => format!("{a}"),
                 None => "".to_owned(),
             },
             match &self.ret_type {
                 Some(t) => format!("{t}"),
                 None => "unknown".to_owned(),
-            }
+            },
+            self.body
         )
     }
 }
@@ -143,13 +155,46 @@ pub struct FunctionArg {
 
 impl fmt::Display for FunctionArg {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "TODO")
+        write!(f, "Arg {{ {} : {} }}", self.id, self.typeid)
     }
 }
 
 /// A collection of function arguments.
-pub type FunctionArgs = Vec<FunctionArg>;
+// TODO: Use newtype proper (see: https://github.com/apolitical/impl-display-for-vec)
+#[derive(Debug)]
+pub struct FunctionArgs(pub Vec<FunctionArg>);
 
+impl FunctionArgs {
+    pub fn new() -> Self {
+        FunctionArgs(Vec::<FunctionArg>::new())
+    }
+
+    pub fn push(&mut self, s: FunctionArg) {
+        self.0.push(s)
+    }
+
+    pub fn inner(&mut self) -> &mut Vec<FunctionArg> {
+        &mut self.0
+    }
+}
+
+impl fmt::Display for FunctionArgs {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(
+            f,
+            "{}",
+            if self.0.is_empty() {
+                "(empty)".to_owned()
+            } else {
+                self.0
+                    .iter()
+                    .map(|s| format!("{s}"))
+                    .collect::<Vec<String>>()
+                    .join(", ")
+            }
+        )
+    }
+}
 /// Variable declaration.
 #[derive(Debug)]
 pub struct VarDecl {
@@ -219,11 +264,15 @@ pub enum ExprKind {
 impl fmt::Display for ExprKind {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
+            ExprKind::Binary(x) => write!(f, "BinaryExpr {{ {x} }}"),
+            ExprKind::Block(x) => write!(f, "BlockExpr {{ {x} }}"),
+            ExprKind::Empty() => write!(f, "EmptyExpr"),
             ExprKind::FuncCall(x) => write!(f, "FuncCallExpr {{ {x} }}"),
+            ExprKind::Group(x) => write!(f, "GroupExpr {{ ( {x} ) }}"),
             ExprKind::Literal(x) => write!(f, "LiteralExpr {{ {x} }}"),
             ExprKind::Range(x) => write!(f, "RangeExpr {{ {x} }}"),
+            ExprKind::Unary(x) => write!(f, "UnaryExpr {{ {x} }}"),
             ExprKind::Var(x) => write!(f, "VarExpr {{ {x} }}"),
-            _ => write!(f, "TODO"),
         }
     }
 }
@@ -234,6 +283,12 @@ pub struct BinaryExpr {
     pub op: BinaryOp,
     pub lhs: Expr,
     pub rhs: Expr,
+}
+
+impl fmt::Display for BinaryExpr {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "{} {} {}", self.lhs, self.op, self.rhs)
+    }
 }
 
 /// Binary operator.
@@ -259,6 +314,12 @@ pub enum BinaryOp {
 #[derive(Debug)]
 pub struct BlockExpr {
     pub body: Stmt,
+}
+
+impl fmt::Display for BlockExpr {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "{}", self.body)
+    }
 }
 
 /// Function call expression.
@@ -288,6 +349,12 @@ impl fmt::Display for FuncCall {
 pub struct UnaryExpr {
     pub op: UnaryOp,
     pub expr: Expr,
+}
+
+impl fmt::Display for UnaryExpr {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "{} {}", self.op, self.expr)
+    }
 }
 
 /// Unary operator.

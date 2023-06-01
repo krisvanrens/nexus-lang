@@ -1,0 +1,5 @@
+let x = {
+  let a = 42;
+  let b = 8;
+  a + b
+};
