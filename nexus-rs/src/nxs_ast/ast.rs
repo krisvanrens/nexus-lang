@@ -1,4 +1,4 @@
-use core::fmt;
+use std::{fmt, ops};
 use strum_macros::Display;
 
 use super::ptr::Ptr;
@@ -58,7 +58,6 @@ impl fmt::Display for StmtKind {
     }
 }
 
-// TODO: Use newtype proper (see: https://github.com/apolitical/impl-display-for-vec)
 #[derive(Debug)]
 pub struct Stmts(pub Vec<Stmt>);
 
@@ -66,12 +65,24 @@ impl Stmts {
     pub fn new() -> Self {
         Stmts(Vec::<Stmt>::new())
     }
+}
 
-    pub fn push(&mut self, s: Stmt) {
-        self.0.push(s)
+impl Default for Stmts {
+    fn default() -> Self {
+        Self::new()
     }
+}
 
-    pub fn inner(&mut self) -> &mut Vec<Stmt> {
+impl ops::Deref for Stmts {
+    type Target = Vec<Stmt>;
+
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+
+impl ops::DerefMut for Stmts {
+    fn deref_mut(&mut self) -> &mut Self::Target {
         &mut self.0
     }
 }
@@ -160,20 +171,31 @@ impl fmt::Display for FunctionArg {
 }
 
 /// A collection of function arguments.
-// TODO: Use newtype proper (see: https://github.com/apolitical/impl-display-for-vec)
 #[derive(Debug)]
 pub struct FunctionArgs(pub Vec<FunctionArg>);
 
 impl FunctionArgs {
     pub fn new() -> Self {
-        FunctionArgs(Vec::<FunctionArg>::new())
+        FunctionArgs(Vec::new())
     }
+}
 
-    pub fn push(&mut self, s: FunctionArg) {
-        self.0.push(s)
+impl Default for FunctionArgs {
+    fn default() -> Self {
+        Self::new()
     }
+}
 
-    pub fn inner(&mut self) -> &mut Vec<FunctionArg> {
+impl ops::Deref for FunctionArgs {
+    type Target = Vec<FunctionArg>;
+
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+
+impl ops::DerefMut for FunctionArgs {
+    fn deref_mut(&mut self) -> &mut Self::Target {
         &mut self.0
     }
 }
