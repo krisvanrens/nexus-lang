@@ -217,6 +217,7 @@ impl fmt::Display for FunctionArgs {
         )
     }
 }
+
 /// Variable declaration.
 #[derive(Debug)]
 pub struct VarDecl {
