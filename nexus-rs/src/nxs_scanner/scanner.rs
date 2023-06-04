@@ -90,7 +90,7 @@ impl Scanner {
         while let Some(c) = cursor.value() {
             if !self.comment_ {
                 match c {
-                    ' ' | '\r' | '\t' => (),
+                    ' ' | '\n' | '\r' | '\t' => (),
                     '(' => tokens.push(Token::LeftParen),
                     ')' => tokens.push(Token::RightParen),
                     '{' => tokens.push(Token::LeftBrace),
