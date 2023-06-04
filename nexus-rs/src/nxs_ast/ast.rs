@@ -58,6 +58,10 @@ impl fmt::Display for StmtKind {
     }
 }
 
+/// A collection of statements.
+///
+/// By way of the orphan rule, we are not allowed to implement a foreign trait on a foreign type.
+/// That's why we use the newtype pattern here, and introduce a single-field tuple.
 #[derive(Debug)]
 pub struct Stmts(pub Vec<Stmt>);
 
@@ -171,6 +175,9 @@ impl fmt::Display for FunctionArg {
 }
 
 /// A collection of function arguments.
+///
+/// By way of the orphan rule, we are not allowed to implement a foreign trait on a foreign type.
+/// That's why we use the newtype pattern here, and introduce a single-field tuple.
 #[derive(Debug)]
 pub struct FunctionArgs(pub Vec<FunctionArg>);
 
