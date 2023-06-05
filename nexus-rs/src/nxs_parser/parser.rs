@@ -498,6 +498,7 @@ fn parse_primary_expr(c: &mut TokenCursor) -> ast::Expr {
         Some(Token::String(_)) => parse_string_literal(c),
         Some(Token::True | Token::False) => parse_bool_literal(c),
         Some(Token::Identifier(_)) => parse_var_expr(c),
+        Some(Token::If) => parse_if_expr(c),
         Some(Token::LeftParen) => parse_group_expr(c),
         Some(Token::LeftBrace) => parse_block_expr(c),
         Some(Token::SemiColon) => ast::Expr {
@@ -524,6 +525,31 @@ fn parse_expr_stmt(c: &mut TokenCursor) -> ast::Stmt {
                 kind: ast::StmtKind::Expr(Ptr::new(expr)),
             }
         }
+    }
+}
+
+fn parse_if_expr(c: &mut TokenCursor) -> ast::Expr {
+    c.consume(Token::If);
+
+    let expr = parse_expr(c);
+    let body_then = parse_block_expr(c);
+
+    let body_else = if c.advance_if(Token::Else) {
+        if c.peek() == Some(Token::If) {
+            Some(parse_if_expr(c))
+        } else {
+            Some(parse_block_expr(c))
+        }
+    } else {
+        None
+    };
+
+    ast::Expr {
+        kind: ast::ExprKind::If(Ptr::new(ast::IfExpr {
+            expr,
+            body_then,
+            body_else,
+        })),
     }
 }
 

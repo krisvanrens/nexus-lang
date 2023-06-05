@@ -285,6 +285,7 @@ pub enum ExprKind {
     Empty(),
     FuncCall(Ptr<FuncCall>),
     Group(Ptr<Expr>),
+    If(Ptr<IfExpr>),
     Literal(Ptr<Literal>),
     Range(Ptr<Range>),
     Unary(Ptr<UnaryExpr>),
@@ -299,6 +300,7 @@ impl fmt::Display for ExprKind {
             ExprKind::Empty() => write!(f, "EmptyExpr"),
             ExprKind::FuncCall(x) => write!(f, "FuncCallExpr {{ {x} }}"),
             ExprKind::Group(x) => write!(f, "GroupExpr {{ ( {x} ) }}"),
+            ExprKind::If(x) => write!(f, "IfExpr {{ {x} }}"),
             ExprKind::Literal(x) => write!(f, "LiteralExpr {{ {x} }}"),
             ExprKind::Range(x) => write!(f, "RangeExpr {{ {x} }}"),
             ExprKind::Unary(x) => write!(f, "UnaryExpr {{ {x} }}"),
@@ -444,6 +446,30 @@ pub struct Return {
 impl fmt::Display for Return {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(f, "Return {{ {} }}", self.expr)
+    }
+}
+
+/// If expression.
+#[derive(Debug)]
+pub struct IfExpr {
+    pub expr: Expr,
+    pub body_then: Expr,
+    pub body_else: Option<Expr>,
+}
+
+impl fmt::Display for IfExpr {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(
+            f,
+            "if {{ {} }} then {{ {} }}{}",
+            self.expr,
+            self.body_then,
+            if let Some(e) = &self.body_else {
+                format!(" else {{ {} }}", e)
+            } else {
+                "".to_owned()
+            }
+        )
     }
 }
 

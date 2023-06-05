@@ -1,0 +1,30 @@
+fn test1() {
+  if true {
+    print "OK";
+  }
+}
+
+
+fn test2() {
+  if false {
+    print "OK";
+  } else {
+    print "NOK";
+  }
+}
+
+fn test3() {
+  if false {
+    print "OK";
+  } else if false {
+    print "NOK";
+  } else {
+    print "NNOK";
+  }
+}
+
+fn test4() {
+  if a + b > 100 {
+    print "OK";
+  }
+}
