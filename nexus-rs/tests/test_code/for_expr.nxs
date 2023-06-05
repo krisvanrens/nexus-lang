@@ -1,0 +1,21 @@
+fn test1() {
+  for x in 0..100 {
+    print "loop";
+  }
+}
+
+fn test2() {
+  let end = 100;
+  for x in (0 + 42)..end {
+    print x;
+  }
+}
+
+fn test3() {
+  for x in collection {
+    print x;
+  }
+}
+
+let s = "";
+let test4 = for x in 0..3 { s = s + x; s };

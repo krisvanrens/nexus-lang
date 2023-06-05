@@ -283,6 +283,7 @@ pub enum ExprKind {
     Binary(Ptr<BinaryExpr>),
     Block(Ptr<BlockExpr>),
     Empty(),
+    For(Ptr<For>),
     FuncCall(Ptr<FuncCall>),
     Group(Ptr<Expr>),
     If(Ptr<If>),
@@ -299,6 +300,7 @@ impl fmt::Display for ExprKind {
             ExprKind::Binary(x) => write!(f, "BinaryExpr {{ {x} }}"),
             ExprKind::Block(x) => write!(f, "BlockExpr {{ {x} }}"),
             ExprKind::Empty() => write!(f, "EmptyExpr"),
+            ExprKind::For(x) => write!(f, "ForExpr {{ {x} }}"),
             ExprKind::FuncCall(x) => write!(f, "FuncCallExpr {{ {x} }}"),
             ExprKind::Group(x) => write!(f, "GroupExpr {{ ( {x} ) }}"),
             ExprKind::If(x) => write!(f, "IfExpr {{ {x} }}"),
@@ -353,6 +355,24 @@ pub struct BlockExpr {
 impl fmt::Display for BlockExpr {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(f, "{}", self.body)
+    }
+}
+
+/// For expression.
+#[derive(Debug)]
+pub struct For {
+    pub id: String,
+    pub expr: Expr,
+    pub body: Expr,
+}
+
+impl fmt::Display for For {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(
+            f,
+            "for {{ {} }} in {{ {} }} do {{ {} }}",
+            self.id, self.expr, self.body
+        )
     }
 }
 
