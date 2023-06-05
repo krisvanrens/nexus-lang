@@ -498,7 +498,7 @@ impl fmt::Display for LiteralKind {
         match self {
             LiteralKind::Bool(x) => write!(f, "Bool {{ {x} }}"),
             LiteralKind::Number(x) => write!(f, "Number {{ {x} }}"),
-            LiteralKind::String(x) => write!(f, "String {{ {x} }}"),
+            LiteralKind::String(x) => write!(f, "String {{ \"{x}\" }}"),
         }
     }
 }
