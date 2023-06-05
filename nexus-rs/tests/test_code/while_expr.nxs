@@ -1,0 +1,26 @@
+fn test1() {
+  while true {
+    print "loop";
+  }
+}
+
+fn test2() {
+  let x = true;
+  while x {
+    print "loop";
+    x = false;
+  }
+}
+
+fn test3() {
+  while true {}
+}
+
+fn test4() {
+  let x = 0;
+  while x < 42 {
+    x = x + 1;
+  }
+}
+
+let test5 = while x < 100 { x = x + 1; x };

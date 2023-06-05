@@ -285,11 +285,12 @@ pub enum ExprKind {
     Empty(),
     FuncCall(Ptr<FuncCall>),
     Group(Ptr<Expr>),
-    If(Ptr<IfExpr>),
+    If(Ptr<If>),
     Literal(Ptr<Literal>),
     Range(Ptr<Range>),
     Unary(Ptr<UnaryExpr>),
     Var(Ptr<Var>),
+    While(Ptr<While>),
 }
 
 impl fmt::Display for ExprKind {
@@ -305,6 +306,7 @@ impl fmt::Display for ExprKind {
             ExprKind::Range(x) => write!(f, "RangeExpr {{ {x} }}"),
             ExprKind::Unary(x) => write!(f, "UnaryExpr {{ {x} }}"),
             ExprKind::Var(x) => write!(f, "VarExpr {{ {x} }}"),
+            ExprKind::While(x) => write!(f, "WhileExpr {{ {x} }}"),
         }
     }
 }
@@ -451,13 +453,13 @@ impl fmt::Display for Return {
 
 /// If expression.
 #[derive(Debug)]
-pub struct IfExpr {
+pub struct If {
     pub expr: Expr,
     pub body_then: Expr,
     pub body_else: Option<Expr>,
 }
 
-impl fmt::Display for IfExpr {
+impl fmt::Display for If {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(
             f,
@@ -546,6 +548,19 @@ pub struct Var {
 impl fmt::Display for Var {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(f, "Var {{ {} }}", self.id)
+    }
+}
+
+/// While expression.
+#[derive(Debug)]
+pub struct While {
+    pub expr: Expr,
+    pub body: Expr,
+}
+
+impl fmt::Display for While {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "while {{ {} }} do {{ {} }}", self.expr, self.body)
     }
 }
 
