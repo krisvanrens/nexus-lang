@@ -295,7 +295,7 @@ use_decl   = 'use' expr ';' ;
 
 stmt       = expr_stmt | assignment | connect | print | return | block ;
 expr_stmt  = expr ( ';' )? ;
-assignment = ID '=' expr ';' ;
+assignment = ID '=' ( expr | ref ) ';' ;
 connect    = ID '->' ID ';' ;
 print      = 'print' ( expr | ) ';' ;
 return     = 'return' expr? ';' ;
@@ -321,6 +321,7 @@ dot        = '.' ;
 binary     = expr operator expr ;
 range_expr = ( literal | ID | group ) '..' ( '=' )? ( literal | ID | group ) ;
 
+ref        = '&' ID ;
 function   = ID '(' params* ')' ( '->' type )? block ;
 params     = ID ':' type ( ',' ID ':' type )* ;
 args       = expr ( ',' expr )* ;

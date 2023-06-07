@@ -7,3 +7,6 @@ let mut x5;
 let mut x6 : Number;
 let mut x7 = 42;
 let mut x8 : Number = 42;
+
+let x9 = &x1;
+let x10 = &x1.len;

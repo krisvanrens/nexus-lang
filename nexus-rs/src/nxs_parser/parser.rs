@@ -182,7 +182,14 @@ fn parse_var_decl(c: &mut TokenCursor) -> ast::Stmt {
     };
 
     let value = if c.advance_if(Token::Is) {
-        Some(parse_expr(c))
+        Some(if c.advance_if(Token::Amp) {
+            let expr = parse_expr(c);
+            ast::Expr {
+                kind: ast::ExprKind::Ref(Ptr::new(ast::Ref { expr })),
+            }
+        } else {
+            parse_expr(c)
+        })
     } else {
         None
     };

@@ -289,6 +289,7 @@ pub enum ExprKind {
     If(Ptr<If>),
     Literal(Ptr<Literal>),
     Range(Ptr<Range>),
+    Ref(Ptr<Ref>),
     Unary(Ptr<UnaryExpr>),
     Var(Ptr<Var>),
     While(Ptr<While>),
@@ -306,6 +307,7 @@ impl fmt::Display for ExprKind {
             ExprKind::If(x) => write!(f, "IfExpr {{ {x} }}"),
             ExprKind::Literal(x) => write!(f, "LiteralExpr {{ {x} }}"),
             ExprKind::Range(x) => write!(f, "RangeExpr {{ {x} }}"),
+            ExprKind::Ref(x) => write!(f, "RefExpr {{ {x} }}"),
             ExprKind::Unary(x) => write!(f, "UnaryExpr {{ {x} }}"),
             ExprKind::Var(x) => write!(f, "VarExpr {{ {x} }}"),
             ExprKind::While(x) => write!(f, "WhileExpr {{ {x} }}"),
@@ -556,6 +558,18 @@ impl fmt::Display for RangeKind {
                 RangeKind::Inclusive => "..=",
             }
         )
+    }
+}
+
+/// Ref expression.
+#[derive(Debug)]
+pub struct Ref {
+    pub expr: Expr,
+}
+
+impl fmt::Display for Ref {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "Ref {{ {} }}", self.expr)
     }
 }
 

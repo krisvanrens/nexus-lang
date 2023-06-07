@@ -153,10 +153,7 @@ impl Scanner {
                             cursor.advance();
                             tokens.push(Token::And);
                         } else {
-                            return Err(ScanError::new(
-                                ScanErrorKind::UnexpectedCharacter,
-                                &cursor,
-                            ));
+                            tokens.push(Token::Amp);
                         }
                     }
                     '/' => match cursor.peek() {

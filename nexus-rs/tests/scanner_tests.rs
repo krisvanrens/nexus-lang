@@ -25,6 +25,7 @@ fn token_test() {
     test("]", Token::RightBracket);
     test(":", Token::Colon);
     test(";", Token::SemiColon);
+    test("&", Token::Amp);
     test("+", Token::Plus);
     test("-", Token::Minus);
     test("->", Token::Arrow);
