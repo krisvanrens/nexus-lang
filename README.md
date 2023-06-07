@@ -208,8 +208,8 @@ There are three fundamental data types:
 
 ### Milestone 1: language setup (v0.2)
 
-- [ ] First thorough iteration of grammar rules.
-- [ ] Parsing setup.
+- [x] First thorough iteration of grammar rules.
+- [x] Parsing setup.
 - [ ] Parsing error handling.
 - [ ] Debugging commands in REPL and interpreter.
 
