@@ -29,6 +29,7 @@ fn run_from_file(filename: String) {
     });
 
     let mut scanner = scanner::Scanner::new();
+    let mut scan_error = false;
 
     let mut parser = parser::Parser::new(file.into_iter().enumerate().fold(
         token::Tokens::new(),
@@ -36,12 +37,20 @@ fn run_from_file(filename: String) {
             let (index, line) = line;
             match scanner.scan(line) {
                 Ok(mut result) => acc.append(&mut result),
-                Err(error) => eprintln!("line {}: {error:?}", index + 1),
+                Err(error) => {
+                    scan_error = true;
+                    eprintln!("line {}: {error:?}", index + 1)
+                }
             }
 
             acc
         },
     ));
+
+    if scan_error {
+        eprintln!("scanning failed, aborting");
+        return;
+    }
 
     println!("{}", parser.parse()); // XXX
 }
