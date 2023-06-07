@@ -152,6 +152,11 @@ impl Scanner {
                         if cursor.peek() == Some('&') {
                             cursor.advance();
                             tokens.push(Token::And);
+                        } else {
+                            return Err(ScanError::new(
+                                ScanErrorKind::UnexpectedCharacter,
+                                &cursor,
+                            ));
                         }
                     }
                     '/' => match cursor.peek() {
