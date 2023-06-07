@@ -1,0 +1,17 @@
+// Comment.
+fn free(a: Number, b: bool, c: Number) -> Number {
+      42 + a + if b { c } else { 0 }
+}
+
+/* Comment */
+fn main() {
+  fn local1() {
+    return "Hello1".len();
+  }
+
+  let local2 = ||{ return "Hello2".len(); };
+
+  let x = free(1, true, local1() + local2());
+
+  print |x|{ 17 + x }(); // IIFE.
+}

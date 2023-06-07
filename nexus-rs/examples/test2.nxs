@@ -1,0 +1,17 @@
+// Instantiate components:
+let c1 = node "TypeA";
+let c2 = node "TypeB";
+
+let mut system : Group; // A component group named 'system'.
+system.source = c1;
+system.sink = c2;
+
+system.processor = node "TypeC"; // Ad-hoc definitions.
+
+// References to (sub-)systems:
+let proc = &system.processor;
+proc.velocity = 3.14;
+
+// Operators for defining edge connections:
+c1.Output -> system.processor.Input;
+system.processor.Output -> c2.Input;

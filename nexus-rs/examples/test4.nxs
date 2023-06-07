@@ -1,0 +1,23 @@
+fn create_system(name: String) -> group {
+    let mut sys = group(name);
+
+    let sys.source = node "Reader";
+    let sys.sink = node "Writer";
+
+    sys.source.Output -> sys.sink.Input;
+
+    // Group in-/outputs:
+    let sys.Input = &sys.source.Input;
+    let sys.Output = &sys.sink.Output;
+
+    sys
+}
+
+let mut app : group;
+
+// Create four systems in 'app':
+for i in 0..4 {
+      app[i] = create_system("Sys" + i);
+}
+
+print app;
