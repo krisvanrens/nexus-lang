@@ -39,7 +39,7 @@ fn run_from_file(filename: String) {
                 Ok(mut result) => acc.append(&mut result),
                 Err(error) => {
                     scan_error = true;
-                    eprintln!("line {}: {error:?}", index + 1)
+                    eprintln!("{error}");
                 }
             }
 

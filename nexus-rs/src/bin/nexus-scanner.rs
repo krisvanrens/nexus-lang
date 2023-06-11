@@ -31,7 +31,7 @@ fn main() {
         );
         match s.scan(line) {
             Ok(tokens) => tokens.into_iter().for_each(|t| print!("{t:?} ")),
-            Err(error) => eprint!("{error:?}"),
+            Err(error) => eprint!("{error}"),
         }
         println!();
     }

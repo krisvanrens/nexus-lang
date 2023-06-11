@@ -40,22 +40,29 @@ pub enum ScanErrorKind {
 
 #[derive(Error, Debug)]
 pub struct ScanError {
+    line: String,
     kind: ScanErrorKind,
     char_index: Option<usize>,
 }
 
 impl Display for ScanError {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        f.write_fmt(format_args!(
-            "error: {} at position {:?}",
-            self.kind, self.char_index
-        ))
+        if let Some(filler_len) = self.char_index {
+            let filler = " ".repeat(filler_len);
+            f.write_fmt(format_args!(
+                "| {}\n| {}{}\n| error: {}",
+                self.line, filler, "^", self.kind
+            ))
+        } else {
+            f.write_fmt(format_args!("| {}\n|\n| error: {}", self.line, self.kind))
+        }
     }
 }
 
 impl ScanError {
-    fn new(kind: ScanErrorKind, cursor: &Cursor) -> Self {
+    fn new(line: String, kind: ScanErrorKind, cursor: &Cursor) -> Self {
         ScanError {
+            line,
             kind,
             char_index: cursor.index(),
         }
@@ -169,7 +176,13 @@ impl Scanner {
                     }
                     '0'..='9' => tokens.push(Token::Number(parse_number(&mut cursor)?)),
                     x if x.is_alphabetic() => tokens.push(parse_word(&mut cursor)?),
-                    _ => return Err(ScanError::new(ScanErrorKind::UnexpectedCharacter, &cursor)),
+                    _ => {
+                        return Err(ScanError::new(
+                            line.clone(),
+                            ScanErrorKind::UnexpectedCharacter,
+                            &cursor,
+                        ))
+                    }
                 }
             } else if (c == '*') && (cursor.peek() == Some('/')) {
                 cursor.advance();
@@ -222,11 +235,19 @@ fn parse_string(cursor: &mut Cursor) -> Result<String, ScanError> {
     }
 
     if !ended {
-        return Err(ScanError::new(ScanErrorKind::UnterminatedString, cursor));
+        return Err(ScanError::new(
+            result,
+            ScanErrorKind::UnterminatedString,
+            cursor,
+        ));
     }
 
     if escaped {
-        return Err(ScanError::new(ScanErrorKind::MalformedString, cursor));
+        return Err(ScanError::new(
+            result,
+            ScanErrorKind::MalformedString,
+            cursor,
+        ));
     }
 
     Ok(result)
@@ -272,7 +293,13 @@ fn parse_number(cursor: &mut Cursor) -> Result<f64, ScanError> {
                 Some(x) if x.is_ascii_digit() => {
                     result.push(c);
                 }
-                _ => return Err(ScanError::new(ScanErrorKind::UnexpectedCharacter, cursor)),
+                _ => {
+                    return Err(ScanError::new(
+                        result,
+                        ScanErrorKind::UnexpectedCharacter,
+                        cursor,
+                    ))
+                }
             },
             _ => break,
         }
@@ -280,9 +307,13 @@ fn parse_number(cursor: &mut Cursor) -> Result<f64, ScanError> {
         cursor.advance();
     }
 
-    result
-        .parse::<f64>()
-        .map_err(|e| ScanError::new(ScanErrorKind::NumberParseError(e.to_string()), cursor))
+    result.parse::<f64>().map_err(|e| {
+        ScanError::new(
+            result,
+            ScanErrorKind::NumberParseError(e.to_string()),
+            cursor,
+        )
+    })
 }
 
 #[test]
@@ -354,7 +385,11 @@ fn parse_word(cursor: &mut Cursor) -> Result<Token, ScanError> {
                 Ok(Token::Identifier(word))
             }
         }
-        _ => Err(ScanError::new(ScanErrorKind::WordParseError, cursor)),
+        _ => Err(ScanError::new(
+            "".to_owned(),
+            ScanErrorKind::WordParseError,
+            cursor,
+        )),
     }
 }
 
