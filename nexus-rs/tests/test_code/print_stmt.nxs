@@ -1,4 +1,12 @@
-print;
+print; // Should print just a newline.
 print "Hello";
 print 42;
 print "Hello" + 42;
+print "Hello" + "ooooo";
+print node "Test123";
+print {
+    let x = node "Test123";
+    x.parameter = 12.34;
+    print x.parameter;
+    x
+};

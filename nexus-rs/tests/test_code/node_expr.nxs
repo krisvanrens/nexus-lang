@@ -2,3 +2,4 @@ let x1 = node "Test";
 let x2 = node "Test" + 42;
 let x3 = node ""; // Should fail.
 let x4 = node 42; // Should fail.
+let x5 = node;    // Should fail.
