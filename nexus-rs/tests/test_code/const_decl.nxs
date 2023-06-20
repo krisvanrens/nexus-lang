@@ -1,3 +1,4 @@
 const x1 : bool = true;
 const x2 : Number = 42;
-const x3 : String = "Hello";
+const x3 : String = "";
+const x4 : String = "Hello";

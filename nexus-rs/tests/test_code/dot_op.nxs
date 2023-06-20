@@ -2,3 +2,8 @@ a.b;
 a.b.c.d;
 let x = func().b.c;
 func().b.c = "blah";
+let s = {
+  let x = node "Test123";
+  x.prop = 42;
+  x
+}.prop;

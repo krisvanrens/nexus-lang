@@ -1,5 +1,15 @@
-let x = {
+let x1 = {
   let a = 42;
   let b = 8;
   a + b
+};
+let x2 = {
+  let c = {
+    let b = {
+      let a = { 42 };
+      a
+    } + 2;
+    b
+  } - 2;
+  c
 };
