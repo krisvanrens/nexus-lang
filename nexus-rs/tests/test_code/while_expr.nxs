@@ -23,4 +23,11 @@ fn test4() {
   }
 }
 
-let test5 = while x < 100 { x = x + 1; x };
+fn test5() {
+  let x = 0;
+  while x < { let end = 42; end } {
+    x = x + 1;
+  }
+}
+
+let test6 = while x < 100 { x = x + 1; x };

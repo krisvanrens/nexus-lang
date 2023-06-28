@@ -1,2 +1,3 @@
 use "some.nxs";
 use "part" + 42 + ".nxs";
+use ""; // Should fail.

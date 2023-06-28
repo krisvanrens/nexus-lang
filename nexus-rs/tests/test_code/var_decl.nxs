@@ -10,3 +10,5 @@ let mut x8 : Number = 42;
 
 let x9 = &x1;
 let x10 = &x1.len;
+
+let x11 = node "Test";

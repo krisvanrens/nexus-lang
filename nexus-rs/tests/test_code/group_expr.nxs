@@ -1,4 +1,5 @@
 let x1 = group "Test";
 let x2 = group "Test" + 42;
-let x3 = group ""; // Should fail.
-let x4 = group 42; // Should fail.
+let x3 = group { let x = "Test"; x + "42" };
+let x4 = group ""; // Should fail.
+let x5 = group 42; // Should fail.

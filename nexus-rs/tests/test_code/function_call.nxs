@@ -7,4 +7,6 @@ let x2 = func(a);
 let x3 = func(a, b);
 let x4 = func(a, b, c);
 let x5 = func(a, b + 42, "blah");
-let x5 = func(a, func(b + 42), "blah");
+let x6 = func(a, func(b + 42), "blah");
+let x7 = func({ let x = 42; x + 10 });
+let x8 = func({ let x = 42; x + 10 }, 23);
