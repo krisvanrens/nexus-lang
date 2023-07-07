@@ -1,6 +1,6 @@
 use clap::Parser;
 use colored::Colorize;
-use nexus_rs::{filereader::FileReader, parser, scanner, token::Tokens};
+use nexus_rs::{filereader::FileReader, parser, scanner, source_line::SourceLine, token::Tokens};
 use std::process::exit;
 
 /// Nexus programming language scanner/lexer tester.
@@ -26,12 +26,12 @@ fn main() {
     let mut parser = parser::Parser::new(file.into_iter().enumerate().fold(
         Tokens::new(),
         |mut acc, line| {
-            let (index, line) = line;
-            match scanner.scan(line) {
+            let (number, line) = line;
+            match scanner.scan(SourceLine { line, number }) {
                 Ok(mut result) => acc.append(&mut result),
                 Err(error) => {
                     scan_error = true;
-                    eprintln!("line {}: {error:?}", index + 1)
+                    eprintln!("line {}: {error:?}", number + 1)
                 }
             }
 

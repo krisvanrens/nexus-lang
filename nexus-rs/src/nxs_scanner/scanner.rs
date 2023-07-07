@@ -1,4 +1,5 @@
 use super::cursor::Cursor;
+use super::source_line::SourceLine;
 use crate::token::{Token, Tokens};
 use lazy_static::lazy_static;
 use std::collections::HashMap;
@@ -80,17 +81,18 @@ impl Scanner {
     /// # Example
     ///
     /// ```
-    /// use nexus_rs::{scanner::Scanner, token::Token};
+    /// use nexus_rs::{scanner::Scanner, source_line::SourceLine, token::Token};
     ///
     /// let mut s = Scanner::new();
-    /// if let Ok(tokens) = s.scan("let x;".to_string()) {
+    /// if let Ok(tokens) = s.scan(SourceLine { line: "let x;".to_string(), number: 1 }) {
     ///     assert_eq!(tokens,
     ///                vec![Token::Let,
     ///                     Token::Identifier("x".to_string()),
     ///                     Token::SemiColon]);
     /// }
     /// ```
-    pub fn scan(&mut self, line: String) -> Result<Tokens, ScanError> {
+    pub fn scan(&mut self, sline: SourceLine) -> Result<Tokens, ScanError> {
+        let SourceLine { line, .. } = sline; // TODO: Use number in error message?
         let mut tokens = Vec::new();
 
         let mut cursor = Cursor::new(&line);

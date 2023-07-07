@@ -24,6 +24,9 @@ pub mod nxs_scanner {
     /// Scanner/lexer for Nexus.
     pub mod scanner;
 
+    /// Line of source code.
+    pub mod source_line;
+
     /// Character-based cursor used for scanning/lexing.
     pub mod cursor;
 }

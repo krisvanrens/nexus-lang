@@ -1,4 +1,4 @@
-use nexus_rs::{scanner::Scanner, token::Token};
+use nexus_rs::{scanner::Scanner, source_line::SourceLine, token::Token};
 
 #[cfg(test)]
 use pretty_assertions::assert_eq;
@@ -8,7 +8,10 @@ fn token_test() {
     let test = |input: &str, expected: Token| {
         let mut s = Scanner::new();
 
-        match s.scan(input.to_string()) {
+        match s.scan(SourceLine {
+            line: input.to_string(),
+            number: 0,
+        }) {
             Ok(tokens) => {
                 assert_eq!(tokens.len(), 1);
                 assert_eq!(tokens.into_iter().next().unwrap(), expected);

@@ -1,6 +1,6 @@
 use std::{ffi::OsStr, fs, path::Path};
 
-use nexus_rs::{parser::Parser, scanner::Scanner};
+use nexus_rs::{parser::Parser, scanner::Scanner, source_line::SourceLine};
 
 const CODE_PATH: &str = "tests/test_code/";
 
@@ -18,7 +18,14 @@ fn parser_test() {
             println!("Parsing {filename:?}..");
 
             let mut scanner = Scanner::new();
-            let mut parser = Parser::new(scanner.scan(code).unwrap());
+            let mut parser = Parser::new(
+                scanner
+                    .scan(SourceLine {
+                        line: code,
+                        number: 0,
+                    })
+                    .unwrap(),
+            );
             parser.parse();
 
             println!("..done");

@@ -34,11 +34,15 @@ fn run_from_file(filename: String) {
     let mut parser = parser::Parser::new(file.into_iter().enumerate().fold(
         token::Tokens::new(),
         |mut acc, line| {
-            let (index, line) = line;
-            match scanner.scan(line) {
+            let (number, line) = line;
+            match scanner.scan(source_line::SourceLine { line, number }) {
                 Ok(mut result) => acc.append(&mut result),
                 Err(error) => {
                     scan_error = true;
+
+                    // TODO: We must match the pretty printing of the error here; not ideal.
+                    eprintln!("| Error on line {number}:");
+                    eprintln!("|");
                     eprintln!("{error}");
                 }
             }
@@ -66,7 +70,7 @@ fn run_repl() {
             Ok(line) => {
                 rl.add_history_entry(line.clone())
                     .expect("failed to store line to history");
-                match scanner::Scanner::new().scan(line) {
+                match scanner::Scanner::new().scan(source_line::SourceLine { line, number: 0 }) {
                     Ok(tokens) => {
                         println!("{}", parser::Parser::new(tokens).parse()); // XXX
                     }
