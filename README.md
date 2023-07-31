@@ -102,13 +102,25 @@ The current leading implementation of Nexus, `nexus_rs` will be documented and t
 
 This section describes the abstract component model used to define networks for.
 
-| Diagram | Operation |
-| ------- | --------- |
-| ![](images/component.jpg)            | Component instantiation           |
-| ![](images/component-property.jpg)   | Component property definition     |
-| ![](images/component-inout.jpg)      | Component in- / output definition |
-| ![](images/component-connection.jpg) | Component in- / output connection |
-| ![](images/component-group.jpg)      | Component group definition        |
+The end result of a Nexus program is a component network, described in terms of a number of fundamental operations.
+The following table illustrates these fundamental operations:
+
+| Operation | Diagram |
+| --------- | ------- |
+| Component instantiation           | ![Component instantiation](images/component.jpg)         |
+| Component property definition     | ![Component property](images/component-property.jpg)     |
+| Component in- / output definition | ![Component in-/output](images/component-inout.jpg)      |
+| Component in- / output connection | ![Component connection](images/component-connection.jpg) |
+| Component group definition        | ![Component group](images/component-group.jpg)           |
+
+Because Nexus itself only deals with these simple operations, it is up to the higher-level processing to deal with further validation of the resulting component network.
+These validation checks might include:
+
+- Checking for nonexistent component types,
+- Checking for nonexistent component in- / outputs,
+- Checking for invalid component properties,
+- Checking for incompatible component in- / output connections,
+- ...
 
 ## Language API
 
