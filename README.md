@@ -102,7 +102,13 @@ The current leading implementation of Nexus, `nexus_rs` will be documented and t
 
 This section describes the abstract component model used to define networks for.
 
-`// TODO`
+| Diagram | Operation |
+| ------- | --------- |
+| ![](images/component.jpg)            | Component instantiation           |
+| ![](images/component-property.jpg)   | Component property definition     |
+| ![](images/component-inout.jpg)      | Component in- / output definition |
+| ![](images/component-connection.jpg) | Component in- / output connection |
+| ![](images/component-group.jpg)      | Component group definition        |
 
 ## Language API
 
