@@ -102,14 +102,14 @@ The current leading implementation of Nexus, `nexus_rs` will be documented and t
 
 This section describes the abstract component model used to define networks for.
 
-The end result of a Nexus program is a component network, described in terms of a number of fundamental operations.
-The following table illustrates these fundamental operations:
+### Operations
+
+The end result of a Nexus program is a component network, described in terms of four fundamental operations:
 
 | Operation | Diagram |
 | --------- | ------- |
 | Component instantiation           | ![Component instantiation](images/component.jpg)         |
 | Component property definition     | ![Component property](images/component-property.jpg)     |
-| Component in- / output definition | ![Component in-/output](images/component-inout.jpg)      |
 | Component in- / output connection | ![Component connection](images/component-connection.jpg) |
 | Component group definition        | ![Component group](images/component-group.jpg)           |
 
@@ -121,6 +121,26 @@ These validation checks might include:
 - Checking for invalid component properties,
 - Checking for incompatible component in- / output connections,
 - ...
+
+### Network model
+
+The resulting component network is modelled as a tree hierarchy, starting from a virtual root node.
+
+For example, consider this network:
+
+![Component network example](images/component-network.jpg)
+
+This would lead to the network definition:
+
+```text
+root.c1
+root.g1.c2
+root.g1.c3
+root.g2.c4
+root.c5
+```
+
+Here `c1`..`c5` are component instantiations, `g1` and `g2` are component groups.
 
 ## Language API
 
