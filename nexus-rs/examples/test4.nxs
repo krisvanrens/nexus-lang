@@ -17,7 +17,7 @@ let mut app : group;
 
 // Create four systems in 'app':
 for i in 0..4 {
-      app[i] = create_system("Sys" + i);
+    app[i] = create_system("Sys" + i);
 }
 
 print app;

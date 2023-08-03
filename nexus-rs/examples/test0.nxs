@@ -1,0 +1,57 @@
+let g = group "Main";
+
+// Questions:
+//
+// - Is 'let'/'let mut' really necessary? Allows for possible re-assignment using 'mut', but it
+//     seems redundant with all the possible conditional expressions available.
+// - Ad-hoc notation (which is non-native to Rust) seems necessary to introduce a child name.
+
+/////////////////////////////////////////////////////////////////////////////////////////
+// Option 1: ad-hoc definition using 'let' and 'dot'.
+//
+// Pros: simple
+// Cons: surprising (does not fit "normal" Rust use)
+//
+
+// Direct node creation:
+let g.x1a = node "Test";
+
+// Indirect node creation:
+let x1b = node "Test";
+let g.x1b = x1b; // Moves 'x1b'.
+
+// Facilitation for conditionals:
+let g.x1c = if cond {
+    node "Test1"
+} else {
+    node "Test2"
+};
+
+/////////////////////////////////////////////////////////////////////////////////////////
+// Option 2: ad-hoc definition using 'let' and 'dot'.
+//
+// Pros: simple
+// Cons: no mutability indication
+//
+g.x2 = node "Test";
+
+/////////////////////////////////////////////////////////////////////////////////////////
+// Option 3: explicit group 'add' function.
+//
+// Pros: consistent and simple to implement
+// Cons: unnecessary local node handle, non-native integration, hard to infer child name
+//
+let x3 = node "Test";
+g.add(x3);
+
+/////////////////////////////////////////////////////////////////////////////////////////
+// Option 4: explicit group 'add' operator.
+//
+// Pros: consistent and simple to implement
+// Cons: unnecessary local node handle, non-native integration, hard to infer child name
+//
+let x4 = node "Test";
+g += x4;
+
+/////////////////////////////////////////////////////////////////////////////////////////
+// === PREFERRED OPTION: 1
