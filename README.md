@@ -405,7 +405,7 @@ Precedence levels from *high to low* in order:
 - Simple support for variable aliases (references)? Should be handy for shorthand names.
 - Immutability? Is the benefit of immutability by default + move semantics beneficial for the use case of Nexus? Why or why not?
 - Support for objects? Groups using `group` should suffice.
-- Execution entry point? Just structural starting from the root `.nxs` file?
+- Execution entry point? Just structural starting from the root `.nxs` file? No. An end result object or function entry point is required.
 - Object literal notation? (or JSON literal notation)
 - Add `match` expression? Should be relatively simple for a few fundamental types.
 - Handling setting of component values...how/what/mutability?
