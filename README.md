@@ -23,8 +23,8 @@ Consider this example network:
 graph TD
     subgraph system
     C1 --> process
-    process["`**process**
-    velocity=3.14`"] --> C2
+    process["process
+    velocity=3.14"] --> C2
     end
 ```
 
