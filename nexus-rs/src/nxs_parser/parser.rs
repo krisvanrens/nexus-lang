@@ -173,7 +173,7 @@ fn parse_var_decl(c: &mut TokenCursor) -> ast::Stmt {
 
     let mutable = c.advance_if(Token::Mut);
 
-    let id = parse_identifier(c);
+    let id = parse_expr(c);
 
     let typeid = if c.advance_if(Token::Colon) {
         Some(parse_type(c))

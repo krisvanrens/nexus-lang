@@ -228,7 +228,7 @@ impl fmt::Display for FunctionArgs {
 /// Variable declaration.
 #[derive(Debug)]
 pub struct VarDecl {
-    pub id: String,
+    pub id: Expr,
     pub mutable: bool,
     pub typeid: Option<TypeKind>,
     pub value: Option<Expr>,
