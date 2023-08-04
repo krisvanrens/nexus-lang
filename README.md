@@ -5,17 +5,30 @@
 
 The Nexus programming language.
 
-Nexus is a language for supporting software component network descriptions.
+Nexus is a language for describing component network descriptions.
 Aside a simple base of common general-purpose primitives/control flow/etc. it offers native integration for building a network of components, connecting in-/outputs and setting component properties.
-The syntax and most semantics of Nexus are loosely modeled after that of the excellent [Rust programming language](https://github.com/rust-lang/rust).
+The syntax and most semantics of Nexus are loosely modeled after that of the [Rust programming language](https://github.com/rust-lang/rust).
 
-Nexus is meant to drive a software component network system through its API, using the Nexus network description as input.
+Nexus is meant to drive another component-network-oriented network system through its API, using the Nexus network description as input.
 
 **NOTE**: This project is still very much under construction -- anything might change!
 
 ## Native integration with component networks
 
-Nexus is designed to interface component-network-oriented systems:
+Nexus is designed to interface component-network-oriented systems.
+
+Consider this example network:
+
+```mermaid
+graph TD
+    subgraph system
+    C1 --> process
+    process["`**process**
+    velocity=3.14`"] --> C2
+    end
+```
+
+This network can be implemented using the following code:
 
 ```rust
 // Instantiate components:
@@ -30,12 +43,23 @@ let system.processor = node "TypeC"; // Ad-hoc definitions.
 
 // References to (sub-)systems:
 let proc = &system.processor;
-proc.velocity = 3.14;
+let proc.velocity = 3.14; // Create a property.
 
 // Operators for defining edge connections:
 c1.Output -> system.processor.Input;
 system.processor.Output -> c2.Input;
 ```
+
+### Nodes, properties, connections and groups
+
+A component network is described in terms of four elementary parts:
+
+- **Nodes** (i.e. component instantiations),
+- **Node properties**,
+- **Connections** (between node in-/outputs),
+- **Groups** (i.e. collections of nodes).
+
+Each
 
 ## Simplicity
 
