@@ -5,11 +5,13 @@
 
 The Nexus programming language.
 
-Nexus is a language for describing component network descriptions.
+Nexus is a programming language for describing component network descriptions.
 Aside a simple base of common general-purpose primitives/control flow/etc. it offers native integration for building a network of components, connecting in-/outputs and setting component properties.
-The syntax and most semantics of Nexus are loosely modeled after that of the [Rust programming language](https://github.com/rust-lang/rust).
+The goal of Nexus is to strike a balance between a full-fledged programming language and a declarative network description language.
 
 Nexus is meant to drive another component-network-oriented network system through its API, using the Nexus network description as input.
+
+The syntax and most semantics of Nexus are loosely modeled after that of the [Rust programming language](https://github.com/rust-lang/rust).
 
 **NOTE**: This project is still very much under construction -- anything might change!
 
@@ -22,9 +24,9 @@ Consider this example network:
 ```mermaid
 graph TD
     subgraph system
-    C1 --> process
+    Source --> process
     process["process
-    velocity=3.14"] --> C2
+    velocity=3.14"] --> Sink
     end
 ```
 
@@ -32,20 +34,22 @@ This network can be implemented using the following code:
 
 ```rust
 // Instantiate components:
-let c1 = node "TypeA";
-let c2 = node "TypeB";
+let c1 = node "Source";
+let c2 = node "Sink";
 
 let mut system : group; // A component group named 'system'.
 system.source = c1;
 system.sink = c2;
 
-let system.processor = node "TypeC"; // Ad-hoc definitions.
+let system.processor = node "Converter"; // Ad-hoc definitions.
 
-// References to (sub-)systems:
+// References to entities:
 let proc = &system.processor;
-let proc.velocity = 3.14; // Create a property.
 
-// Operators for defining edge connections:
+// Create an immutable node property:
+let proc.threshold = 3.14;
+
+// Operators for defining node in-/output connections:
 c1.Output -> system.processor.Input;
 system.processor.Output -> c2.Input;
 ```
@@ -59,11 +63,81 @@ A component network is described in terms of four elementary parts:
 - **Connections** (between node in-/outputs),
 - **Groups** (i.e. collections of nodes).
 
-Each
+Each of these parts can be expressed using Nexus.
+
+#### Nodes
+
+To instantiate a component (i.e. create a node) of type `Converter`:
+
+```rust
+let c = node "Converter";
+```
+
+The local handle `c` can be used to address the node within Nexus (e.g. for creating a connection).
+
+#### Node properties
+
+To set a node property, simply add ad-hoc definitions:
+
+```rust
+let c = node "Converter";
+
+let c.rate     = 10;
+let c.profile  = "baseline";
+let c.clipping = true;
+```
+
+Properties can be primitive types (i.e. booleans, numbers or strings).
+
+#### Connections
+
+To create a connection between nodes, the `->` operator can be used:
+
+```rust
+let ingest = node "Source";
+let egest  = node "Sink";
+
+ingest.output -> egest.input;
+```
+
+This will connect edge `output` of the node typed `Source` to edge `input` of the node typed `Sink`.
+Nexus does not distinguish between in- or outputs, and will ad-hoc assume the presence of any used edges.
+
+Edges are directional (i.e. `source -> destination`), but it is up to the system consuming the network description to deal with this (or ignore this property).
+
+#### Groups
+
+To organize nodes hierarchically, groups can be defined:
+
+```rust
+let ingest = group "In";
+let egest  = group "Out";
+
+// Ingest subsystem:
+let ingest.source  = node "Source";
+let ingest.convert = node "Converter";
+
+ingest.source.out -> ingest.convert.in;
+
+// Egest subsystem:
+let egest.convert = node "Converter";
+let egest.sink    = node "Sink";
+
+egest.convert.out -> egest.sink.in;
+
+// Connect both subsystems:
+ingest.convert.out -> egest.convert.in;
+```
 
 ## Simplicity
 
 Nexus is geared towards simplicity, in the sense that it tries to support a minimal viable set of features required for flexible use as a component network description language.
+
+That's the reason why, at least for now, it is agnostic of component types, in-/output types or validity of connections/properties/etc.
+Just to name a few.
+It is up to the downstream application consuming the component network to check validity on a higher level.
+
+Perhaps as this project matures, more advanced concepts will be modeled by Nexus itself.
 
 ## Safety
 
