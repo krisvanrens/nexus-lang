@@ -277,9 +277,13 @@ fn parse_identifier(c: &mut TokenCursor) -> String {
     match c.value() {
         Some(Token::Identifier(i)) => i,
         Some(t) if KEYWORDS.contains(&t) => {
-            panic!("cannot use a reserved language keyword as an identifier")
+            panic!(
+                "cannot use reserved language keyword '{:?}' as an identifier",
+                t
+            )
         } // TODO: Proper error handling..
-        _ => panic!("unexpected token"), // TODO: Proper error handling..
+        Some(t) => panic!("unexpected token '{:?}'", t), // TODO: Proper error handling..
+        None => panic!("unexpected end of token stream"), // TODO: Proper error handling..
     }
 }
 
@@ -290,7 +294,8 @@ fn parse_type(c: &mut TokenCursor) -> ast::TypeKind {
         Some(Token::GroupId) => ast::TypeKind::Group,
         Some(Token::NumberId) => ast::TypeKind::Number,
         Some(Token::StringId) => ast::TypeKind::String,
-        _ => panic!("unexpected type ID"), // TODO: Proper error handling..
+        Some(t) => panic!("not a type ID '{:?}'", t), // TODO: Proper error handling..
+        None => panic!("empty type ID"),              // TODO: Proper error handling..
     }
 }
 
@@ -513,8 +518,8 @@ fn parse_primary_expr(c: &mut TokenCursor) -> ast::Expr {
         Some(Token::SemiColon) => ast::Expr {
             kind: ast::ExprKind::Empty(),
         },
+        Some(t) => panic!("unexpected token '{:?}'", t), // TODO: Proper error handling..
         None => panic!("unexpected end of token stream"), // TODO: Proper error handling..
-        _ => panic!("unexpected token"),                  // TODO: Proper error handling..
     }
 }
 
@@ -602,8 +607,8 @@ fn parse_bool_literal(c: &mut TokenCursor) -> ast::Expr {
             kind: ast::LiteralKind::Bool(match c.value() {
                 Some(Token::True) => true,
                 Some(Token::False) => false,
+                Some(t) => panic!("not a boolean literal '{:?}'", t), // TODO: Proper error handling..
                 None => panic!("unexpected end of token stream"), // TODO: Proper error handling..
-                _ => panic!("not a boolean literal"),             // TODO: Proper error handling..
             }),
         })),
     }
@@ -614,8 +619,8 @@ fn parse_number_literal(c: &mut TokenCursor) -> ast::Expr {
         kind: ast::ExprKind::Literal(Ptr::new(ast::Literal {
             kind: ast::LiteralKind::Number(match c.value() {
                 Some(Token::Number(n)) => n,
+                Some(n) => panic!("not a number literal '{:?}'", n), // TODO: Proper error handling..
                 None => panic!("unexpected end of token stream"), // TODO: Proper error handling..
-                _ => panic!("not a number literal"),              // TODO: Proper error handling..
             }),
         })),
     }
@@ -626,8 +631,8 @@ fn parse_string_literal(c: &mut TokenCursor) -> ast::Expr {
         kind: ast::ExprKind::Literal(Ptr::new(ast::Literal {
             kind: ast::LiteralKind::String(match c.value() {
                 Some(Token::String(s)) => s,
+                Some(s) => panic!("not a string literal '{:?}'", s), // TODO: Proper error handling..
                 None => panic!("unexpected end of token stream"), // TODO: Proper error handling..
-                _ => panic!("not a string literal"),              // TODO: Proper error handling..
             }),
         })),
     }
