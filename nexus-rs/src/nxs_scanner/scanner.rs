@@ -285,7 +285,7 @@ fn parse_string_test() {
 }
 
 fn parse_number(cursor: &mut Cursor) -> Result<f64, ScanError> {
-    let mut result = cursor.value().unwrap().to_string();
+    let mut result = cursor.value().unwrap().to_string(); // Loads the first digit.
 
     while let Some(c) = cursor.peek() {
         match c {
