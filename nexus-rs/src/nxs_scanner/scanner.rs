@@ -287,13 +287,15 @@ fn parse_string_test() {
 fn parse_number(cursor: &mut Cursor) -> Result<f64, ScanError> {
     let mut result = cursor.value().unwrap().to_string(); // Loads the first digit.
 
+    let mut found_dot = false;
     while let Some(c) = cursor.peek() {
         match c {
             '0'..='9' => result.push(c),
-            '.' => match cursor.peek_nth(2) {
-                Some('.') => break,
+            '.' if !found_dot => match cursor.peek_nth(2) {
+                Some('.') => break, // Range.
                 Some(x) if x.is_ascii_digit() => {
                     result.push(c);
+                    found_dot = true;
                 }
                 _ => {
                     return Err(ScanError::new(
