@@ -180,7 +180,10 @@ impl Scanner {
                         parse_number(&mut cursor)
                             .map_err(|e| ScanError::new(line.clone(), e, &cursor))?,
                     )),
-                    x if x.is_alphabetic() => tokens.push(parse_word(&mut cursor)?),
+                    x if x.is_alphabetic() => tokens.push(
+                        parse_word(&mut cursor)
+                            .map_err(|e| ScanError::new(line.clone(), e, &cursor))?,
+                    ),
                     _ => {
                         return Err(ScanError::new(
                             line.clone(),
@@ -349,7 +352,7 @@ macro_rules! token_map {
     }
 }
 
-fn parse_word(cursor: &mut Cursor) -> Result<Token, ScanError> {
+fn parse_word(cursor: &mut Cursor) -> Result<Token, ScanErrorKind> {
     lazy_static! {
         static ref KEYWORDS: TokenMap = token_map! {
             "Group"  => Token::GroupId,
@@ -385,11 +388,7 @@ fn parse_word(cursor: &mut Cursor) -> Result<Token, ScanError> {
                 Ok(Token::Identifier(word))
             }
         }
-        _ => Err(ScanError::new(
-            "".to_owned(),
-            ScanErrorKind::WordParseError,
-            cursor,
-        )),
+        _ => Err(ScanErrorKind::WordParseError),
     }
 }
 
