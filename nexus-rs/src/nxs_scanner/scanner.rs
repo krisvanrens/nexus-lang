@@ -174,7 +174,10 @@ impl Scanner {
                         _ => tokens.push(Token::Slash),
                     },
                     '"' => {
-                        tokens.push(Token::String(parse_string(&mut cursor)?));
+                        tokens.push(Token::String(
+                            parse_string(&mut cursor)
+                                .map_err(|e| ScanError::new(line.clone(), e, &cursor))?,
+                        ));
                     }
                     '0'..='9' => tokens.push(Token::Number(
                         parse_number(&mut cursor)
@@ -210,7 +213,7 @@ impl Default for Scanner {
     }
 }
 
-fn parse_string(cursor: &mut Cursor) -> Result<String, ScanError> {
+fn parse_string(cursor: &mut Cursor) -> Result<String, ScanErrorKind> {
     let mut result = String::new();
     let mut escaped = false;
     let mut ended = false;
@@ -243,19 +246,11 @@ fn parse_string(cursor: &mut Cursor) -> Result<String, ScanError> {
     }
 
     if !ended {
-        return Err(ScanError::new(
-            result,
-            ScanErrorKind::UnterminatedString,
-            cursor,
-        ));
+        return Err(ScanErrorKind::UnterminatedString);
     }
 
     if escaped {
-        return Err(ScanError::new(
-            result,
-            ScanErrorKind::MalformedString,
-            cursor,
-        ));
+        return Err(ScanErrorKind::MalformedString);
     }
 
     Ok(result)
