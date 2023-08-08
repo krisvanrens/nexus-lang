@@ -176,7 +176,10 @@ impl Scanner {
                     '"' => {
                         tokens.push(Token::String(parse_string(&mut cursor)?));
                     }
-                    '0'..='9' => tokens.push(Token::Number(parse_number(&mut cursor)?)),
+                    '0'..='9' => tokens.push(Token::Number(
+                        parse_number(&mut cursor)
+                            .map_err(|e| ScanError::new(line.clone(), e, &cursor))?,
+                    )),
                     x if x.is_alphabetic() => tokens.push(parse_word(&mut cursor)?),
                     _ => {
                         return Err(ScanError::new(
@@ -284,7 +287,7 @@ fn parse_string_test() {
     test(r#"\"quotes at the sides\""#);
 }
 
-fn parse_number(cursor: &mut Cursor) -> Result<f64, ScanError> {
+fn parse_number(cursor: &mut Cursor) -> Result<f64, ScanErrorKind> {
     let mut result = cursor.value().unwrap().to_string(); // Loads the first digit.
 
     let mut found_dot = false;
@@ -298,11 +301,8 @@ fn parse_number(cursor: &mut Cursor) -> Result<f64, ScanError> {
                     found_dot = true;
                 }
                 _ => {
-                    return Err(ScanError::new(
-                        result,
-                        ScanErrorKind::UnexpectedCharacter,
-                        cursor,
-                    ))
+                    cursor.advance_by(2); // Point cursor to unexpected char.
+                    return Err(ScanErrorKind::UnexpectedCharacter);
                 }
             },
             _ => break,
@@ -311,13 +311,9 @@ fn parse_number(cursor: &mut Cursor) -> Result<f64, ScanError> {
         cursor.advance();
     }
 
-    result.parse::<f64>().map_err(|e| {
-        ScanError::new(
-            result,
-            ScanErrorKind::NumberParseError(e.to_string()),
-            cursor,
-        )
-    })
+    result
+        .parse::<f64>()
+        .map_err(|e| ScanErrorKind::NumberParseError(e.to_string()))
 }
 
 #[test]
