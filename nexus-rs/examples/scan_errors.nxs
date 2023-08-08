@@ -1,0 +1,11 @@
+// Unexpected character:
+let x = #23;
+
+// Unexpected character:
+let blah = x?;
+
+// Unexpected character in number:
+let y = 323.!342;
+
+// Unterminated string:
+let whoops = "ddsafsfd;
