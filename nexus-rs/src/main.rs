@@ -23,7 +23,7 @@ fn main() {
 }
 
 fn run_from_file(filename: String) {
-    let file = FileReader::try_new(filename).unwrap_or_else(|e| {
+    let file = FileReader::try_new(&filename).unwrap_or_else(|e| {
         eprintln!("Failed to open file: {e}");
         exit(1);
     });
@@ -40,9 +40,7 @@ fn run_from_file(filename: String) {
                 Err(error) => {
                     scan_error = true;
 
-                    // TODO: We must match the pretty printing of the error here; not ideal.
-                    eprintln!("| Error on line {number}:");
-                    eprintln!("|");
+                    eprintln!("  ---> {filename}:{number}");
                     eprintln!("{error}");
                 }
             }
@@ -74,7 +72,7 @@ fn run_repl() {
                     Ok(tokens) => {
                         println!("{}", parser::Parser::new(tokens).parse()); // XXX
                     }
-                    Err(error) => eprintln!("{error:?}"),
+                    Err(error) => eprintln!("{error}"),
                 }
             }
             Err(ReadlineError::Eof) => break,
