@@ -10,7 +10,7 @@
 ///
 /// let sl = SourceLine{ line, number };
 /// ```
-#[derive(Debug)]
+#[derive(Clone, Debug)]
 pub struct SourceLine {
     pub line: String,
     pub number: usize,

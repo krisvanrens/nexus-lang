@@ -41,23 +41,32 @@ pub enum ScanErrorKind {
 
 #[derive(Error, Debug)]
 pub struct ScanError {
-    line: String,
+    line: SourceLine,
     kind: ScanErrorKind,
     char_index: usize,
 }
 
 impl Display for ScanError {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        let filler = " ".repeat(self.char_index);
+        let prefix_fill = " ".repeat(self.line.number.to_string().len() + 2); // +2 for spaces.
+        let char_fill = " ".repeat(self.char_index);
         f.write_fmt(format_args!(
-            "| {}\n| {}{}\n| error: {}",
-            self.line, filler, "^", self.kind
+            "{}|\n {} | {}\n{}| {}{}\n{}| error: {}\n{}|",
+            prefix_fill,
+            self.line.number,
+            self.line.line,
+            prefix_fill,
+            char_fill,
+            "^",
+            prefix_fill,
+            self.kind,
+            prefix_fill,
         ))
     }
 }
 
 impl ScanError {
-    fn new(line: String, kind: ScanErrorKind, cursor: &Cursor) -> Self {
+    fn new(line: SourceLine, kind: ScanErrorKind, cursor: &Cursor) -> Self {
         ScanError {
             line,
             kind,
@@ -88,10 +97,9 @@ impl Scanner {
     /// }
     /// ```
     pub fn scan(&mut self, sline: SourceLine) -> Result<Tokens, ScanError> {
-        let SourceLine { line, .. } = sline; // TODO: Use number in error message?
         let mut tokens = Vec::new();
 
-        let mut cursor = Cursor::new(&line);
+        let mut cursor = Cursor::new(&sline.line);
         while let Some(c) = cursor.value() {
             if !self.comment_ {
                 match c {
@@ -172,20 +180,20 @@ impl Scanner {
                     '"' => {
                         tokens.push(Token::String(
                             parse_string(&mut cursor)
-                                .map_err(|e| ScanError::new(line.clone(), e, &cursor))?,
+                                .map_err(|e| ScanError::new(sline.clone(), e, &cursor))?,
                         ));
                     }
                     '0'..='9' => tokens.push(Token::Number(
                         parse_number(&mut cursor)
-                            .map_err(|e| ScanError::new(line.clone(), e, &cursor))?,
+                            .map_err(|e| ScanError::new(sline.clone(), e, &cursor))?,
                     )),
                     x if x.is_alphabetic() => tokens.push(
                         parse_word(&mut cursor)
-                            .map_err(|e| ScanError::new(line.clone(), e, &cursor))?,
+                            .map_err(|e| ScanError::new(sline.clone(), e, &cursor))?,
                     ),
                     _ => {
                         return Err(ScanError::new(
-                            line.clone(),
+                            sline.clone(),
                             ScanErrorKind::UnexpectedCharacter,
                             &cursor,
                         ))
