@@ -25,7 +25,7 @@ impl<'a> Cursor<'a> {
     /// let c = Cursor::new(&s);
     ///
     /// assert_eq!(c.value(), Some('H'));
-    /// assert_eq!(c.index(), Some(0));
+    /// assert_eq!(c.index(), 0);
     /// assert_eq!(c.peek(), Some('e'));
     /// ```
     pub fn new(line: &'a str) -> Self {
@@ -208,18 +208,14 @@ impl<'a> Cursor<'a> {
     /// let s = "abcdefg".to_string();
     /// let mut c = Cursor::new(&s);
     ///
-    /// assert_eq!(c.index(), Some(0));
+    /// assert_eq!(c.index(), 0);
     /// c.advance();
-    /// assert_eq!(c.index(), Some(1));
+    /// assert_eq!(c.index(), 1);
     /// c.advance_by(3);
-    /// assert_eq!(c.index(), Some(4));
+    /// assert_eq!(c.index(), 4);
     /// ```
-    pub fn index(&self) -> Option<usize> {
-        if !self.eol() {
-            Some(self.index)
-        } else {
-            None
-        }
+    pub fn index(&self) -> usize {
+        self.index
     }
 
     /// Check if the cursor is at end-of-line (EOL).
@@ -394,17 +390,15 @@ fn parse_word_test() {
 fn index_advance_test() {
     let mut cursor = Cursor::new("0123456789");
 
-    assert_eq!(cursor.index(), Some(0));
+    assert_eq!(cursor.index(), 0);
 
     while !cursor.eol() {
         assert_eq!(
             cursor.index(),
-            Some(cursor.value().unwrap().to_digit(10).unwrap() as usize)
+            cursor.value().unwrap().to_digit(10).unwrap() as usize
         );
         cursor.advance();
     }
-
-    assert!(cursor.index().is_none());
 }
 
 #[test]
@@ -413,7 +407,7 @@ fn index_advance_by_test() {
     //                            0    5  7 9    14    EOL
 
     let test = |cursor: &Cursor, i: usize, c: char| {
-        assert_eq!(cursor.index(), Some(i));
+        assert_eq!(cursor.index(), i);
         assert_eq!(cursor.value(), Some(c));
     };
 
@@ -427,6 +421,4 @@ fn index_advance_by_test() {
     cursor.advance_by(5);
     test(&cursor, 15, 's');
     cursor.advance_by(6);
-
-    assert!(cursor.index().is_none());
 }
