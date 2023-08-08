@@ -43,20 +43,16 @@ pub enum ScanErrorKind {
 pub struct ScanError {
     line: String,
     kind: ScanErrorKind,
-    char_index: Option<usize>,
+    char_index: usize,
 }
 
 impl Display for ScanError {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        if let Some(filler_len) = self.char_index {
-            let filler = " ".repeat(filler_len);
-            f.write_fmt(format_args!(
-                "| {}\n| {}{}\n| error: {}",
-                self.line, filler, "^", self.kind
-            ))
-        } else {
-            f.write_fmt(format_args!("| {}\n|\n| error: {}", self.line, self.kind))
-        }
+        let filler = " ".repeat(self.char_index);
+        f.write_fmt(format_args!(
+            "| {}\n| {}{}\n| error: {}",
+            self.line, filler, "^", self.kind
+        ))
     }
 }
 
