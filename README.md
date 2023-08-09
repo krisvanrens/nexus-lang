@@ -2,6 +2,7 @@
 
 [![MIT licensed](https://img.shields.io/github/license/krisvanrens/nexus-lang?style=for-the-badge)](./LICENSE)
 [![Build status](https://img.shields.io/github/actions/workflow/status/krisvanrens/nexus-lang/rust.yml?style=for-the-badge)](https://github.com/krisvanrens/nexus-lang/actions)
+[![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-2.1-4baaaa.svg?style=for-the-badge)](CODE_OF_CONDUCT.md)
 
 The Nexus programming language.
 
