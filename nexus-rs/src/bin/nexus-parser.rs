@@ -27,7 +27,10 @@ fn main() {
         Tokens::new(),
         |mut acc, line| {
             let (number, line) = line;
-            match scanner.scan(SourceLine { line, number }) {
+            match scanner.scan(SourceLine {
+                line,
+                number: Some(number + 1),
+            }) {
                 Ok(mut result) => acc.append(&mut result),
                 Err(error) => {
                     scan_error = true;

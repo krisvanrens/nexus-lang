@@ -22,7 +22,7 @@ fn parser_test() {
                 scanner
                     .scan(SourceLine {
                         line: code,
-                        number: 0,
+                        number: None,
                     })
                     .unwrap(),
             );

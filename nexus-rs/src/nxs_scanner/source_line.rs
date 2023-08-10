@@ -8,10 +8,10 @@
 /// let line = "let x;".to_string();
 /// let number = 42;
 ///
-/// let sl = SourceLine{ line, number };
+/// let sl = SourceLine{ line, Some(number) };
 /// ```
 #[derive(Clone, Debug)]
 pub struct SourceLine {
     pub line: String,
-    pub number: usize,
+    pub number: Option<usize>,
 }

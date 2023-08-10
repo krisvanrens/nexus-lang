@@ -35,7 +35,10 @@ fn run_from_file(filename: String) {
         token::Tokens::new(),
         |mut acc, line| {
             let (number, line) = line;
-            match scanner.scan(source_line::SourceLine { line, number }) {
+            match scanner.scan(source_line::SourceLine {
+                line,
+                number: Some(number + 1),
+            }) {
                 Ok(mut result) => acc.append(&mut result),
                 Err(error) => {
                     scan_error = true;
@@ -68,7 +71,7 @@ fn run_repl() {
             Ok(line) => {
                 rl.add_history_entry(line.clone())
                     .expect("failed to store line to history");
-                match scanner::Scanner::new().scan(source_line::SourceLine { line, number: 0 }) {
+                match scanner::Scanner::new().scan(source_line::SourceLine { line, number: None }) {
                     Ok(tokens) => {
                         println!("{}", parser::Parser::new(tokens).parse()); // XXX
                     }

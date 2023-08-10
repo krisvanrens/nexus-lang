@@ -10,7 +10,7 @@ fn token_test() {
 
         match s.scan(SourceLine {
             line: input.to_string(),
-            number: 0,
+            number: None,
         }) {
             Ok(tokens) => {
                 assert_eq!(tokens.len(), 1);

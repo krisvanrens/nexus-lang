@@ -29,7 +29,10 @@ fn main() {
             "Scan line".bold(),
             line.to_string().bright_red().dimmed()
         );
-        match s.scan(SourceLine { line, number }) {
+        match s.scan(SourceLine {
+            line,
+            number: Some(number + 1),
+        }) {
             Ok(tokens) => tokens.into_iter().for_each(|t| print!("{t:?} ")),
             Err(error) => eprint!("{error}"),
         }
