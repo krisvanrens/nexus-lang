@@ -95,7 +95,7 @@ impl Scanner {
     /// use nexus_rs::{scanner::Scanner, source_line::SourceLine, token::Token};
     ///
     /// let mut s = Scanner::new();
-    /// if let Ok(tokens) = s.scan(SourceLine { line: "let x;".to_string(), number: 1 }) {
+    /// if let Ok(tokens) = s.scan(SourceLine { line: "let x;".to_string(), number: None }) {
     ///     assert_eq!(tokens,
     ///                vec![Token::Let,
     ///                     Token::Identifier("x".to_string()),
