@@ -24,6 +24,9 @@ pub mod nxs_scanner {
     /// Scanner/lexer for Nexus.
     pub mod scanner;
 
+    /// Scanner error representation
+    pub mod scan_error;
+
     /// Line of source code.
     pub mod source_line;
 

@@ -1,10 +1,9 @@
 use super::cursor::Cursor;
+use super::scan_error::{ScanError, ScanErrorKind};
 use super::source_line::SourceLine;
 use crate::token::{Token, Tokens};
 use lazy_static::lazy_static;
 use std::collections::HashMap;
-use std::fmt::Display;
-use thiserror::Error;
 
 #[cfg(test)]
 use pretty_assertions::assert_eq;
@@ -18,67 +17,6 @@ use std::f64::consts::PI;
 /// Due to support for multiline comments in Nexus, line scans are non-commutative.
 pub struct Scanner {
     comment_: bool, //<! Indicates multiline comment state.
-}
-
-/// Scanning/lexing error representation.
-#[derive(Error, Debug)]
-pub enum ScanErrorKind {
-    #[error("malformed string literal")]
-    MalformedString,
-
-    #[error("failed to parse number '{0}'")]
-    NumberParseError(String),
-
-    #[error("failed to parse word")]
-    WordParseError,
-
-    #[error("unexpected character")]
-    UnexpectedCharacter,
-
-    #[error("unterminated string")]
-    UnterminatedString,
-}
-
-#[derive(Error, Debug)]
-pub struct ScanError {
-    line: SourceLine,
-    kind: ScanErrorKind,
-    char_index: usize,
-}
-
-impl Display for ScanError {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        let prefix_fill = " ".repeat(
-            self.line
-                .number
-                .map_or("".to_owned(), |n| n.to_string())
-                .len()
-                + 2,
-        ); // +2 for spaces.
-        let char_fill = " ".repeat(self.char_index);
-        f.write_fmt(format_args!(
-            "{}|\n {} | {}\n{}| {}{}\n{}| error: {}\n{}|",
-            prefix_fill,
-            self.line.number.map_or("".to_owned(), |n| n.to_string()),
-            self.line.line,
-            prefix_fill,
-            char_fill,
-            "^",
-            prefix_fill,
-            self.kind,
-            prefix_fill,
-        ))
-    }
-}
-
-impl ScanError {
-    fn new(line: SourceLine, kind: ScanErrorKind, cursor: &Cursor) -> Self {
-        ScanError {
-            line,
-            kind,
-            char_index: cursor.index(),
-        }
-    }
 }
 
 impl Scanner {
