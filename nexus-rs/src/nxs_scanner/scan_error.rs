@@ -31,19 +31,13 @@ pub struct ScanError {
 
 impl Display for ScanError {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        // TODO: Simplify?
-        let prefix_fill = " ".repeat(
-            self.line
-                .number
-                .map_or("".to_owned(), |n| n.to_string())
-                .len()
-                + 2,
-        ); // +2 for spaces.
+        let line_number_str = self.line.number.map_or("".to_owned(), |n| n.to_string());
+        let prefix_fill = " ".repeat(line_number_str.len() + 2); // +2 for spaces.
         let char_fill = " ".repeat(self.char_index);
         f.write_fmt(format_args!(
             "{}|\n {} | {}\n{}| {}{}\n{}| error: {}\n{}|",
             prefix_fill,
-            self.line.number.map_or("".to_owned(), |n| n.to_string()),
+            line_number_str,
             self.line.line,
             prefix_fill,
             char_fill,
