@@ -52,6 +52,8 @@ impl<'a> Cursor<'a> {
     /// assert_eq!(c.value(), Some('a'));
     /// c.advance();
     /// assert_eq!(c.value(), Some('b'));
+    /// c.advance();
+    /// assert_eq!(c.value(), None);
     /// ```
     pub fn value(&self) -> Option<char> {
         self.value
