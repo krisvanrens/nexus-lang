@@ -79,7 +79,7 @@ impl<'a> Cursor<'a> {
     /// ```
     pub fn advance(&mut self) {
         self.value = self.chars.next();
-        self.index += 1;
+        self.index_inc();
     }
 
     /// Advance the cursor by N positions, consuming the value at each increment.
@@ -107,7 +107,7 @@ impl<'a> Cursor<'a> {
             _ => {
                 for _ in 0..(n - 1) {
                     self.chars.next();
-                    self.index += 1;
+                    self.index_inc();
 
                     if self.chars.peek().is_none() {
                         break;
@@ -115,7 +115,7 @@ impl<'a> Cursor<'a> {
                 }
 
                 self.value = self.chars.next();
-                self.index += 1;
+                self.index_inc();
             }
         }
     }
@@ -236,6 +236,13 @@ impl<'a> Cursor<'a> {
     /// ```
     pub fn eol(&self) -> bool {
         self.value.is_none()
+    }
+
+    /// Increment index.
+    fn index_inc(&mut self) {
+        if !self.eol() {
+            self.index += 1;
+        }
     }
 }
 
@@ -404,6 +411,15 @@ fn index_advance_test() {
         );
         cursor.advance();
     }
+
+    assert!(cursor.eol());
+    assert_eq!(cursor.index(), 9);
+
+    cursor.advance();
+    cursor.advance();
+
+    assert!(cursor.eol());
+    assert_eq!(cursor.index(), 9);
 }
 
 #[test]
@@ -426,4 +442,12 @@ fn index_advance_by_test() {
     cursor.advance_by(5);
     test(&cursor, 15, 's');
     cursor.advance_by(6);
+
+    assert!(cursor.eol());
+    assert_eq!(cursor.index(), 20);
+
+    cursor.advance_by(10);
+
+    assert!(cursor.eol());
+    assert_eq!(cursor.index(), 20);
 }
