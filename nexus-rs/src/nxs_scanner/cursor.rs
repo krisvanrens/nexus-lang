@@ -280,6 +280,7 @@ fn advance_test() {
         c.advance();
     }
 
+    assert!(c.value().is_none());
     assert!(c.eol());
 }
 
@@ -298,6 +299,8 @@ fn advance_by_test() {
     assert_eq!(c.value(), Some('g'));
 
     c.advance_by(3);
+
+    assert!(c.value().is_none());
     assert!(c.eol());
 }
 
