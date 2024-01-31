@@ -408,9 +408,9 @@ Productions are in [Extended Backus-Naur Form (EBNF)](https://en.wikipedia.org/w
 ### Lexical grammar
 
 ```ebnf
-ALPHA  = [a-zA-Z] | '_' ;
+ALPHA  = [a-zA-Z_] ;
 DIGIT  = [0-9] ;
-STRING = '"' ( ? any character - '"' ? )* '"' ;
+STRING = '"' ( [^"\\] | '\\' . )* '"' ;
 NUMBER = DIGIT+ ( '.' DIGIT+ )? ;
 ID     = ALPHA ( ALPHA | DIGIT )* ;
 ```
@@ -422,12 +422,17 @@ This means in practice it is possible to define identifiers named '`ŮñĭçøƋ
 ### Main syntax (WIP)
 
 ```ebnf
+comment_single = '//' [^\n]* '\n' ;
+comment_multi  = '/*' ( ? all characters ? - '/*' )* '*/' ;
+```
+
+```ebnf
 program    = decl* EOF ;
 
 decl       = fn_decl | const_decl | var_decl | use_decl | stmt ;
 fn_decl    = 'fn' function ;
 const_decl = 'const' ID ':' type '=' expr ';' ;
-var_decl   = 'let' ( 'mut' )? ID ( ( '=' expr ) | ( ':' type ) ( ':' type '=' expr ) )? ';' ;
+var_decl   = 'let' ( 'mut' )? ID ( ( '=' expr ) | ( ':' type ) | ( ':' type '=' expr ) )? ';' ;
 use_decl   = 'use' expr ';' ;
 
 stmt       = expr_stmt | assignment | connect | print | return | block ;
@@ -445,7 +450,7 @@ literal    = NUMBER | STRING | 'true' | 'false' ;
 closure    = ( '||' | '|' args '|' ) ( '->' type )? ( expr | block ) ;
 control    = if | while | for ;
 group      = '(' expr ')' ;
-if         = "if" expr block ( "else" ( if | block) ) ;
+if         = "if" expr block ( "else" ( if | block ) ) ;
 while      = "while" expr block ;
 for        = "for" ID "in" ( ( range_expr ) | ID ) block ;
 unary      = ( '!' | '+' | '-' | 'group' | 'node' ) expr ;
