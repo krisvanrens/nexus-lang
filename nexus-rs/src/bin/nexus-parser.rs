@@ -47,12 +47,15 @@ fn main() {
         return;
     }
 
-    parser.parse().iter().for_each(|n| {
-        println!(
-            "{} {}: {}",
-            "==".yellow().bold(),
-            "AST Node".bold(),
-            n.to_string().bright_red().dimmed()
-        )
-    });
+    match parser.parse() {
+        Ok(ast) => ast.iter().for_each(|n| {
+            println!(
+                "{} {}: {}",
+                "==".yellow().bold(),
+                "AST Node".bold(),
+                n.to_string().bright_red().dimmed()
+            )
+        }),
+        Err(e) => eprintln!("{e:?}"),
+    }
 }

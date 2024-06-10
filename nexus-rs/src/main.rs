@@ -1,4 +1,5 @@
 use clap::Parser;
+use colored::Colorize;
 use nexus_rs::{filereader::*, *};
 use rustyline::{error::ReadlineError, DefaultEditor};
 use std::process::exit;
@@ -57,7 +58,10 @@ fn run_from_file(filename: String) {
         return;
     }
 
-    println!("{}", parser.parse()); // XXX
+    match parser.parse() {
+        Ok(ast) => println!("{ast}"),
+        Err(e) => eprintln!("{}: {e:?}", "Error".red().bold()),
+    }
 }
 
 fn run_repl() {
@@ -72,9 +76,10 @@ fn run_repl() {
                 rl.add_history_entry(line.clone())
                     .expect("failed to store line to history");
                 match scanner::Scanner::new().scan(source_line::SourceLine { line, number: None }) {
-                    Ok(tokens) => {
-                        println!("{}", parser::Parser::new(tokens).parse()); // XXX
-                    }
+                    Ok(tokens) => match parser::Parser::new(tokens).parse() {
+                        Ok(ast) => println!("{ast}"),
+                        Err(e) => eprintln!("{}: {e:?}", "Error".red().bold()),
+                    },
                     Err(error) => eprintln!("{error}"),
                 }
             }

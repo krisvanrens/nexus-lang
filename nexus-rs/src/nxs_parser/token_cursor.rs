@@ -1,3 +1,4 @@
+use crate::parse_error::*;
 use crate::token::{Token, Tokens};
 use std::{iter::Peekable, vec::IntoIter};
 
@@ -126,6 +127,7 @@ impl TokenCursor {
     }
 
     /// Consume an expected token.
+    /// Returns `Ok` if the consumed token matches the expected one, otherwise a parse error.
     ///
     /// # Example
     ///
@@ -133,18 +135,24 @@ impl TokenCursor {
     /// use nexus_rs::token_cursor::TokenCursor;
     /// use nexus_rs::token::Token;
     ///
-    /// let t = vec![Token::Let, Token::Arrow];
+    /// let t = vec![Token::Let, Token::Arrow, Token::Colon];
     /// let mut c = TokenCursor::new(t);
     ///
-    /// c.consume(Token::Let);
-    /// c.consume(Token::Arrow);
+    /// assert!(c.consume(Token::Let).is_ok());
+    /// assert!(c.consume(Token::Arrow).is_ok());
+    /// assert!(c.consume(Token::SemiColon).is_err());
     /// ```
-    pub fn consume(&mut self, expected: Token) {
-        assert_eq!(self.curr, Some(expected));
-        self.advance();
+    pub fn consume(&mut self, expected: Token) -> ParseResult<()> {
+        if self.curr == Some(expected.clone()) {
+            self.advance();
+            Ok(())
+        } else {
+            Err(ParseError::new(ParseErrorKind::Expected(expected)))
+        }
     }
 
-    /// Consume an expected token (with fail error message).
+    /// Consume an expected token (with a custom message explaining the specific reason).
+    /// Returns `Ok` if the consumed token matches the expected one, otherwise a parse error.
     ///
     /// # Example
     ///
@@ -152,15 +160,23 @@ impl TokenCursor {
     /// use nexus_rs::token_cursor::TokenCursor;
     /// use nexus_rs::token::Token;
     ///
-    /// let t = vec![Token::Let, Token::Arrow];
+    /// let t = vec![Token::Let, Token::Arrow, Token::Colon];
     /// let mut c = TokenCursor::new(t);
     ///
-    /// c.consume_msg(Token::Let, "Expected 'let' token");
-    /// c.consume_msg(Token::Arrow, "Expected 'arrow' token");
+    /// assert!(c.consume_msg(Token::Let, "for funzies").is_ok());
+    /// assert!(c.consume_msg(Token::Arrow, "just because").is_ok());
+    /// assert!(c.consume_msg(Token::SemiColon, "I like it").is_err());
     /// ```
-    pub fn consume_msg(&mut self, expected: Token, msg: &str) {
-        assert_eq!(self.curr, Some(expected), "{}", msg); // TODO: Proper error handling..
-        self.advance();
+    pub fn consume_msg(&mut self, expected: Token, reason: &str) -> ParseResult<()> {
+        if self.curr == Some(expected.clone()) {
+            self.advance();
+            Ok(())
+        } else {
+            Err(ParseError::new(ParseErrorKind::ExpectedReason(
+                expected,
+                reason.to_owned(),
+            )))
+        }
     }
 
     /// Check if token stream is end-of-stream (EOS).
@@ -261,20 +277,22 @@ fn advance_if_test() {
 
 #[test]
 fn consume_test() {
-    let t = vec![Token::Let, Token::Arrow];
+    let t = vec![Token::Let, Token::Arrow, Token::Colon];
     let mut c = TokenCursor::new(t);
 
-    c.consume(Token::Let);
-    c.consume(Token::Arrow);
+    assert!(c.consume(Token::Let).is_ok());
+    assert!(c.consume(Token::Arrow).is_ok());
+    assert!(c.consume(Token::SemiColon).is_err());
 }
 
 #[test]
 fn consume_msg_test() {
-    let t = vec![Token::Let, Token::Arrow];
+    let t = vec![Token::Let, Token::Arrow, Token::Colon];
     let mut c = TokenCursor::new(t);
 
-    c.consume_msg(Token::Let, "Expected 'let' token");
-    c.consume_msg(Token::Arrow, "Expected 'arrow' token");
+    assert!(c.consume_msg(Token::Let, "expected 'let'").is_ok());
+    assert!(c.consume_msg(Token::Arrow, "expected '->'").is_ok());
+    assert!(c.consume_msg(Token::SemiColon, "expected ';'").is_err());
 }
 
 #[test]

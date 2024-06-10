@@ -41,6 +41,9 @@ pub mod nxs_parser {
 
     /// Token cursor used for parsing.
     pub mod token_cursor;
+
+    /// Parser error representation.
+    pub mod parse_error;
 }
 
 pub use nxs_ast::*;

@@ -26,7 +26,8 @@ fn parser_test() {
                     })
                     .unwrap(),
             );
-            parser.parse();
+
+            assert!(parser.parse().is_ok()); // TODO: Display error.
 
             println!("..done");
         }

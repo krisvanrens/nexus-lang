@@ -1,6 +1,6 @@
 use super::cursor::Cursor;
 use super::source_line::SourceLine;
-use std::fmt::Display;
+use std::fmt;
 use thiserror::Error;
 
 /// Scanning/lexing error representation.
@@ -29,8 +29,8 @@ pub struct ScanError {
     char_index: usize,
 }
 
-impl Display for ScanError {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+impl fmt::Display for ScanError {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         let line_number_str = self.line.number.map_or("".to_owned(), |n| n.to_string());
         let prefix_fill = " ".repeat(line_number_str.len() + 2); // +2 for spaces.
         let char_fill = " ".repeat(self.char_index);
